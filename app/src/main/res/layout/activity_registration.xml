@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/usernameRegText"
+            android:layout_below="@+id/username"
+            android:layout_alignRight="@+id/passwordRegText"
+            android:layout_alignEnd="@+id/passwordRegText"
+            android:layout_alignLeft="@+id/passwordRegText"
+            android:layout_alignStart="@+id/passwordRegText"
+            android:inputType="textVisiblePassword|textNoSuggestions" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/passwordRegText"
+            android:layout_below="@+id/password"
+            android:layout_centerHorizontal="true" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/mailRegText"
+            android:inputType="textEmailAddress"
+            android:ems="10"
+            android:layout_below="@+id/mail"
+            android:layout_centerHorizontal="true" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPostalAddress"
+            android:ems="10"
+            android:id="@+id/adressRegText"
+            android:layout_below="@+id/adress"
+            android:layout_centerHorizontal="true" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:ems="10"
+            android:id="@+id/phoneNumberRegText"
+            android:layout_below="@+id/phoneNumber"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/titleReg"
+            android:layout_marginTop="25dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:id="@+id/titleText"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/username"
+            android:id="@+id/username"
+            android:layout_below="@+id/titleText"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/password"
+            android:id="@+id/password"
+            android:layout_below="@+id/usernameRegText"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mail"
+            android:id="@+id/mail"
+            android:layout_below="@+id/passwordRegText"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/adress"
+            android:id="@+id/adress"
+            android:layout_below="@+id/mailRegText"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/phone"
+            android:id="@+id/phoneNumber"
+            android:layout_below="@+id/adressRegText"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/register"
+            android:id="@+id/registerButton"
+            android:layout_below="@+id/phoneNumberRegText"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"/>
+
+    </RelativeLayout>
+    </ScrollView>
+
+
+</RelativeLayout>
