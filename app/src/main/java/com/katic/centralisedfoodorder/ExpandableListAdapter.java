@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -43,14 +44,18 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         final String childText = (String) getChild(groupPosition, childPosition);
 
         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this._context
+            LayoutInflater inflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.list_restaurant, null);
+            convertView = inflater.inflate(R.layout.list_restaurant, null);
         }
 
+
         TextView txtListChild = (TextView) convertView.findViewById(R.id.listRestaurant);
+        ImageView imgListChild = (ImageView) convertView.findViewById(R.id.restaurantPhoto);
 
         txtListChild.setText(childText);
+        imgListChild.setImageResource(R.drawable.restaurant);
+
         return convertView;
     }
 

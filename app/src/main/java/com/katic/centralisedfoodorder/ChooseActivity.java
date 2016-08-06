@@ -34,7 +34,7 @@ public class ChooseActivity extends Activity {
         listDataHeader = new ArrayList<String>();
         listDataChild = new HashMap<String, List<String>>();
 
-        // Adding child data
+        // Adding header data
         listDataHeader.add("Izbor restorana");
         listDataHeader.add("Izbor kuhinje");
 
@@ -54,6 +54,6 @@ public class ChooseActivity extends Activity {
 
         listDataChild.put(listDataHeader.get(0), izborRestorana); // Header, Child data
         listDataChild.put(listDataHeader.get(1), izborKuhinje);
-    }
 
+    }
 }
