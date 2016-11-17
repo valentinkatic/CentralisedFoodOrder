@@ -28,7 +28,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ChooseActivity">
+        <activity android:name=".ChooseActivity"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
             </intent-filter>

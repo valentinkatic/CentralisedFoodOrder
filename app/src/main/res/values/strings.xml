@@ -9,4 +9,6 @@
     <string name="titleReg">Forma za registraciju</string>
     <string name="login">Prijava</string>
     <string name="run">Pokreni bez prijave</string>
+    <string name="hello_world">Hello World</string>
+    <string name="titleChoose">Filter:</string>
 </resources>

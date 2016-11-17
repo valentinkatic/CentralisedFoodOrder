@@ -1,59 +1,100 @@
 package com.katic.centralisedfoodorder;
 
+import com.katic.centralisedfoodorder.adapter.HorizontalListView;
+import com.katic.centralisedfoodorder.adapter.RVAdapter;
+
 import android.app.Activity;
 import android.os.Bundle;
-import android.widget.ExpandableListView;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class ChooseActivity extends Activity {
 
-    ExpandableListAdapter listAdapter;
-    ExpandableListView expListView;
-    List<String> listDataHeader;
-    HashMap<String, List<String>> listDataChild;
+    private List<Restaurant> restaurants;
+    private RecyclerView rv;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose);
 
-        expListView = (ExpandableListView) findViewById(R.id.expandableListView);
+        HorizontalListView listview = (HorizontalListView) findViewById(R.id.listview);
+        listview.setAdapter(new HAdapter());
 
-        prepareListData();
+        rv = (RecyclerView) findViewById(R.id.restaurantList);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        rv.setLayoutManager(llm);
+        rv.setHasFixedSize(true);
 
-        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+        initializeData();
+        initializeAdapter();
 
-        expListView.setAdapter(listAdapter);
+    }
+
+    private void initializeData() {
+        restaurants = new ArrayList<>();
+        restaurants.add(new Restaurant("Karaka", "Kneza Trpimira 16", R.drawable.karaka));
+        restaurants.add(new Restaurant("Rustika", "Ul. Pavla Pejačevića 32", R.drawable.rustika));
+        restaurants.add(new Restaurant("Oliva", "Kninska ul. 24", R.drawable.oliva));
+    }
+
+    private void initializeAdapter(){
+        RVAdapter adapter = new RVAdapter(restaurants);
+        rv.setAdapter(adapter);
+    }
+
+    private static String[] dataObjects = new String[]{
+            "Pizza", "pizza",
+            "Meksicka", "mexican",
+            "Talijanska", "italian",
+            "Kineska", "chinese",
+            "Indijska", "indian",
+            "#6", ""
+    };
+
+    private class HAdapter extends BaseAdapter {
+
+        public HAdapter() {
+            super();
+        }
+
+
+        public int getCount() {
+            return dataObjects.length / 2;
+        }
+
+        public Object getItem(int position) {
+            return null;
+        }
+
+        public long getItemId(int position) {
+            return 0;
+        }
+
+
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View retval = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewitem, null);
+            TextView title = (TextView) retval.findViewById(R.id.title);
+            title.setText(dataObjects[position * 2]);
+            String string = dataObjects[position * 2 + 1];
+            int resID = getResources().getIdentifier(string, "drawable", getPackageName());
+            ImageView image = (ImageView) retval.findViewById(R.id.image);
+            image.setImageResource(resID);
+
+            return retval;
+        }
 
     }
 
-    private void prepareListData() {
-        listDataHeader = new ArrayList<String>();
-        listDataChild = new HashMap<String, List<String>>();
 
-        // Adding header data
-        listDataHeader.add("Izbor restorana");
-        listDataHeader.add("Izbor kuhinje");
-
-        // Adding child data
-        List<String> izborRestorana = new ArrayList<String>();
-        izborRestorana.add("Corner");
-        izborRestorana.add("Galija");
-        izborRestorana.add("Karaka");
-        izborRestorana.add("Lipov Hlad");
-        izborRestorana.add("Rustika");
-
-        List<String> izborKuhinje = new ArrayList<String>();
-        izborKuhinje.add("Kineska");
-        izborKuhinje.add("Talijanska");
-        izborKuhinje.add("Meksička");
-        izborKuhinje.add("Veganska");
-
-        listDataChild.put(listDataHeader.get(0), izborRestorana); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), izborKuhinje);
-
-    }
 }
