@@ -1,31 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    >
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
 
-    <TextView
+    <TabHost
+        android:id="@+id/tabHost"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/titleChoose"
-        android:textSize="20sp"
-        android:padding="20dp"
-        />
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
 
-    <com.katic.centralisedfoodorder.adapter.HorizontalListView
-        android:id="@+id/listview"
-        android:layout_width="match_parent"
-        android:layout_height="110dp"
-        android:background="#ddd"
-        android:layout_margin="2dp"
-        />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/restaurantList"
-        />
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></TabWidget>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/tab1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:orientation="vertical">
+
+                    <com.katic.centralisedfoodorder.adapter.HorizontalListView
+                        android:id="@+id/listview"
+                        android:layout_width="match_parent"
+                        android:layout_height="110dp"
+                        android:background="#ddd"
+                        android:layout_margin="2dp"
+                        />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/restaurantList"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <com.katic.centralisedfoodorder.adapter.HorizontalListView
+                        android:id="@+id/listview2"
+                        android:layout_width="match_parent"
+                        android:layout_height="110dp"
+                        android:background="#ddd"
+                        android:layout_margin="2dp"
+                        />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/restaurantList2"
+                        />
+                </LinearLayout>
+
+
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
 
 </LinearLayout>
