@@ -34,6 +34,7 @@ import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.SparseBooleanArray;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
@@ -312,6 +313,8 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 
     private OnGestureListener mOnGesture = new GestureDetector.SimpleOnGestureListener() {
 
+        private SparseBooleanArray selectedItems = new SparseBooleanArray();
+
         @Override
         public boolean onDown(MotionEvent e) {
             return HorizontalListView.this.onDown(e);
@@ -345,6 +348,14 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
                     }
                     if(mOnItemSelected != null){
                         mOnItemSelected.onItemSelected(HorizontalListView.this, child, mLeftViewIndex + 1 + i, mAdapter.getItemId( mLeftViewIndex + 1 + i ));
+                    }
+                    if (selectedItems.get(i, false)){
+                        selectedItems.delete(i);
+                        child.setSelected(false);
+                    }
+                    else {
+                        selectedItems.put(i, true);
+                        child.setSelected(true);
                     }
                     break;
                 }

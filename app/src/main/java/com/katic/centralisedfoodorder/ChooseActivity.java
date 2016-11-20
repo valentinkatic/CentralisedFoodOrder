@@ -4,6 +4,7 @@ import com.katic.centralisedfoodorder.adapter.HorizontalListView;
 import com.katic.centralisedfoodorder.adapter.RVAdapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -14,10 +15,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +62,7 @@ public class ChooseActivity extends Activity {
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
         rv.setHasFixedSize(true);
+        
 
         rv2 = (RecyclerView) findViewById(R.id.restaurantList2);
         LinearLayoutManager llm2 = new LinearLayoutManager(this);
@@ -78,7 +82,7 @@ public class ChooseActivity extends Activity {
     }
 
     private void initializeAdapter(){
-        RVAdapter adapter = new RVAdapter(restaurants);
+        RVAdapter adapter = new RVAdapter(restaurants, this);
         rv.setAdapter(adapter);
         rv2.setAdapter(adapter);
     }
