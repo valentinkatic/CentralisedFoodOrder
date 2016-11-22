@@ -3,41 +3,48 @@ package com.katic.centralisedfoodorder;
 import com.katic.centralisedfoodorder.adapter.HorizontalListView;
 import com.katic.centralisedfoodorder.adapter.RVAdapter;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChooseActivity extends Activity {
+public class ChooseActivity extends AppCompatActivity {
 
-    private List<Restaurant> restaurants;
+    public static List<Restaurant> restaurants;
     private RecyclerView rv;
     private RecyclerView rv2;
-    TabHost tabHost;
+    private TabHost host;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.mymenu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose);
 
-        TabHost host = (TabHost)findViewById(R.id.tabHost);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Izbor restorana");
+        actionBar.setElevation(4);
+        actionBar.collapseActionView();
+
+
+        host = (TabHost)findViewById(R.id.tabHost);
         host.setup();
 
         //Tab 1

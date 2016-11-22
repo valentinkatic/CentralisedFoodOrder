@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.katic.centralisedfoodorder.ChooseActivity;
 import com.katic.centralisedfoodorder.R;
 import com.katic.centralisedfoodorder.Restaurant;
 import com.katic.centralisedfoodorder.RestaurantActivity;
@@ -27,6 +28,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
         TextView restaurantName;
         TextView restaurantAddress;
         ImageView restaurantPhoto;
+        ImageView bookmark;
         boolean restaurantPressed = false;
 
         private SparseBooleanArray selectedItems = new SparseBooleanArray();
@@ -38,6 +40,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
             restaurantName = (TextView) itemView.findViewById(R.id.restaurantName);
             restaurantAddress = (TextView) itemView.findViewById(R.id.restaurantAddress);
             restaurantPhoto = (ImageView) itemView.findViewById(R.id.restaurantPhoto);
+            bookmark = (ImageView) itemView.findViewById(R.id.bookmark);
         }
 
         @Override
@@ -67,6 +70,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
         }
     }
 
+    private List<Restaurant> res = ChooseActivity.restaurants;
     List<Restaurant> restaurants;
     Context context;
 
@@ -77,7 +81,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
 
     @Override
     public int getItemCount() {
-        return restaurants.size();
+        return res.size();
     }
 
     @Override
@@ -87,11 +91,34 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
         return rvh;
     }
 
+    int pos;
+
+
     @Override
-    public void onBindViewHolder(RestaurantViewHolder restaurantViewHolder, int i) {
-        restaurantViewHolder.restaurantName.setText(restaurants.get(i).name);
-        restaurantViewHolder.restaurantAddress.setText(restaurants.get(i).address);
-        restaurantViewHolder.restaurantPhoto.setImageResource(restaurants.get(i).photoId);
+    public void onBindViewHolder(final RestaurantViewHolder restaurantViewHolder, int i) {
+        restaurantViewHolder.restaurantName.setText(res.get(i).name);
+        restaurantViewHolder.restaurantAddress.setText(res.get(i).address);
+        restaurantViewHolder.restaurantPhoto.setImageResource(res.get(i).photoId);
+        pos = i;
+        if (!res.get(i).bookmarked) {
+            restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_off);
+        }
+        else {
+            restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_on);
+        }
+        restaurantViewHolder.bookmark.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if (!res.get(pos).bookmarked) {
+                    restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_on);
+                    res.get(pos).setBookmarked(true);
+                }
+                else {
+                    restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_off);
+                    res.get(pos).setBookmarked(false);
+                }
+            }
+        });
     }
 
     @Override
