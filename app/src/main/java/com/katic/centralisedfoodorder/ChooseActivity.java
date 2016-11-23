@@ -3,6 +3,7 @@ package com.katic.centralisedfoodorder;
 import com.katic.centralisedfoodorder.adapter.HorizontalListView;
 import com.katic.centralisedfoodorder.adapter.RVAdapter;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,13 +13,17 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.katic.centralisedfoodorder.R.id.tabHost;
 
 public class ChooseActivity extends AppCompatActivity {
 
@@ -44,17 +49,18 @@ public class ChooseActivity extends AppCompatActivity {
         actionBar.collapseActionView();
 
 
-        host = (TabHost)findViewById(R.id.tabHost);
+        host = (TabHost)findViewById(tabHost);
         host.setup();
 
+
         //Tab 1
-        TabHost.TabSpec spec = host.newTabSpec("All");
+        TabHost.TabSpec spec = host.newTabSpec("TAB_1");
         spec.setContent(R.id.tab1);
         spec.setIndicator("All");
         host.addTab(spec);
 
         //Tab 2
-        spec = host.newTabSpec("Bookmarks");
+        spec = host.newTabSpec("TAB_2");
         spec.setContent(R.id.tab2);
         spec.setIndicator("Bookmarks");
         host.addTab(spec);
@@ -64,34 +70,42 @@ public class ChooseActivity extends AppCompatActivity {
 
         HorizontalListView listview2 = (HorizontalListView) findViewById(R.id.listview2);
         listview2.setAdapter(new HAdapter());
+        listview2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                initializeAdapter();
+            }
+        });
 
         rv = (RecyclerView) findViewById(R.id.restaurantList);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
         rv.setHasFixedSize(true);
-        
 
         rv2 = (RecyclerView) findViewById(R.id.restaurantList2);
         LinearLayoutManager llm2 = new LinearLayoutManager(this);
         rv2.setLayoutManager(llm2);
-        rv2.setHasFixedSize(true);
 
         initializeData();
         initializeAdapter();
 
+        host.setOnTabChangedListener(new TabHost.OnTabChangeListener(){
+            public void onTabChanged(String tabId) {
+                initializeAdapter();
+            }
+        });
     }
 
     private void initializeData() {
         restaurants = new ArrayList<>();
-        restaurants.add(new Restaurant("Karaka", "Kneza Trpimira 16", R.drawable.karaka));
-        restaurants.add(new Restaurant("Rustika", "Ul. Pavla Pejačevića 32", R.drawable.rustika));
-        restaurants.add(new Restaurant("Oliva", "Kninska ul. 24", R.drawable.oliva));
+        restaurants.add(new Restaurant(1, "Karaka", "Kneza Trpimira 16", R.drawable.karaka));
+        restaurants.add(new Restaurant(2, "Rustika", "Ul. Pavla Pejačevića 32", R.drawable.rustika));
+        restaurants.add(new Restaurant(3, "Oliva", "Kninska ul. 24", R.drawable.oliva));
     }
 
     private void initializeAdapter(){
-        RVAdapter adapter = new RVAdapter(restaurants, this);
-        rv.setAdapter(adapter);
-        rv2.setAdapter(adapter);
+        rv.setAdapter(new RVAdapter(this, false));
+        rv2.setAdapter(new RVAdapter(this, true));
     }
 
     private static String[] dataObjects = new String[]{
@@ -108,7 +122,6 @@ public class ChooseActivity extends AppCompatActivity {
         public HAdapter() {
             super();
         }
-
 
         public int getCount() {
             return dataObjects.length / 2;

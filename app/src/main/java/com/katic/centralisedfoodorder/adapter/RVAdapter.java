@@ -11,12 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.katic.centralisedfoodorder.ChooseActivity;
 import com.katic.centralisedfoodorder.R;
 import com.katic.centralisedfoodorder.Restaurant;
 import com.katic.centralisedfoodorder.RestaurantActivity;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHolder> {
@@ -71,16 +74,27 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
     }
 
     private List<Restaurant> res = ChooseActivity.restaurants;
-    List<Restaurant> restaurants;
+    boolean bookmarks;
     Context context;
+    private List<Integer> marks = new ArrayList<>();
 
-    public RVAdapter(List<Restaurant> restaurants, Context context) {
-        this.restaurants = restaurants;
+    public RVAdapter(Context context, boolean bookmarks) {
         this.context = context;
+        this.bookmarks = bookmarks;
     }
 
     @Override
     public int getItemCount() {
+        if (bookmarks) {
+            int bookmarked = 0;
+            for (int i = 0; i < res.size() ; i++) {
+                if (res.get(i).isBookmarked()) {
+                    bookmarked++;
+                    marks.add(i);
+                }
+            }
+            return bookmarked;
+        } else
         return res.size();
     }
 
@@ -91,34 +105,31 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
         return rvh;
     }
 
-    int pos;
-
-
     @Override
     public void onBindViewHolder(final RestaurantViewHolder restaurantViewHolder, int i) {
-        restaurantViewHolder.restaurantName.setText(res.get(i).name);
-        restaurantViewHolder.restaurantAddress.setText(res.get(i).address);
-        restaurantViewHolder.restaurantPhoto.setImageResource(res.get(i).photoId);
-        pos = i;
-        if (!res.get(i).bookmarked) {
-            restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_off);
-        }
-        else {
-            restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_on);
-        }
-        restaurantViewHolder.bookmark.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                if (!res.get(pos).bookmarked) {
-                    restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_on);
-                    res.get(pos).setBookmarked(true);
-                }
-                else {
-                    restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_off);
-                    res.get(pos).setBookmarked(false);
-                }
+        if (bookmarks) {i = marks.get(i);}
+            restaurantViewHolder.restaurantName.setText(res.get(i).name);
+            restaurantViewHolder.restaurantAddress.setText(res.get(i).address);
+            restaurantViewHolder.restaurantPhoto.setImageResource(res.get(i).photoId);
+            if (!res.get(i).isBookmarked()) {
+                restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_off);
+            } else {
+                restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_on);
             }
-        });
+            restaurantViewHolder.bookmark.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int pos = restaurantViewHolder.getAdapterPosition();
+                    if (bookmarks) {pos = marks.get(pos);}
+                    if (!res.get(pos).isBookmarked()) {
+                        restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_on);
+                        res.get(pos).setBookmarked(true);
+                    } else {
+                        restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_off);
+                        res.get(pos).setBookmarked(false);
+                    }
+                }
+            });
     }
 
     @Override
