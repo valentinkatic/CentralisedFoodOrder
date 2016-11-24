@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Centralized Food Order</string>
-    <string name="username">Korisničko ime:</string>
     <string name="password">Zaporka:</string>
     <string name="mail">Elektronička pošta:</string>
     <string name="adress">Adresa:</string>
@@ -9,4 +8,7 @@
     <string name="titleReg">Forma za registraciju</string>
     <string name="login">Prijava</string>
     <string name="run">Pokreni bez prijave</string>
+    <string name="auth_failed">Authentication Failed</string>
+    <string name="auth_success">Registration successful</string>
+    <string name="login_success">Sign in successful</string>
 </resources>

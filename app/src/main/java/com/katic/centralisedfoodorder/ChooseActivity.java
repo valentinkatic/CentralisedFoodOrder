@@ -1,12 +1,12 @@
 package com.katic.centralisedfoodorder;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.katic.centralisedfoodorder.adapter.HorizontalListView;
 import com.katic.centralisedfoodorder.adapter.RVAdapter;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,14 +18,15 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.katic.centralisedfoodorder.R.id.tabHost;
 
-public class ChooseActivity extends AppCompatActivity {
+public class ChooseActivity extends BaseActivity {
+
+    private DatabaseReference mDatabase;
 
     public static List<Restaurant> restaurants;
     private RecyclerView rv;
@@ -42,6 +43,8 @@ public class ChooseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Izbor restorana");
@@ -94,12 +97,20 @@ public class ChooseActivity extends AppCompatActivity {
                 initializeAdapter();
             }
         });
+
+        //writeNewRestaurant(4, "ime", "adresa", 34253);
+    }
+
+    private void writeNewRestaurant(int resId, String name, String address, int photoId) {
+        Restaurant res = new Restaurant(resId, name, address, photoId);
+
+        mDatabase.child("restaurants").child(Integer.toString(resId)).setValue(res);
     }
 
     private void initializeData() {
         restaurants = new ArrayList<>();
         restaurants.add(new Restaurant(1, "Karaka", "Kneza Trpimira 16", R.drawable.karaka));
-        restaurants.add(new Restaurant(2, "Rustika", "Ul. Pavla Pejačevića 32", R.drawable.rustika));
+            restaurants.add(new Restaurant(2, "Rustika", "Ul. Pavla Pejačevića 32", R.drawable.rustika));
         restaurants.add(new Restaurant(3, "Oliva", "Kninska ul. 24", R.drawable.oliva));
     }
 

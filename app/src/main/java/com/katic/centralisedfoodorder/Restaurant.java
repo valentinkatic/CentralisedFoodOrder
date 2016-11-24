@@ -7,6 +7,8 @@ public class Restaurant {
     public int photoId;
     public boolean bookmarked;
 
+    public Restaurant(){}
+
     public Restaurant(int restaurantID, String name, String address, int photoId) {
         this.restaurantID = restaurantID;
         this.name = name;
