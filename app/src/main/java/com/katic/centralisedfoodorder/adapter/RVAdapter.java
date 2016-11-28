@@ -113,7 +113,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
         if (bookmarks) {i = marks.get(i);}
             restaurantViewHolder.restaurantName.setText(res.get(i).name);
             restaurantViewHolder.restaurantAddress.setText(res.get(i).address);
-            //restaurantViewHolder.restaurantPhoto.setImageURI(parse(res.get(i).photoId));
+            //restaurantViewHolder.restaurantPhoto.setImageResource(res.get(i).photoId);
             /*if (!res.get(i).isBookmarked()) {
                 restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_off);
             } else {

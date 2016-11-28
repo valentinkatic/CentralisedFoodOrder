@@ -1,15 +1,15 @@
 package com.katic.centralisedfoodorder;
 
 public class Restaurant {
-    public String restaurantID;
+    public long restaurantID;
     public String name;
     public String address;
-    public String photoID;
-    public String bookmarked;
+    public long photoID;
+    public boolean bookmarked;
 
     public Restaurant(){}
 
-    public Restaurant(String restaurantID, String name, String address, String photoID, String bookmarked) {
+    public Restaurant(long restaurantID, String name, String address, long photoID, boolean bookmarked) {
         this.restaurantID = restaurantID;
         this.name = name;
         this.address = address;
@@ -25,11 +25,11 @@ public class Restaurant {
         this.bookmarked = rest.isBookmarked();
     }
 
-    public void setBookmarked(String bookmarked) {
-        this.bookmarked = "true";
+    public void setBookmarked(boolean bookmarked) {
+        this.bookmarked = bookmarked;
     }
 
-    public String getRestaurantID() {
+    public long getRestaurantID() {
         return restaurantID;
     }
 
@@ -41,11 +41,11 @@ public class Restaurant {
         return address;
     }
 
-    public String getPhotoID() {
+    public long getPhotoID() {
         return photoID;
     }
 
-    public String isBookmarked() {
+    public boolean isBookmarked() {
         return bookmarked;
     }
 }

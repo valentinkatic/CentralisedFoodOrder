@@ -2,7 +2,6 @@ package com.katic.centralisedfoodorder;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -12,6 +11,7 @@ import com.katic.centralisedfoodorder.adapter.HorizontalListView;
 import com.katic.centralisedfoodorder.adapter.RVAdapter;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -31,6 +31,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,11 +48,13 @@ public class ChooseActivity extends BaseActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser user;
+    //private StorageReference storageRef;
 
     public static List<Restaurant> restaurants;
     private RecyclerView rv;
     private RecyclerView rv2;
     private TabHost host;
+    private ImageView image;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -81,6 +84,7 @@ public class ChooseActivity extends BaseActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference()
                 .child("restaurants");
+        //storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://centralised-food-order.appspot.com").child("restaurants");
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Izbor restorana");
@@ -186,9 +190,14 @@ public class ChooseActivity extends BaseActivity {
             TextView title = (TextView) retval.findViewById(R.id.title);
             title.setText(dataObjects[position * 2]);
             String string = dataObjects[position * 2 + 1];
-            int resID = getResources().getIdentifier(string, "drawable", getPackageName());
-            ImageView image = (ImageView) retval.findViewById(R.id.image);
-            image.setImageResource(resID);
+            image = (ImageView) retval.findViewById(R.id.image);
+            //int resID = getResources().getIdentifier(string, "drawable", getPackageName());
+            /*Glide.with(getApplicationContext())
+                    .using(new FirebaseImageLoader())
+                    .load(storageRef.child(string+".png"))
+                    .into(image);
+*/
+
 
             return retval;
         }
@@ -208,7 +217,7 @@ public class ChooseActivity extends BaseActivity {
                 restaurants.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Restaurant currentRes = snapshot.getValue(Restaurant.class);
-                    restaurants.add(new Restaurant(currentRes.restaurantID, currentRes.name, currentRes.address, currentRes.photoID, currentRes.bookmarked));
+                    restaurants.add(currentRes);
                 }
                 initializeAdapter();
             }
