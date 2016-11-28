@@ -1,16 +1,26 @@
 package com.katic.centralisedfoodorder;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.katic.centralisedfoodorder.adapter.HorizontalListView;
 import com.katic.centralisedfoodorder.adapter.RVAdapter;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -18,6 +28,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +37,19 @@ import static com.katic.centralisedfoodorder.R.id.tabHost;
 
 public class ChooseActivity extends BaseActivity {
 
+    private static final String TAG = "ChooseActivity";
+
+    private boolean doubleBackToExitPressedOnce = false;
+
     private DatabaseReference mDatabase;
+    private DatabaseReference mUserReference;
+    private DatabaseReference mRestaurantReference;
+    private ValueEventListener mRestaurantListener;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseUser user;
+    private Restaurant mRes;
+    private static long resNum = 0;
 
     public static List<Restaurant> restaurants;
     private RecyclerView rv;
@@ -40,11 +63,27 @@ public class ChooseActivity extends BaseActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(ChooseActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference()
+                .child("restaurants");
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Izbor restorana");
@@ -98,20 +137,28 @@ public class ChooseActivity extends BaseActivity {
             }
         });
 
-        //writeNewRestaurant(4, "ime", "adresa", 34253);
-    }
-
-    private void writeNewRestaurant(int resId, String name, String address, int photoId) {
-        Restaurant res = new Restaurant(resId, name, address, photoId);
-
-        mDatabase.child("restaurants").child(Integer.toString(resId)).setValue(res);
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    mUserReference = FirebaseDatabase.getInstance().getReference()
+                            .child("users").child(user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+            }
+        };
     }
 
     private void initializeData() {
         restaurants = new ArrayList<>();
-        restaurants.add(new Restaurant(1, "Karaka", "Kneza Trpimira 16", R.drawable.karaka));
-            restaurants.add(new Restaurant(2, "Rustika", "Ul. Pavla Pejačevića 32", R.drawable.rustika));
-        restaurants.add(new Restaurant(3, "Oliva", "Kninska ul. 24", R.drawable.oliva));
+        restaurants.add(new Restaurant(1, "Karaka", "Kneza Trpimira 16", R.drawable.karaka, false));
+        restaurants.add(new Restaurant(2, "Rustika", "Ul. Pavla Pejačevića 32", R.drawable.rustika, false));
+        restaurants.add(new Restaurant(3, "Oliva", "Kninska ul. 24", R.drawable.oliva, false));
     }
 
     private void initializeAdapter(){
@@ -161,5 +208,53 @@ public class ChooseActivity extends BaseActivity {
 
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
 
+        mAuth.addAuthStateListener(mAuthListener);
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                resNum = dataSnapshot.getChildrenCount();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            finish();
+        }
+
+        if(user.isAnonymous()){
+            Intent intent = new Intent(ChooseActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "Press BACK again to exit", Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce = false;
+                }
+            }, 2000);
+        }
+    }
 }

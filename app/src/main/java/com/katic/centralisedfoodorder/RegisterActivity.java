@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -27,9 +28,12 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseUser user;
 
     private EditText mEmailField;
     private EditText mPasswordField;
+    private EditText mAddressField;
+    private EditText mPhoneNumField;
     private Button mSignUpButton;
 
     @Override
@@ -46,17 +50,26 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
         mEmailField = (EditText) findViewById(R.id.mailRegText);
         mPasswordField = (EditText) findViewById(R.id.passwordRegText);
+        mAddressField = (EditText) findViewById(R.id.addressRegText);
+        mPhoneNumField = (EditText) findViewById(R.id.phoneNumberRegText);
         mSignUpButton = (Button) findViewById(R.id.registerButton);
+
+        mEmailField.setInputType(InputType.TYPE_CLASS_TEXT);
 
         mSignUpButton.setOnClickListener(this);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
+                user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    if(!user.isAnonymous()) {
+                        Intent intent = new Intent(RegisterActivity.this, ChooseActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -64,6 +77,12 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             }
         };
 
+    }
+
+    private void writeNewUser(String email, String address, String phoneNum, boolean anon) {
+        User mUser = new User(email, address, phoneNum, anon);
+
+        mDatabase.child("users").child(user.getUid()).setValue(mUser);
     }
 
     @Override
@@ -82,19 +101,23 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     private void signUp() {
         Log.d(TAG, "signUp");
+        if (user!=null && user.isAnonymous()){
+            FirebaseAuth.getInstance().signOut();
+        }
         if (!validateForm()) {
             return;
         }
 
         showProgressDialog();
-        String email = mEmailField.getText().toString();
+        final String email = mEmailField.getText().toString();
         String password = mPasswordField.getText().toString();
+        final String address = mAddressField.getText().toString();
+        final String phoneNum = mPhoneNumField.getText().toString();
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
-
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
@@ -107,12 +130,18 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                         if (task.isSuccessful()) {
                             Toast.makeText(RegisterActivity.this, R.string.auth_success,
                                     Toast.LENGTH_SHORT).show();
+                            writeNewUser(email, address, phoneNum, false);
+                            /*mDatabase.child("users").child(user.getUid()).child("email").setValue(email);
+                            mDatabase.child("users").child(user.getUid()).child("address").setValue(address);
+                            mDatabase.child("users").child(user.getUid()).child("phoneNum").setValue(phoneNum);
+                            mDatabase.child("users").child(user.getUid()).child("anon").setValue(false);*/
                             Intent intent = new Intent(getApplicationContext(), ChooseActivity.class);
                             startActivity(intent);
                             finish();
                         }
                     }
                 });
+
     }
 
     private boolean validateForm() {
@@ -129,6 +158,20 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             result = false;
         } else {
             mPasswordField.setError(null);
+        }
+
+        if (TextUtils.isEmpty(mAddressField.getText().toString())) {
+            mAddressField.setError("Required");
+            result = false;
+        } else {
+            mAddressField.setError(null);
+        }
+
+        if (TextUtils.isEmpty(mPhoneNumField.getText().toString())) {
+            mPhoneNumField.setError("Required");
+            result = false;
+        } else {
+            mPhoneNumField.setError(null);
         }
 
         return result;

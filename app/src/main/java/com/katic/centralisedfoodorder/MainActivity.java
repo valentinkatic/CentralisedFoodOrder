@@ -2,7 +2,9 @@ package com.katic.centralisedfoodorder;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -16,13 +18,22 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MainActivity";
 
+    boolean doubleBackToExitPressedOnce = false;
+
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private DatabaseReference mDatabase;
+    private FirebaseUser user;
 
     private EditText mEmail;
     private EditText mPassword;
@@ -38,6 +49,7 @@ public class MainActivity extends BaseActivity {
 
         mEmail = (EditText) findViewById(R.id.mailText);
         mPassword = (EditText) findViewById(R.id.passwordText);
+        mEmail.setInputType(InputType.TYPE_CLASS_TEXT);
 
         registrationButton = (Button) findViewById(R.id.btnRegistration);
         registrationButton.setOnClickListener(new View.OnClickListener() {
@@ -53,9 +65,7 @@ public class MainActivity extends BaseActivity {
         noLoginButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, ChooseActivity.class);
-                startActivity(intent);
-                finish();
+                signIn();
             }
         });
 
@@ -67,13 +77,20 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
+                user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
+                    if(!user.isAnonymous()) {
+                        showProgressDialog();
+                        Intent intent = new Intent(getApplicationContext(), ChooseActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                 } else {
                     // User is signed out
@@ -111,14 +128,56 @@ public class MainActivity extends BaseActivity {
                         hideProgressDialog();
 
                         if (task.isSuccessful()) {
+                            Intent intent = new Intent(getApplicationContext(), ChooseActivity.class);
+                            startActivity(intent);
+                            finish();
                             Toast.makeText(MainActivity.this, R.string.login_success,
                                     Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+
+    }
+
+    private void signIn() {
+        Log.d(TAG, "signIn Anonymously");
+
+        showProgressDialog();
+        if(user==null){
+        mAuth.signInAnonymously()
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "signInAnonymously:onComplete:" + task.isSuccessful());
+
+                        hideProgressDialog();
+
+                        if (task.isSuccessful()) {
+                            User mUser = new User(null, null, null, true);
+                            mDatabase.child("users").child(user.getUid()).setValue(mUser);
                             Intent intent = new Intent(getApplicationContext(), ChooseActivity.class);
                             startActivity(intent);
                             finish();
                         }
+
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInAnonymously", task.getException());
+                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                        // ...
                     }
                 });
+        } else if (user.isAnonymous()) {
+            Intent intent = new Intent(getApplicationContext(), ChooseActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private boolean validateForm() {
@@ -146,7 +205,29 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onStart() {
         super.onStart();
+
         mAuth.addAuthStateListener(mAuthListener);
+
+        /*ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get Post object and use the values to update the UI
+                mUser = dataSnapshot.getValue(User.class);
+                // [START_EXCLUDE]
+                // [END_EXCLUDE]
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                // [START_EXCLUDE]
+                Toast.makeText(ChooseActivity.this, "Failed to load user.",
+                        Toast.LENGTH_SHORT).show();
+                // [END_EXCLUDE]
+            }
+        };
+        mPostReference.addValueEventListener(postListener);*/
     }
 
     @Override
@@ -155,6 +236,24 @@ public class MainActivity extends BaseActivity {
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+                finish();
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Press BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
     }
 
 }

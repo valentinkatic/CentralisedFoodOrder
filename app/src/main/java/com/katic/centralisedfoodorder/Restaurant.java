@@ -1,7 +1,7 @@
 package com.katic.centralisedfoodorder;
 
 public class Restaurant {
-    int restaurantID;
+    public int restaurantID;
     public String name;
     public String address;
     public int photoId;
@@ -9,12 +9,12 @@ public class Restaurant {
 
     public Restaurant(){}
 
-    public Restaurant(int restaurantID, String name, String address, int photoId) {
+    public Restaurant(int restaurantID, String name, String address, int photoId, boolean bookmarked) {
         this.restaurantID = restaurantID;
         this.name = name;
         this.address = address;
         this.photoId = photoId;
-        this.bookmarked = false;
+        this.bookmarked = bookmarked;
     }
 
     public void setBookmarked(boolean bookmarked) {

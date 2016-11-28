@@ -2,7 +2,7 @@
     <string name="app_name">Centralized Food Order</string>
     <string name="password">Zaporka:</string>
     <string name="mail">Elektronička pošta:</string>
-    <string name="adress">Adresa:</string>
+    <string name="address">Adresa:</string>
     <string name="phone">Kontakt broj mobitela:</string>
     <string name="register">Registriraj se</string>
     <string name="titleReg">Forma za registraciju</string>

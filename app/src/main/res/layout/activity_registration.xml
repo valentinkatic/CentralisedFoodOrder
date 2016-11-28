@@ -40,8 +40,8 @@
             android:layout_height="wrap_content"
             android:inputType="textPostalAddress"
             android:ems="10"
-            android:id="@+id/adressRegText"
-            android:layout_below="@+id/adress"
+            android:id="@+id/addressRegText"
+            android:layout_below="@+id/address"
             android:layout_centerHorizontal="true" />
 
         <EditText
@@ -85,8 +85,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/adress"
-            android:id="@+id/adress"
+            android:text="@string/address"
+            android:id="@+id/address"
             android:layout_below="@+id/passwordRegText"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"/>
@@ -96,7 +96,7 @@
             android:layout_height="wrap_content"
             android:text="@string/phone"
             android:id="@+id/phoneNumber"
-            android:layout_below="@+id/adressRegText"
+            android:layout_below="@+id/addressRegText"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp" />
 
