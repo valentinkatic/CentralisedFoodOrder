@@ -1,5 +1,7 @@
 package com.katic.centralisedfoodorder;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -7,6 +9,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.katic.centralisedfoodorder.adapter.HorizontalListView;
 import com.katic.centralisedfoodorder.adapter.RVAdapter;
 
@@ -48,9 +52,12 @@ public class ChooseActivity extends BaseActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser user;
-    //private StorageReference storageRef;
+    private FirebaseStorage storageRef;
+    private StorageReference pathReference;
 
     public static List<Restaurant> restaurants;
+    HorizontalListView listview;
+    HorizontalListView listview2;
     private RecyclerView rv;
     private RecyclerView rv2;
     private TabHost host;
@@ -84,7 +91,6 @@ public class ChooseActivity extends BaseActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference()
                 .child("restaurants");
-        //storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://centralised-food-order.appspot.com").child("restaurants");
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Izbor restorana");
@@ -108,11 +114,11 @@ public class ChooseActivity extends BaseActivity {
         spec.setIndicator("Bookmarks");
         host.addTab(spec);
 
-        HorizontalListView listview = (HorizontalListView) findViewById(R.id.listview);
-        listview.setAdapter(new HAdapter());
+        listview = (HorizontalListView) findViewById(R.id.listview);
+        //listview.setAdapter(new HAdapter());
 
-        HorizontalListView listview2 = (HorizontalListView) findViewById(R.id.listview2);
-        listview2.setAdapter(new HAdapter());
+        listview2 = (HorizontalListView) findViewById(R.id.listview2);
+        //listview2.setAdapter(new HAdapter());
         listview2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -144,6 +150,7 @@ public class ChooseActivity extends BaseActivity {
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     mUserReference = FirebaseDatabase.getInstance().getReference()
                             .child("users").child(user.getUid());
+                    storageRef = FirebaseStorage.getInstance();
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -191,14 +198,11 @@ public class ChooseActivity extends BaseActivity {
             title.setText(dataObjects[position * 2]);
             String string = dataObjects[position * 2 + 1];
             image = (ImageView) retval.findViewById(R.id.image);
-            //int resID = getResources().getIdentifier(string, "drawable", getPackageName());
-            /*Glide.with(getApplicationContext())
+            pathReference = storageRef.getReference("restaurants/"+string+".png");
+            Glide.with(getApplicationContext())
                     .using(new FirebaseImageLoader())
-                    .load(storageRef.child(string+".png"))
+                    .load(pathReference)
                     .into(image);
-*/
-
-
             return retval;
         }
 
@@ -220,6 +224,8 @@ public class ChooseActivity extends BaseActivity {
                     restaurants.add(currentRes);
                 }
                 initializeAdapter();
+                listview.setAdapter(new HAdapter());
+                listview2.setAdapter(new HAdapter());
             }
 
             @Override
