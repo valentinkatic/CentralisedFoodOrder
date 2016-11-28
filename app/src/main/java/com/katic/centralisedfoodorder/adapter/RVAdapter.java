@@ -22,6 +22,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.net.Uri.parse;
+
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHolder> {
 
     public class RestaurantViewHolder extends RecyclerView.ViewHolder implements View.OnTouchListener
@@ -88,10 +90,10 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
         if (bookmarks) {
             int bookmarked = 0;
             for (int i = 0; i < res.size() ; i++) {
-                if (res.get(i).isBookmarked()) {
+                /*if (res.get(i).isBookmarked()) {
                     bookmarked++;
                     marks.add(i);
-                }
+                }*/
             }
             return bookmarked;
         } else
@@ -100,8 +102,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
 
     @Override
     public RestaurantViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        RestaurantViewHolder rvh = null;
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_restaurant, viewGroup, false);
-        RestaurantViewHolder rvh = new RestaurantViewHolder(v);
+        rvh = new RestaurantViewHolder(v);
         return rvh;
     }
 
@@ -110,8 +113,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
         if (bookmarks) {i = marks.get(i);}
             restaurantViewHolder.restaurantName.setText(res.get(i).name);
             restaurantViewHolder.restaurantAddress.setText(res.get(i).address);
-            restaurantViewHolder.restaurantPhoto.setImageResource(res.get(i).photoId);
-            if (!res.get(i).isBookmarked()) {
+            //restaurantViewHolder.restaurantPhoto.setImageURI(parse(res.get(i).photoId));
+            /*if (!res.get(i).isBookmarked()) {
                 restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_off);
             } else {
                 restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_on);
@@ -129,7 +132,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
                         res.get(pos).setBookmarked(false);
                     }
                 }
-            });
+            });*/
     }
 
     @Override

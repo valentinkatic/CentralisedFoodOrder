@@ -2,6 +2,7 @@ package com.katic.centralisedfoodorder;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,13 +44,9 @@ public class ChooseActivity extends BaseActivity {
 
     private DatabaseReference mDatabase;
     private DatabaseReference mUserReference;
-    private DatabaseReference mRestaurantReference;
-    private ValueEventListener mRestaurantListener;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser user;
-    private Restaurant mRes;
-    private static long resNum = 0;
 
     public static List<Restaurant> restaurants;
     private RecyclerView rv;
@@ -115,7 +112,7 @@ public class ChooseActivity extends BaseActivity {
         listview2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                initializeAdapter();
+                //initializeAdapter();
             }
         });
 
@@ -128,12 +125,9 @@ public class ChooseActivity extends BaseActivity {
         LinearLayoutManager llm2 = new LinearLayoutManager(this);
         rv2.setLayoutManager(llm2);
 
-        initializeData();
-        initializeAdapter();
-
         host.setOnTabChangedListener(new TabHost.OnTabChangeListener(){
             public void onTabChanged(String tabId) {
-                initializeAdapter();
+                //initializeAdapter();
             }
         });
 
@@ -152,13 +146,6 @@ public class ChooseActivity extends BaseActivity {
                 }
             }
         };
-    }
-
-    private void initializeData() {
-        restaurants = new ArrayList<>();
-        restaurants.add(new Restaurant(1, "Karaka", "Kneza Trpimira 16", R.drawable.karaka, false));
-        restaurants.add(new Restaurant(2, "Rustika", "Ul. Pavla Pejačevića 32", R.drawable.rustika, false));
-        restaurants.add(new Restaurant(3, "Oliva", "Kninska ul. 24", R.drawable.oliva, false));
     }
 
     private void initializeAdapter(){
@@ -211,12 +198,19 @@ public class ChooseActivity extends BaseActivity {
     @Override
     public void onStart() {
         super.onStart();
+        restaurants = new ArrayList<>();
 
         mAuth.addAuthStateListener(mAuthListener);
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+
+        mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                resNum = dataSnapshot.getChildrenCount();
+                restaurants.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Restaurant currentRes = snapshot.getValue(Restaurant.class);
+                    restaurants.add(new Restaurant(currentRes.restaurantID, currentRes.name, currentRes.address, currentRes.photoID, currentRes.bookmarked));
+                }
+                initializeAdapter();
             }
 
             @Override
@@ -224,6 +218,7 @@ public class ChooseActivity extends BaseActivity {
 
             }
         });
+
     }
 
     @Override

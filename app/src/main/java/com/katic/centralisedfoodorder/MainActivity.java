@@ -174,6 +174,7 @@ public class MainActivity extends BaseActivity {
                     }
                 });
         } else if (user.isAnonymous()) {
+            hideProgressDialog();
             Intent intent = new Intent(getApplicationContext(), ChooseActivity.class);
             startActivity(intent);
             finish();

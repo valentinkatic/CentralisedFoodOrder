@@ -1,27 +1,35 @@
 package com.katic.centralisedfoodorder;
 
 public class Restaurant {
-    public int restaurantID;
+    public String restaurantID;
     public String name;
     public String address;
-    public int photoId;
-    public boolean bookmarked;
+    public String photoID;
+    public String bookmarked;
 
     public Restaurant(){}
 
-    public Restaurant(int restaurantID, String name, String address, int photoId, boolean bookmarked) {
+    public Restaurant(String restaurantID, String name, String address, String photoID, String bookmarked) {
         this.restaurantID = restaurantID;
         this.name = name;
         this.address = address;
-        this.photoId = photoId;
+        this.photoID = photoID;
         this.bookmarked = bookmarked;
     }
 
-    public void setBookmarked(boolean bookmarked) {
-        this.bookmarked = bookmarked;
+    public Restaurant(Restaurant rest) {
+        this.restaurantID = rest.getRestaurantID();
+        this.name = rest.getName();
+        this.address = rest.getAddress();
+        this.photoID = rest.getPhotoID();
+        this.bookmarked = rest.isBookmarked();
     }
 
-    public int getRestaurantID() {
+    public void setBookmarked(String bookmarked) {
+        this.bookmarked = "true";
+    }
+
+    public String getRestaurantID() {
         return restaurantID;
     }
 
@@ -33,11 +41,11 @@ public class Restaurant {
         return address;
     }
 
-    public int getPhotoId() {
-        return photoId;
+    public String getPhotoID() {
+        return photoID;
     }
 
-    public boolean isBookmarked() {
+    public String isBookmarked() {
         return bookmarked;
     }
 }
