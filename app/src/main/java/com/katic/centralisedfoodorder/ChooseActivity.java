@@ -162,6 +162,7 @@ public class ChooseActivity extends BaseActivity {
     private void initializeAdapter(){
         rv.setAdapter(new RVAdapter(this, false));
         rv2.setAdapter(new RVAdapter(this, true));
+
     }
 
     private static String[] dataObjects = new String[]{
@@ -224,6 +225,17 @@ public class ChooseActivity extends BaseActivity {
                     restaurants.add(currentRes);
                 }
                 initializeAdapter();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
                 listview.setAdapter(new HAdapter());
                 listview2.setAdapter(new HAdapter());
             }
