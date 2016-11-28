@@ -79,8 +79,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-    private void writeNewUser(String email, String address, String phoneNum, boolean anon) {
-        User mUser = new User(email, address, phoneNum, anon);
+    private void writeNewUser(String email, String address, String phoneNum) {
+        User mUser = new User(email, address, phoneNum);
 
         mDatabase.child("users").child(user.getUid()).setValue(mUser);
     }
@@ -130,7 +130,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                         if (task.isSuccessful()) {
                             Toast.makeText(RegisterActivity.this, R.string.auth_success,
                                     Toast.LENGTH_SHORT).show();
-                            writeNewUser(email, address, phoneNum, false);
+                            writeNewUser(email, address, phoneNum);
                             /*mDatabase.child("users").child(user.getUid()).child("email").setValue(email);
                             mDatabase.child("users").child(user.getUid()).child("address").setValue(address);
                             mDatabase.child("users").child(user.getUid()).child("phoneNum").setValue(phoneNum);

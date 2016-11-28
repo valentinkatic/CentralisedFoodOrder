@@ -15,7 +15,6 @@ import com.katic.centralisedfoodorder.adapter.HorizontalListView;
 import com.katic.centralisedfoodorder.adapter.RVAdapter;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -35,7 +34,6 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,12 +54,15 @@ public class ChooseActivity extends BaseActivity {
     private StorageReference pathReference;
 
     public static List<Restaurant> restaurants;
+    public static List<Long> bookmarks;
     HorizontalListView listview;
     HorizontalListView listview2;
     private RecyclerView rv;
     private RecyclerView rv2;
     private TabHost host;
     private ImageView image;
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -122,7 +123,8 @@ public class ChooseActivity extends BaseActivity {
         listview2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //initializeAdapter();
+                initializeAdapter();
+                mUserReference.child("bookmarks").setValue(bookmarks);
             }
         });
 
@@ -137,7 +139,8 @@ public class ChooseActivity extends BaseActivity {
 
         host.setOnTabChangedListener(new TabHost.OnTabChangeListener(){
             public void onTabChanged(String tabId) {
-                //initializeAdapter();
+                initializeAdapter();
+                mUserReference.child("bookmarks").setValue(bookmarks);
             }
         });
 
@@ -151,6 +154,22 @@ public class ChooseActivity extends BaseActivity {
                     mUserReference = FirebaseDatabase.getInstance().getReference()
                             .child("users").child(user.getUid());
                     storageRef = FirebaseStorage.getInstance();
+
+                    mUserReference.child("bookmarks").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            bookmarks.clear();
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                Long item = (Long) snapshot.getValue();
+                                bookmarks.add(item);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -213,6 +232,7 @@ public class ChooseActivity extends BaseActivity {
     public void onStart() {
         super.onStart();
         restaurants = new ArrayList<>();
+        bookmarks = new ArrayList<>();
 
         mAuth.addAuthStateListener(mAuthListener);
 
@@ -225,6 +245,7 @@ public class ChooseActivity extends BaseActivity {
                     restaurants.add(currentRes);
                 }
                 initializeAdapter();
+
             }
 
             @Override
@@ -245,6 +266,7 @@ public class ChooseActivity extends BaseActivity {
 
             }
         });
+
 
     }
 

@@ -154,7 +154,7 @@ public class MainActivity extends BaseActivity {
                         hideProgressDialog();
 
                         if (task.isSuccessful()) {
-                            User mUser = new User(null, null, null, true);
+                            User mUser = new User();
                             mDatabase.child("users").child(user.getUid()).setValue(mUser);
                             Intent intent = new Intent(getApplicationContext(), ChooseActivity.class);
                             startActivity(intent);
