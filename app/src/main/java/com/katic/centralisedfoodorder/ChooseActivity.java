@@ -62,8 +62,6 @@ public class ChooseActivity extends BaseActivity {
     private TabHost host;
     private ImageView image;
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.mymenu, menu);
@@ -88,6 +86,8 @@ public class ChooseActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose);
+
+        bookmarks = new ArrayList<>();
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference()
@@ -116,15 +116,18 @@ public class ChooseActivity extends BaseActivity {
         host.addTab(spec);
 
         listview = (HorizontalListView) findViewById(R.id.listview);
-        //listview.setAdapter(new HAdapter());
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                refresh(bookmarks);
+            }
+        });
 
         listview2 = (HorizontalListView) findViewById(R.id.listview2);
-        //listview2.setAdapter(new HAdapter());
         listview2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                initializeAdapter();
-                mUserReference.child("bookmarks").setValue(bookmarks);
+                refresh(bookmarks);
             }
         });
 
@@ -139,8 +142,7 @@ public class ChooseActivity extends BaseActivity {
 
         host.setOnTabChangedListener(new TabHost.OnTabChangeListener(){
             public void onTabChanged(String tabId) {
-                initializeAdapter();
-                mUserReference.child("bookmarks").setValue(bookmarks);
+                refresh(bookmarks);
             }
         });
 
@@ -158,11 +160,36 @@ public class ChooseActivity extends BaseActivity {
                     mUserReference.child("bookmarks").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+
                             bookmarks.clear();
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                 Long item = (Long) snapshot.getValue();
                                 bookmarks.add(item);
                             }
+
+                            mDatabase.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    restaurants.clear();
+                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                        Restaurant currentRes = snapshot.getValue(Restaurant.class);
+
+                                        for (int i = 0; i<bookmarks.size(); i++){
+                                            if (bookmarks.get(i)==currentRes.getRestaurantID())
+                                                currentRes.setBookmarked(true);
+                                        }
+
+                                        restaurants.add(currentRes);
+                                    }
+                                    initializeAdapter();
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
                         }
 
                         @Override
@@ -170,6 +197,8 @@ public class ChooseActivity extends BaseActivity {
 
                         }
                     });
+
+
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -178,10 +207,14 @@ public class ChooseActivity extends BaseActivity {
         };
     }
 
+    public void refresh(List<Long> bookmarks){
+        initializeAdapter();
+        mUserReference.child("bookmarks").setValue(bookmarks);
+    }
+
     private void initializeAdapter(){
         rv.setAdapter(new RVAdapter(this, false));
         rv2.setAdapter(new RVAdapter(this, true));
-
     }
 
     private static String[] dataObjects = new String[]{
@@ -232,27 +265,8 @@ public class ChooseActivity extends BaseActivity {
     public void onStart() {
         super.onStart();
         restaurants = new ArrayList<>();
-        bookmarks = new ArrayList<>();
 
         mAuth.addAuthStateListener(mAuthListener);
-
-        mDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                restaurants.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Restaurant currentRes = snapshot.getValue(Restaurant.class);
-                    restaurants.add(currentRes);
-                }
-                initializeAdapter();
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
