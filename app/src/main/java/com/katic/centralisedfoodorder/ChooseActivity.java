@@ -75,7 +75,7 @@ public class ChooseActivity extends BaseActivity {
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(ChooseActivity.this, MainActivity.class);
                 startActivity(intent);
-                finish();
+                finishAffinity();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

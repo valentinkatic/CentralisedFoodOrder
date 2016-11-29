@@ -11,4 +11,5 @@
     <string name="auth_failed">Authentication Failed</string>
     <string name="auth_success">Registration successful</string>
     <string name="login_success">Sign in successful</string>
+    <string name="logout">Odjava</string>
 </resources>

@@ -57,7 +57,6 @@ public class MainActivity extends BaseActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -208,27 +207,6 @@ public class MainActivity extends BaseActivity {
         super.onStart();
 
         mAuth.addAuthStateListener(mAuthListener);
-
-        /*ValueEventListener postListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Post object and use the values to update the UI
-                mUser = dataSnapshot.getValue(User.class);
-                // [START_EXCLUDE]
-                // [END_EXCLUDE]
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                // [START_EXCLUDE]
-                Toast.makeText(ChooseActivity.this, "Failed to load user.",
-                        Toast.LENGTH_SHORT).show();
-                // [END_EXCLUDE]
-            }
-        };
-        mPostReference.addValueEventListener(postListener);*/
     }
 
     @Override

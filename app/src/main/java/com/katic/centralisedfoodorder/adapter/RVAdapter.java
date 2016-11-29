@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -35,6 +36,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
         ImageView restaurantPhoto;
         ImageView bookmark;
         boolean restaurantPressed = false;
+        Long pos;
 
         private SparseBooleanArray selectedItems = new SparseBooleanArray();
 
@@ -62,6 +64,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
                     if (restaurantPressed) {
                         restaurantPressed = false;
                         Intent intent = new Intent(context, RestaurantActivity.class);
+                        checkID();
+                        intent.putExtra(ID, pos);
                         context.startActivity(intent);
                     }
                     break;
@@ -73,7 +77,16 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
             }
             return true;
         }
+
+        private void checkID(){
+            pos = res.get(getAdapterPosition()).getRestaurantID();
+            if (bookmarks) {
+                pos = res.get(marks.get(getAdapterPosition())).getRestaurantID();
+            }
+        }
     }
+
+    public final static String ID = "com.katic.centralisedfoodorded.ID";
 
     private FirebaseStorage storageRef = FirebaseStorage.getInstance();
     private StorageReference pathReference;

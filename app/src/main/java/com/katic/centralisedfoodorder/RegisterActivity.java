@@ -42,7 +42,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         setContentView(R.layout.activity_registration);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Registracija");
+        actionBar.setTitle(R.string.register);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -137,7 +137,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                             mDatabase.child("users").child(user.getUid()).child("anon").setValue(false);*/
                             Intent intent = new Intent(getApplicationContext(), ChooseActivity.class);
                             startActivity(intent);
-                            finish();
+                            finishAffinity();
                         }
                     }
                 });
@@ -186,8 +186,6 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
-        Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivityForResult(myIntent, 0);
         finish();
         return true;
     }
