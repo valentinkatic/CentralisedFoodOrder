@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2014 Gary Guo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.katic.centralisedfoodorder.adapter;
 
 import java.util.ArrayList;
@@ -31,7 +47,7 @@ public class AnimatedExpandableListView extends ExpandableListView {
      * Animating the ExpandableListView was no easy task. The way that this
      * class does it is by exploiting how an ExpandableListView works.
      *
-     * Normally when {@link ExpandaleListView#collbapseGroup(int)} or
+     * Normally when {@link ExpandableListView#collapseGroup(int)} or
      * {@link ExpandableListView#expandGroup(int)} is called, the view toggles
      * the flag for a group and calls notifyDataSetChanged to cause the ListView
      * to refresh all of it's view. This time however, depending on whether a
@@ -120,12 +136,12 @@ public class AnimatedExpandableListView extends ExpandableListView {
     public void setAdapter(ExpandableListAdapter adapter) {
         super.setAdapter(adapter);
 
-        // Make sure that the adapter extends MultiLayeredAdapter
+        // Make sure that the adapter extends AnimatedExpandableListAdapter
         if(adapter instanceof AnimatedExpandableListAdapter) {
             this.adapter = (AnimatedExpandableListAdapter) adapter;
             this.adapter.setParent(this);
         } else {
-            throw new ClassCastException(adapter.toString() + " must implement MultiLayeredAdapter");
+            throw new ClassCastException(adapter.toString() + " must implement AnimatedExpandableListAdapter");
         }
     }
 

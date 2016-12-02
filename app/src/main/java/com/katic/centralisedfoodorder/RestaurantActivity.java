@@ -12,17 +12,21 @@ import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.katic.centralisedfoodorder.adapter.AnimatedExpandableListView;
-import com.katic.centralisedfoodorder.adapter.MultiLayeredAdapter;
+import com.katic.centralisedfoodorder.adapter.AnimatedListAdapter;
 import com.katic.centralisedfoodorder.adapter.RVAdapter;
 
 import java.util.ArrayList;
@@ -50,9 +54,9 @@ public class RestaurantActivity extends AppCompatActivity {
     private TextView titleView;
     private TextView addressView;
 
-    MultiLayeredAdapter adapter;
-    AnimatedExpandableListView animatedList;
-    public static List<String> jela;
+    private AnimatedExpandableListView listView;
+    private AnimatedListAdapter adapter;
+    final List<GroupItem> items = new ArrayList<GroupItem>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,12 +65,12 @@ public class RestaurantActivity extends AppCompatActivity {
 
         resID = getIntent().getLongExtra(RVAdapter.ID, 0);
 
-        imgView = (ImageView) findViewById(R.id.imageView);
+        imgView = (ImageView) findViewById(R.id.restaurantImageView);
         titleView = (TextView) findViewById(R.id.restaurantName);
         addressView = (TextView) findViewById(R.id.restaurantAddress);
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("restaurants");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("restaurants").child(Long.toString(resID)).child("food_type");
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -80,7 +84,7 @@ public class RestaurantActivity extends AppCompatActivity {
 
                     storageRef = FirebaseStorage.getInstance();
                     pathReference = storageRef.
-                            getReference("restaurants/"+current.restaurantID+"/"+current.name+".png");
+                            getReference("restaurants/"+current.restaurantID+"/"+current.name+"_large.png");
                     Glide.with(getApplicationContext())
                             .using(new FirebaseImageLoader())
                             .load(pathReference)
@@ -108,36 +112,29 @@ public class RestaurantActivity extends AppCompatActivity {
         actionBar.setElevation(4);
         actionBar.collapseActionView();
 
-        adapter = new MultiLayeredAdapter(this);
-        jela = new ArrayList<>();
-        jela.add("Pizze");
-        jela.add("Tjestenine");
-        jela.add("Jela s rostilja");
-        jela.add("Plate");
-        jela.add("Deserti");
+    }
 
-        animatedList = (AnimatedExpandableListView) findViewById(R.id.animatedList);
-        animatedList.setAdapter(adapter);
+    public static class GroupItem {
+        public String title;
+        public List<ChildItem> items = new ArrayList<>();
+        public boolean clickedGroup = false;
+    }
 
-        // In order to show animations, we need to use a custom click handler
-        // for our ExpandableListView.
-        animatedList.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+    public static class ChildItem {
+        public String title;
+        public String hint;
+        public String invisible;
+    }
 
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                // We call collapseGroupWithAnimation(int) and
-                // expandGroupWithAnimation(int) to animate group
-                // expansion/collapse.
-                if (animatedList.isGroupExpanded(groupPosition)) {
-                    animatedList.collapseGroupWithAnimation(groupPosition);
-                } else {
-                    animatedList.expandGroupWithAnimation(groupPosition);
-                }
-                return true;
-            }
+    public static class ChildHolder {
+        public TextView title;
+        public TextView hint;
+        public TextView invisible;
+    }
 
-        });
-
+    public static class GroupHolder {
+        public TextView title;
+        public ImageView groupImageView;
     }
 
     @Override
@@ -146,6 +143,58 @@ public class RestaurantActivity extends AppCompatActivity {
 
         mAuth.addAuthStateListener(mAuthListener);
 
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    GroupItem item = new GroupItem();
+                    item.title = snapshot.getKey();
+
+                    for (DataSnapshot children : snapshot.getChildren()){
+                        ChildItem child = new ChildItem();
+                        child.title = children.getKey();
+                        child.hint = "";
+                        child.invisible = children.getValue().toString();
+
+                        item.items.add(child);
+                    }
+
+                    items.add(item);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        adapter = new AnimatedListAdapter(this);
+        adapter.setData(items);
+
+        listView = (AnimatedExpandableListView) findViewById(R.id.animatedList);
+        listView.setAdapter(adapter);
+
+        // In order to show animations, we need to use a custom click handler
+        // for our ExpandableListView.
+        listView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                // We call collapseGroupWithAnimation(int) and
+                // expandGroupWithAnimation(int) to animate group
+                // expansion/collapse.
+                if (listView.isGroupExpanded(groupPosition)) {
+                    items.get(groupPosition).clickedGroup = false;
+                    listView.collapseGroupWithAnimation(groupPosition);
+                } else {
+                    items.get(groupPosition).clickedGroup = true;
+                    listView.expandGroupWithAnimation(groupPosition);
+                }
+                return true;
+            }
+
+        });
     }
 
     @Override
@@ -175,7 +224,7 @@ public class RestaurantActivity extends AppCompatActivity {
                 finish();
                 return true;
         }
-
     }
+
 
 }

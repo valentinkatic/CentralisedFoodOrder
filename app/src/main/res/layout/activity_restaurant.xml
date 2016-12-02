@@ -6,47 +6,53 @@
     android:layout_height="match_parent"
     >
 
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="110dp"
+            android:layout_height="170dp"
             android:src="@drawable/restaurant"
-            android:id="@+id/imageView"
-            />
+            android:id="@+id/restaurantImageView"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
         <TextView
-            android:text="Naziv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/restaurantName"
-            android:gravity="center_horizontal"
-            />
+        android:text="Naziv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/restaurantName"
+        android:gravity="center_horizontal"
+        android:layout_above="@+id/restaurantAddress"
+        android:textColor="@color/white"
+        android:layout_marginBottom="10dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        />
 
-        <TextView
-            android:text="Adresa"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/restaurantAddress"
-            android:gravity="center_horizontal"
-            />
+    <TextView
+        android:text="Adresa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/restaurantAddress"
+        android:gravity="center_horizontal"
+        android:layout_alignBottom="@+id/restaurantImageView"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/white"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        />
 
-            <com.katic.centralisedfoodorder.adapter.AnimatedExpandableListView
-                android:layout_width="match_parent"
-                android:layout_height="350dp"
-                android:id="@+id/animatedList"
-                android:groupIndicator="@android:color/transparent"
-            />
+    <com.katic.centralisedfoodorder.adapter.AnimatedExpandableListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/animatedList"
+        android:groupIndicator="@android:color/transparent"
+        android:layout_below="@id/restaurantAddress"
+        />
 
-        </LinearLayout>
+    </RelativeLayout>
 
-    </ScrollView>
 
 </LinearLayout>
