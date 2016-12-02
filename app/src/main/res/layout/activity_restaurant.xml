@@ -38,18 +38,15 @@
             android:gravity="center_horizontal"
             />
 
+            <com.katic.centralisedfoodorder.adapter.AnimatedExpandableListView
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                android:id="@+id/animatedList"
+                android:groupIndicator="@android:color/transparent"
+            />
+
         </LinearLayout>
 
     </ScrollView>
-
-    <ExpandableListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/expandableListView"
-        android:layout_centerHorizontal="true"
-        android:paddingTop="10dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        />
 
 </LinearLayout>

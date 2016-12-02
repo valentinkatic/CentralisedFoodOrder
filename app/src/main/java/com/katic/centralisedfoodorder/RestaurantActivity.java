@@ -8,10 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.katic.centralisedfoodorder.adapter.ExpandableListAdapter;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -21,10 +21,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.katic.centralisedfoodorder.adapter.AnimatedExpandableListView;
+import com.katic.centralisedfoodorder.adapter.MultiLayeredAdapter;
 import com.katic.centralisedfoodorder.adapter.RVAdapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class RestaurantActivity extends AppCompatActivity {
@@ -44,14 +45,14 @@ public class RestaurantActivity extends AppCompatActivity {
 
     private Long resID;
     private String title="";
-    private ExpandableListAdapter listAdapter;
-    private ExpandableListView expListView;
-    private List<String> listDataHeader;
-    private HashMap<String, List<String>> listDataChild;
 
     private ImageView imgView;
     private TextView titleView;
     private TextView addressView;
+
+    MultiLayeredAdapter adapter;
+    AnimatedExpandableListView animatedList;
+    public static List<String> jela;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +64,6 @@ public class RestaurantActivity extends AppCompatActivity {
         imgView = (ImageView) findViewById(R.id.imageView);
         titleView = (TextView) findViewById(R.id.restaurantName);
         addressView = (TextView) findViewById(R.id.restaurantAddress);
-        expListView = (ExpandableListView) findViewById(R.id.expandableListView);
-
-        prepareListData();
-
-        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
-
-        expListView.setAdapter(listAdapter);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("restaurants");
@@ -114,32 +108,36 @@ public class RestaurantActivity extends AppCompatActivity {
         actionBar.setElevation(4);
         actionBar.collapseActionView();
 
-    }
+        adapter = new MultiLayeredAdapter(this);
+        jela = new ArrayList<>();
+        jela.add("Pizze");
+        jela.add("Tjestenine");
+        jela.add("Jela s rostilja");
+        jela.add("Plate");
+        jela.add("Deserti");
 
-    private void prepareListData() {
-        listDataHeader = new ArrayList<>();
-        listDataChild = new HashMap<>();
+        animatedList = (AnimatedExpandableListView) findViewById(R.id.animatedList);
+        animatedList.setAdapter(adapter);
 
-        // Adding header data
-        listDataHeader.add("Izbor restorana");
-        listDataHeader.add("Izbor kuhinje");
+        // In order to show animations, we need to use a custom click handler
+        // for our ExpandableListView.
+        animatedList.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
-        // Adding child data
-        List<String> izborRestorana = new ArrayList<>();
-        izborRestorana.add("Corner");
-        izborRestorana.add("Galija");
-        izborRestorana.add("Karaka");
-        izborRestorana.add("Lipov Hlad");
-        izborRestorana.add("Rustika");
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                // We call collapseGroupWithAnimation(int) and
+                // expandGroupWithAnimation(int) to animate group
+                // expansion/collapse.
+                if (animatedList.isGroupExpanded(groupPosition)) {
+                    animatedList.collapseGroupWithAnimation(groupPosition);
+                } else {
+                    animatedList.expandGroupWithAnimation(groupPosition);
+                }
+                return true;
+            }
 
-        List<String> izborKuhinje = new ArrayList<>();
-        izborKuhinje.add("Kineska");
-        izborKuhinje.add("Talijanska");
-        izborKuhinje.add("Meksička");
-        izborKuhinje.add("Veganska");
+        });
 
-        listDataChild.put(listDataHeader.get(0), izborRestorana); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), izborKuhinje);
     }
 
     @Override
