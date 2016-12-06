@@ -13,6 +13,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.katic.centralisedfoodorder.adapter.HorizontalListView;
 import com.katic.centralisedfoodorder.adapter.RVAdapter;
+import com.katic.centralisedfoodorder.classes.Restaurant;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,6 +43,7 @@ import static com.katic.centralisedfoodorder.R.id.tabHost;
 public class ChooseActivity extends BaseActivity {
 
     private static final String TAG = "ChooseActivity";
+    private Menu menu;
 
     private boolean doubleBackToExitPressedOnce = false;
 
@@ -65,12 +67,17 @@ public class ChooseActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.mymenu, menu);
+        this.menu = menu;
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.cart:
+                Intent checkout = new Intent(ChooseActivity.this, CartActivity.class);
+                startActivity(checkout);
+                return true;
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(ChooseActivity.this, MainActivity.class);

@@ -1,4 +1,4 @@
-package com.katic.centralisedfoodorder;
+package com.katic.centralisedfoodorder.classes;
 
 import java.util.ArrayList;
 

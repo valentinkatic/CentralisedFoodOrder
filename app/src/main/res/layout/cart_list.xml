@@ -2,61 +2,45 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:paddingEnd="10dp"
     android:paddingRight="10dp"
     android:paddingStart="30dp"
-    android:paddingLeft="30dp"
-    android:background="@drawable/border_shadow">
-
+    android:paddingLeft="30dp">
 
     <TextView
-        android:id="@+id/textTitle"
+        android:id="@+id/cartTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="text1"
-        android:textColor="@android:color/white"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
 
     <TextView
-        android:id="@+id/textHint"
+        android:id="@+id/cartHint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="text2"
-        android:textColor="@android:color/white"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_below="@+id/textTitle"
+        android:layout_below="@+id/cartTitle"
         />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/add_to_cart"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@id/textTitle"
-        android:layout_alignBottom="@id/textHint"
-        android:scaleType="fitEnd"
-        android:layout_toRightOf="@id/textTitle"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textHint"
+        android:layout_below="@+id/cartHint"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-       >
+        >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/invisible"
-            android:textColor="@android:color/white"
+            android:id="@+id/cartInvisible"
             android:text="Invisible"
             />
 
     </LinearLayout>
-
 
 </RelativeLayout>

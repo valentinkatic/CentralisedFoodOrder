@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     >
 
     <RelativeLayout
@@ -28,7 +29,7 @@
         android:id="@+id/restaurantName"
         android:gravity="center_horizontal"
         android:layout_above="@+id/restaurantAddress"
-        android:textColor="@color/white"
+        android:textColor="@android:color/white"
         android:layout_marginBottom="10dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         />
@@ -41,7 +42,7 @@
         android:gravity="center_horizontal"
         android:layout_alignBottom="@+id/restaurantImageView"
         android:layout_marginBottom="10dp"
-        android:textColor="@color/white"
+        android:textColor="@android:color/white"
         android:textAppearance="?android:attr/textAppearanceMedium"
         />
 
@@ -54,6 +55,5 @@
         />
 
     </RelativeLayout>
-
 
 </LinearLayout>

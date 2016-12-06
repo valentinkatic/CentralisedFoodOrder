@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -28,6 +27,9 @@ import com.google.firebase.storage.StorageReference;
 import com.katic.centralisedfoodorder.adapter.AnimatedExpandableListView;
 import com.katic.centralisedfoodorder.adapter.AnimatedListAdapter;
 import com.katic.centralisedfoodorder.adapter.RVAdapter;
+import com.katic.centralisedfoodorder.classes.ChildItem;
+import com.katic.centralisedfoodorder.classes.GroupItem;
+import com.katic.centralisedfoodorder.classes.Restaurant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,9 @@ import java.util.List;
 public class RestaurantActivity extends AppCompatActivity {
 
     private static final String TAG = "RestaurantActivity";
+    public static List<GroupItem> items = new ArrayList<>();
+
+    private Menu menu;
 
     private DatabaseReference mDatabase;
     private DatabaseReference mUserReference;
@@ -56,7 +61,6 @@ public class RestaurantActivity extends AppCompatActivity {
 
     private AnimatedExpandableListView listView;
     private AnimatedListAdapter adapter;
-    final List<GroupItem> items = new ArrayList<GroupItem>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,29 +116,6 @@ public class RestaurantActivity extends AppCompatActivity {
         actionBar.setElevation(4);
         actionBar.collapseActionView();
 
-    }
-
-    public static class GroupItem {
-        public String title;
-        public List<ChildItem> items = new ArrayList<>();
-        public boolean clickedGroup = false;
-    }
-
-    public static class ChildItem {
-        public String title;
-        public String hint;
-        public String invisible;
-    }
-
-    public static class ChildHolder {
-        public TextView title;
-        public TextView hint;
-        public TextView invisible;
-    }
-
-    public static class GroupHolder {
-        public TextView title;
-        public ImageView groupImageView;
     }
 
     @Override
@@ -208,12 +189,17 @@ public class RestaurantActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.mymenu, menu);
+        this.menu=menu;
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.cart:
+                Intent checkout = new Intent(RestaurantActivity.this, CartActivity.class);
+                startActivity(checkout);
+                return true;
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(RestaurantActivity.this, MainActivity.class);

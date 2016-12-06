@@ -12,4 +12,5 @@
     <string name="auth_success">Registration successful</string>
     <string name="login_success">Sign in successful</string>
     <string name="logout">Odjava</string>
+    <string name="cart">Košarica</string>
 </resources>

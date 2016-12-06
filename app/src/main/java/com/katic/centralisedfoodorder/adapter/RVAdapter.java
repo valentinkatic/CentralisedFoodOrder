@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -19,7 +18,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.katic.centralisedfoodorder.ChooseActivity;
 import com.katic.centralisedfoodorder.R;
-import com.katic.centralisedfoodorder.Restaurant;
+import com.katic.centralisedfoodorder.classes.Restaurant;
 import com.katic.centralisedfoodorder.RestaurantActivity;
 
 import java.util.ArrayList;
