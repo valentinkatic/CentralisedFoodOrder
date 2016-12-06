@@ -8,20 +8,29 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.katic.centralisedfoodorder.R;
+import com.katic.centralisedfoodorder.RestaurantActivity;
+import com.katic.centralisedfoodorder.classes.Cart;
 import com.katic.centralisedfoodorder.classes.ChildHolder;
 import com.katic.centralisedfoodorder.classes.ChildItem;
 import com.katic.centralisedfoodorder.classes.GroupHolder;
 import com.katic.centralisedfoodorder.classes.GroupItem;
+import com.katic.centralisedfoodorder.classes.Restaurant;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpandableListAdapter {
     private LayoutInflater inflater;
 
-    private static List<GroupItem> items;
+    private List<GroupItem> items;
+    private Long id;
+    private List<Cart> cart = RestaurantActivity.cart;
+    Context context;
 
-    public AnimatedListAdapter(Context context) {
+    public AnimatedListAdapter(Context context, Long id) {
         inflater = LayoutInflater.from(context);
+        this.id = id;
+        this.context = context;
     }
 
     public void setData(List<GroupItem> items) {
@@ -39,7 +48,7 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
     }
 
     @Override
-    public View getRealChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getRealChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         final ChildHolder holder;
         final ChildItem item = getChild(groupPosition, childPosition);
         if (convertView == null) {
@@ -48,6 +57,7 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
             holder.title = (TextView) convertView.findViewById(R.id.textTitle);
             holder.hint = (TextView) convertView.findViewById(R.id.textHint);
             holder.invisible = (TextView) convertView.findViewById(R.id.invisible);
+            holder.addToCart = (ImageView) convertView.findViewById(R.id.addToCart) ;
             holder.invisible.setVisibility(View.GONE);
             convertView.setTag(holder);
         } else {
@@ -57,6 +67,41 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
         holder.title.setText(item.title);
         holder.hint.setText(item.hint);
         holder.invisible.setText(item.invisible);
+
+        for (int i=0; i<cart.size(); i++){
+            Cart current = cart.get(i);
+            if(current.ID==id && current.markedFoodChild == childPosition && current.markedFoodGroup == groupPosition)
+                item.addedToCart=true;
+        }
+
+        if (item.addedToCart) {
+            holder.addToCart.setImageResource(R.drawable.checkout);
+        } else {
+            holder.addToCart.setImageResource(R.drawable.add_to_cart);
+        }
+
+        holder.addToCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(item.addedToCart){
+                    item.addedToCart = false;
+                    for (int i=0; i<cart.size(); i++){
+                        Cart current = cart.get(i);
+                        if(current.ID==id && current.markedFoodChild == childPosition && current.markedFoodGroup == groupPosition) {
+                            cart.remove(i);
+                            holder.addToCart.setImageResource(R.drawable.add_to_cart);
+                        }
+                    }
+                }
+                else {
+                    item.addedToCart = true;
+                    Cart cartItem = new Cart(id, groupPosition, childPosition);
+                    cart.add(cartItem);
+                    holder.addToCart.setImageResource(R.drawable.checkout);
+                }
+                ((RestaurantActivity)context).addToCart(cart);
+            }
+        });
 
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override

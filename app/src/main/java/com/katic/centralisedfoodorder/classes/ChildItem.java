@@ -5,6 +5,7 @@ public class ChildItem {
     public String hint;
     public String invisible;
     public boolean clicked = false;
+    public boolean addedToCart = false;
 
     public ChildItem() {
     }

@@ -27,6 +27,7 @@ import com.google.firebase.storage.StorageReference;
 import com.katic.centralisedfoodorder.adapter.AnimatedExpandableListView;
 import com.katic.centralisedfoodorder.adapter.AnimatedListAdapter;
 import com.katic.centralisedfoodorder.adapter.RVAdapter;
+import com.katic.centralisedfoodorder.classes.Cart;
 import com.katic.centralisedfoodorder.classes.ChildItem;
 import com.katic.centralisedfoodorder.classes.GroupItem;
 import com.katic.centralisedfoodorder.classes.Restaurant;
@@ -38,6 +39,7 @@ public class RestaurantActivity extends AppCompatActivity {
 
     private static final String TAG = "RestaurantActivity";
     public static List<GroupItem> items = new ArrayList<>();
+    public static List<Cart> cart = new ArrayList<>();
 
     private Menu menu;
 
@@ -94,6 +96,22 @@ public class RestaurantActivity extends AppCompatActivity {
                             .load(pathReference)
                             .into(imgView);
 
+                    mUserReference.child("cart").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            cart.clear();
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                                Cart item = snapshot.getValue(Cart.class);
+                                cart.add(item);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -116,17 +134,10 @@ public class RestaurantActivity extends AppCompatActivity {
         actionBar.setElevation(4);
         actionBar.collapseActionView();
 
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        mAuth.addAuthStateListener(mAuthListener);
-
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                items.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     GroupItem item = new GroupItem();
                     item.title = snapshot.getKey();
@@ -150,7 +161,19 @@ public class RestaurantActivity extends AppCompatActivity {
             }
         });
 
-        adapter = new AnimatedListAdapter(this);
+    }
+
+    public void addToCart(List<Cart> cart){
+        mUserReference.child("cart").setValue(cart);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mAuth.addAuthStateListener(mAuthListener);
+
+        adapter = new AnimatedListAdapter(this, resID);
         adapter.setData(items);
 
         listView = (AnimatedExpandableListView) findViewById(R.id.animatedList);
@@ -212,5 +235,8 @@ public class RestaurantActivity extends AppCompatActivity {
         }
     }
 
-
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }

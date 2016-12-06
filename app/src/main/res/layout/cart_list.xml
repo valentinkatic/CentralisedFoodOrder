@@ -2,10 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingEnd="10dp"
-    android:paddingRight="10dp"
-    android:paddingStart="30dp"
-    android:paddingLeft="30dp">
+    android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
+    android:paddingStart="?android:attr/expandableListPreferredChildPaddingLeft">
 
     <TextView
         android:id="@+id/cartTitle"
