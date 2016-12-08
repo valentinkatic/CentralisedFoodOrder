@@ -23,13 +23,13 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
     private LayoutInflater inflater;
 
     private List<GroupItem> items;
-    private Long id;
+    private String id;
     private List<Cart> cart = RestaurantActivity.cart;
     Context context;
 
     public AnimatedListAdapter(Context context, Long id) {
         inflater = LayoutInflater.from(context);
-        this.id = id;
+        this.id = id.toString();
         this.context = context;
     }
 
@@ -70,7 +70,7 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
 
         for (int i=0; i<cart.size(); i++){
             Cart current = cart.get(i);
-            if(current.ID==id && current.markedFoodChild == childPosition && current.markedFoodGroup == groupPosition)
+            if(current.ID.equals(id) && current.markedFoodChild.equals(item.title) && current.markedFoodGroup.equals(getGroup(groupPosition).title))
                 item.addedToCart=true;
         }
 
@@ -87,7 +87,7 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
                     item.addedToCart = false;
                     for (int i=0; i<cart.size(); i++){
                         Cart current = cart.get(i);
-                        if(current.ID==id && current.markedFoodChild == childPosition && current.markedFoodGroup == groupPosition) {
+                        if(current.ID.equals(id) && current.markedFoodChild.equals(item.title) && current.markedFoodGroup.equals(getGroup(groupPosition).title)) {
                             cart.remove(i);
                             holder.addToCart.setImageResource(R.drawable.add_to_cart);
                         }
@@ -95,7 +95,7 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
                 }
                 else {
                     item.addedToCart = true;
-                    Cart cartItem = new Cart(id, groupPosition, childPosition);
+                    Cart cartItem = new Cart(id, getGroup(groupPosition).title, item.title);
                     cart.add(cartItem);
                     holder.addToCart.setImageResource(R.drawable.checkout);
                 }

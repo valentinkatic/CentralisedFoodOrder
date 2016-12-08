@@ -48,6 +48,7 @@ public class Restaurant {
     public boolean isBookmarked() {
         return bookmarked;
     }
+
 }
 
 

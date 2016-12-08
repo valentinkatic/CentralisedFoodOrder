@@ -2,11 +2,11 @@ package com.katic.centralisedfoodorder.classes;
 
 public class Cart {
 
-    public long ID;
-    public int markedFoodGroup;
-    public int markedFoodChild;
+    public String ID;
+    public String markedFoodGroup;
+    public String markedFoodChild;
 
-    public Cart(long ID, int markedFoodGroup, int markedFoodChild) {
+    public Cart(String ID, String markedFoodGroup, String markedFoodChild) {
         this.ID = ID;
         this.markedFoodGroup = markedFoodGroup;
         this.markedFoodChild = markedFoodChild;

@@ -95,7 +95,6 @@ public class CartExpandableListAdapter extends BaseExpandableListAdapter {
         }
 
         holder.title.setText(item.title);
-
         return convertView;
     }
 
