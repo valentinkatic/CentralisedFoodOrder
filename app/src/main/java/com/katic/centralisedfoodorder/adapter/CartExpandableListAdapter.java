@@ -55,8 +55,8 @@ public class CartExpandableListAdapter extends BaseExpandableListAdapter {
         }
 
         holder.title.setText(item.title);
-        holder.hint.setText(item.hint);
-        holder.invisible.setText(item.invisible);
+        holder.hint.setText(item.price);
+        holder.invisible.setText(item.ingredients);
         return convertView;
     }
 

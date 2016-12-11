@@ -6,30 +6,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.katic.centralisedfoodorder.R;
 import com.katic.centralisedfoodorder.RestaurantActivity;
-import com.katic.centralisedfoodorder.classes.Cart;
 import com.katic.centralisedfoodorder.classes.ChildHolder;
 import com.katic.centralisedfoodorder.classes.ChildItem;
 import com.katic.centralisedfoodorder.classes.GroupHolder;
 import com.katic.centralisedfoodorder.classes.GroupItem;
-import com.katic.centralisedfoodorder.classes.Restaurant;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpandableListAdapter {
     private LayoutInflater inflater;
 
     private List<GroupItem> items;
-    private String id;
-    private List<Cart> cart = RestaurantActivity.cart;
+    private String resturantName;
+    private List<GroupItem> cart = RestaurantActivity.cart;
     Context context;
 
-    public AnimatedListAdapter(Context context, Long id) {
+    public AnimatedListAdapter(Context context, String resturantName) {
         inflater = LayoutInflater.from(context);
-        this.id = id.toString();
+        this.resturantName = resturantName;
         this.context = context;
     }
 
@@ -65,13 +63,15 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
         }
 
         holder.title.setText(item.title);
-        holder.hint.setText(item.hint);
-        holder.invisible.setText(item.invisible);
+        holder.hint.setText(item.price);
+        holder.invisible.setText(item.ingredients);
 
         for (int i=0; i<cart.size(); i++){
-            Cart current = cart.get(i);
-            if(current.ID.equals(id) && current.markedFoodChild.equals(item.title) && current.markedFoodGroup.equals(getGroup(groupPosition).title))
-                item.addedToCart=true;
+            GroupItem current = cart.get(i);
+            if(current.title.equals(resturantName))
+                for (int j=0; j<current.items.size(); j++)
+                    if(current.items.get(j).title.equals(item.title) && current.items.get(j).ingredients.equals(item.ingredients))
+                        item.addedToCart=true;
         }
 
         if (item.addedToCart) {
@@ -86,20 +86,26 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
                 if(item.addedToCart){
                     item.addedToCart = false;
                     for (int i=0; i<cart.size(); i++){
-                        Cart current = cart.get(i);
-                        if(current.ID.equals(id) && current.markedFoodChild.equals(item.title) && current.markedFoodGroup.equals(getGroup(groupPosition).title)) {
-                            cart.remove(i);
-                            holder.addToCart.setImageResource(R.drawable.add_to_cart);
-                        }
+                        GroupItem current = cart.get(i);
+                        if(current.title.equals(resturantName))
+                            for (int j=0; j<current.items.size(); j++)
+                                if(current.items.get(j).title.equals(item.title) && current.items.get(j).ingredients.equals(item.ingredients)) {
+                                    cart.get(i).items.remove(j);
+                                    holder.addToCart.setImageResource(R.drawable.add_to_cart);
+                                }
+
                     }
                 }
                 else {
                     item.addedToCart = true;
-                    Cart cartItem = new Cart(id, getGroup(groupPosition).title, item.title);
-                    cart.add(cartItem);
+                    GroupItem groupItem = new GroupItem();
+                    groupItem.title = resturantName;
+                    ChildItem cartItem = new ChildItem(item.title, item.ingredients);
+                    groupItem.items.add(cartItem);
+                    cart.add(groupItem);
                     holder.addToCart.setImageResource(R.drawable.checkout);
                 }
-                ((RestaurantActivity)context).addToCart(cart);
+                ((RestaurantActivity)context).addToCart(resturantName, cart);
             }
         });
 

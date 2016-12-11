@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -27,7 +28,7 @@ import com.google.firebase.storage.StorageReference;
 import com.katic.centralisedfoodorder.adapter.AnimatedExpandableListView;
 import com.katic.centralisedfoodorder.adapter.AnimatedListAdapter;
 import com.katic.centralisedfoodorder.adapter.RVAdapter;
-import com.katic.centralisedfoodorder.classes.Cart;
+import com.katic.centralisedfoodorder.classes.CartItem;
 import com.katic.centralisedfoodorder.classes.ChildItem;
 import com.katic.centralisedfoodorder.classes.GroupItem;
 import com.katic.centralisedfoodorder.classes.Restaurant;
@@ -39,7 +40,7 @@ public class RestaurantActivity extends AppCompatActivity {
 
     private static final String TAG = "RestaurantActivity";
     public static List<GroupItem> items = new ArrayList<>();
-    public static List<Cart> cart = new ArrayList<>();
+    public static List<GroupItem> cart = new ArrayList<>();
 
     private Menu menu;
 
@@ -101,7 +102,13 @@ public class RestaurantActivity extends AppCompatActivity {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             cart.clear();
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                                Cart item = snapshot.getValue(Cart.class);
+                                GroupItem item = new GroupItem();
+                                item.title=snapshot.getKey();
+                                for (DataSnapshot snapshot1 : snapshot.getChildren()){
+                                    CartItem cart = snapshot1.getValue(CartItem.class);
+                                    ChildItem child = new ChildItem(cart);
+                                    item.items.add(child);
+                                }
                                 cart.add(item);
                             }
                         }
@@ -143,11 +150,7 @@ public class RestaurantActivity extends AppCompatActivity {
                     item.title = snapshot.getKey();
 
                     for (DataSnapshot children : snapshot.getChildren()){
-                        ChildItem child = new ChildItem();
-                        child.title = children.getKey();
-                        child.hint = "";
-                        child.invisible = children.getValue().toString();
-
+                        ChildItem child = children.getValue(ChildItem.class);
                         item.items.add(child);
                     }
 
@@ -163,8 +166,17 @@ public class RestaurantActivity extends AppCompatActivity {
 
     }
 
-    public void addToCart(List<Cart> cart){
-        mUserReference.child("cart").setValue(cart);
+    public void addToCart(String string, List<GroupItem> cart){
+        List<CartItem> cartItem = new ArrayList<>();
+        for(int i=0; i<cart.size(); i++)
+            if (cart.get(i).title.equals(string)){
+                for(int j=0; j<cart.get(i).items.size(); j++){
+                    ChildItem current = cart.get(i).items.get(j);
+                    CartItem currentItem = new CartItem(current.title, current.ingredients, current.price);
+                    cartItem.add(currentItem);
+                }
+            }
+        mUserReference.child("cart").child(string).setValue(cartItem);
     }
 
     @Override
@@ -173,7 +185,7 @@ public class RestaurantActivity extends AppCompatActivity {
 
         mAuth.addAuthStateListener(mAuthListener);
 
-        adapter = new AnimatedListAdapter(this, resID);
+        adapter = new AnimatedListAdapter(this, title);
         adapter.setData(items);
 
         listView = (AnimatedExpandableListView) findViewById(R.id.animatedList);

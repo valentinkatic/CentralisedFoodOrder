@@ -19,20 +19,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.katic.centralisedfoodorder.adapter.CartExpandableListAdapter;
-import com.katic.centralisedfoodorder.classes.Cart;
+import com.katic.centralisedfoodorder.classes.CartItem;
 import com.katic.centralisedfoodorder.classes.ChildItem;
 import com.katic.centralisedfoodorder.classes.GroupItem;
-import com.katic.centralisedfoodorder.classes.Restaurant;
 
-import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CartActivity extends BaseActivity {
 
     private static final String TAG = "CartActivity";
-
-    public Cart cart = new Cart();
+    public static List<GroupItem> cart = new ArrayList<>();
 
     private DatabaseReference mDatabase;
     private DatabaseReference mUserReference;
@@ -42,8 +39,6 @@ public class CartActivity extends BaseActivity {
 
     CartExpandableListAdapter adapter;
     ExpandableListView expListView;
-
-    private List<GroupItem> resItems = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,38 +63,18 @@ public class CartActivity extends BaseActivity {
                     mUserReference.child("cart").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-
+                            cart.clear();
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                                cart = snapshot.getValue(Cart.class);
-
-                                mDatabase.child(cart.ID).addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        GroupItem item = new GroupItem();
-                                        Restaurant currentRes = dataSnapshot.getValue(Restaurant.class);
-                                        item.title=currentRes.name;
-
-                                        DataSnapshot currentItem=dataSnapshot.child("food_type").child(cart.markedFoodGroup).child(cart.markedFoodChild);
-
-                                        ChildItem child = new ChildItem();
-                                        child.title = currentItem.getKey();
-                                        child.invisible = currentItem.getValue().toString();
-                                        item.items.add(child);
-
-                                        resItems.add(item);
-
-                                        adapter.notifyDataSetChanged();
-
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
-
+                                GroupItem item = new GroupItem();
+                                item.title=snapshot.getKey();
+                                for (DataSnapshot snapshot1 : snapshot.getChildren()){
+                                    CartItem cart = snapshot1.getValue(CartItem.class);
+                                    ChildItem child = new ChildItem(cart);
+                                    item.items.add(child);
+                                }
+                                cart.add(item);
+                                adapter.notifyDataSetChanged();
                             }
-
                         }
 
                         @Override
@@ -108,7 +83,6 @@ public class CartActivity extends BaseActivity {
                         }
                     });
 
-                    //Toast.makeText(CartActivity.this, items.get(0).items.get(0).title, Toast.LENGTH_SHORT).show();
 
                 } else {
                     // User is signed out
@@ -135,10 +109,10 @@ public class CartActivity extends BaseActivity {
             @Override
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int groupPosition, long l) {
                 if (expListView.isGroupExpanded(groupPosition)) {
-                    resItems.get(groupPosition).clickedGroup = false;
+                    cart.get(groupPosition).clickedGroup = false;
                     expListView.collapseGroup(groupPosition);
                 } else {
-                    resItems.get(groupPosition).clickedGroup = true;
+                    cart.get(groupPosition).clickedGroup = true;
                     expListView.expandGroup(groupPosition);
                 }
                 return true;
@@ -148,15 +122,13 @@ public class CartActivity extends BaseActivity {
     }
 
     private void initializeAdapter(){
-        adapter = new CartExpandableListAdapter(this, resItems);
+        adapter = new CartExpandableListAdapter(this, cart);
         expListView.setAdapter(adapter);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        Toast.makeText(this, Integer.toString(resItems.size()), Toast.LENGTH_SHORT).show();
 
         initializeAdapter();
     }
