@@ -13,4 +13,5 @@
     <string name="login_success">Sign in successful</string>
     <string name="logout">Odjava</string>
     <string name="cart">Košarica</string>
+    <string name="choose_size">Choose size</string>
 </resources>

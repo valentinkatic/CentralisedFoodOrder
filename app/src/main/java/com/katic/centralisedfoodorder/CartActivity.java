@@ -73,8 +73,10 @@ public class CartActivity extends BaseActivity {
                                     item.items.add(child);
                                 }
                                 cart.add(item);
-                                adapter.notifyDataSetChanged();
                             }
+                            adapter.notifyDataSetChanged();
+                            for(int i=0; i<adapter.getGroupCount(); i++)
+                                expListView.expandGroup(i);
                         }
 
                         @Override
@@ -103,7 +105,6 @@ public class CartActivity extends BaseActivity {
 
 
         //items = RestaurantActivity.items;
-
 
         expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
@@ -136,7 +137,7 @@ public class CartActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.mymenu, menu);
-        menu.getItem(0).setIcon(R.drawable.checkout);
+        menu.getItem(0).setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
 

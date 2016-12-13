@@ -172,7 +172,7 @@ public class RestaurantActivity extends AppCompatActivity {
             if (cart.get(i).title.equals(string)){
                 for(int j=0; j<cart.get(i).items.size(); j++){
                     ChildItem current = cart.get(i).items.get(j);
-                    CartItem currentItem = new CartItem(current.title, current.ingredients, current.price);
+                    CartItem currentItem = new CartItem(current.title, current.ingredients, current.price, current.type);
                     cartItem.add(currentItem);
                 }
             }

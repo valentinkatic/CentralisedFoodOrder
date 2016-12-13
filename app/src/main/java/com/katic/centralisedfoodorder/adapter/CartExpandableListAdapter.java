@@ -47,16 +47,33 @@ public class CartExpandableListAdapter extends BaseExpandableListAdapter {
             holder = new ChildHolder();
             convertView = inflater.inflate(R.layout.cart_list, parent, false);
             holder.title = (TextView) convertView.findViewById(R.id.cartTitle);
-            holder.hint = (TextView) convertView.findViewById(R.id.cartHint);
-            holder.invisible = (TextView) convertView.findViewById(R.id.cartInvisible);
+            holder.type = (TextView) convertView.findViewById(R.id.cartType);
+            holder.price = (TextView) convertView.findViewById(R.id.cartPrice);
+            holder.ingredients = (TextView) convertView.findViewById(R.id.cartIngredients);
+            holder.ingredients.setVisibility(View.GONE);
             convertView.setTag(holder);
         } else {
             holder = (ChildHolder) convertView.getTag();
         }
 
         holder.title.setText(item.title);
-        holder.hint.setText(item.price);
-        holder.invisible.setText(item.ingredients);
+        holder.type.setText(item.type);
+        holder.price.setText(String.format("%.2f", item.price) + " kn");
+        holder.ingredients.setText(item.ingredients);
+
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!item.clicked) {
+                    item.clicked=true;
+                    holder.ingredients.setVisibility(View.VISIBLE);
+                } else {
+                    item.clicked=false;
+                    holder.ingredients.setVisibility(View.GONE);
+                }
+            }
+        });
+
         return convertView;
     }
 
