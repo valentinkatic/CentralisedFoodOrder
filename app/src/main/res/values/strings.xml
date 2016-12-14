@@ -14,4 +14,5 @@
     <string name="logout">Odjava</string>
     <string name="cart">Košarica</string>
     <string name="choose_size">Choose size</string>
+    <string name="empty_cart">Košarica je prazna</string>
 </resources>

@@ -1,11 +1,15 @@
 package com.katic.centralisedfoodorder;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,8 +45,7 @@ public class RestaurantActivity extends AppCompatActivity {
     private static final String TAG = "RestaurantActivity";
     public static List<GroupItem> items = new ArrayList<>();
     public static List<GroupItem> cart = new ArrayList<>();
-
-    private Menu menu;
+    private int count = 0;
 
     private DatabaseReference mDatabase;
     private DatabaseReference mUserReference;
@@ -101,6 +104,7 @@ public class RestaurantActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             cart.clear();
+                            count=0;
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                                 GroupItem item = new GroupItem();
                                 item.title=snapshot.getKey();
@@ -108,9 +112,11 @@ public class RestaurantActivity extends AppCompatActivity {
                                     CartItem cart = snapshot1.getValue(CartItem.class);
                                     ChildItem child = new ChildItem(cart);
                                     item.items.add(child);
+                                    count++;
                                 }
                                 cart.add(item);
                             }
+                            invalidateOptionsMenu();
                         }
 
                         @Override
@@ -168,15 +174,19 @@ public class RestaurantActivity extends AppCompatActivity {
 
     public void addToCart(String string, List<GroupItem> cart){
         List<CartItem> cartItem = new ArrayList<>();
-        for(int i=0; i<cart.size(); i++)
-            if (cart.get(i).title.equals(string)){
-                for(int j=0; j<cart.get(i).items.size(); j++){
+        count=0;
+        for(int i=0; i<cart.size(); i++) {
+            if (cart.get(i).title.equals(string)) {
+                for (int j = 0; j < cart.get(i).items.size(); j++) {
                     ChildItem current = cart.get(i).items.get(j);
                     CartItem currentItem = new CartItem(current.title, current.ingredients, current.price, current.type);
                     cartItem.add(currentItem);
                 }
             }
+            for (int j = 0; j < cart.get(i).items.size(); j++) count++;
+        }
         mUserReference.child("cart").child(string).setValue(cartItem);
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -214,6 +224,14 @@ public class RestaurantActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        for(int i=0; i<items.size(); i++)
+            if(items.get(i).clickedGroup)
+                listView.expandGroup(i);
+        super.onResume();
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         if (mAuthListener != null) {
@@ -224,7 +242,10 @@ public class RestaurantActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.mymenu, menu);
-        this.menu=menu;
+        MenuItem menuItem = menu.findItem(R.id.cart);
+        if(count!=0)
+        menuItem.setIcon(buildCounterDrawable(count, R.drawable.ic_full_cart));
+        else menuItem.setIcon(R.drawable.empty_cart);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -232,8 +253,11 @@ public class RestaurantActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.cart:
-                Intent checkout = new Intent(RestaurantActivity.this, CartActivity.class);
-                startActivity(checkout);
+                if (count!=0) {
+                    Intent checkout = new Intent(RestaurantActivity.this, CartActivity.class);
+                    startActivity(checkout);
+                } else
+                    Toast.makeText(this, R.string.empty_cart, Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();
@@ -245,6 +269,32 @@ public class RestaurantActivity extends AppCompatActivity {
                 finish();
                 return true;
         }
+    }
+
+    private Drawable buildCounterDrawable(int count, int backgroundImageId) {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View view = inflater.inflate(R.layout.counter_menuitem_layout, null);
+        view.setBackgroundResource(backgroundImageId);
+
+        if (count == 0) {
+            View counterTextPanel = view.findViewById(R.id.counterValuePanel);
+            counterTextPanel.setVisibility(View.GONE);
+        } else {
+            TextView textView = (TextView) view.findViewById(R.id.count);
+            textView.setText("" + count);
+        }
+
+        view.measure(
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+
+        view.setDrawingCacheEnabled(true);
+        view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
+        view.setDrawingCacheEnabled(false);
+
+        return new BitmapDrawable(getResources(), bitmap);
     }
 
     @Override

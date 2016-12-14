@@ -13,9 +13,15 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.katic.centralisedfoodorder.adapter.HorizontalListView;
 import com.katic.centralisedfoodorder.adapter.RVAdapter;
+import com.katic.centralisedfoodorder.classes.CartItem;
+import com.katic.centralisedfoodorder.classes.ChildItem;
+import com.katic.centralisedfoodorder.classes.GroupItem;
 import com.katic.centralisedfoodorder.classes.Restaurant;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -43,9 +49,10 @@ import static com.katic.centralisedfoodorder.R.id.tabHost;
 public class ChooseActivity extends BaseActivity {
 
     private static final String TAG = "ChooseActivity";
-    private Menu menu;
 
     private boolean doubleBackToExitPressedOnce = false;
+    public static List<GroupItem> cart = new ArrayList<>();
+    private int count = 0;
 
     private DatabaseReference mDatabase;
     private DatabaseReference mUserReference;
@@ -67,7 +74,10 @@ public class ChooseActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.mymenu, menu);
-        this.menu = menu;
+        MenuItem menuItem = menu.findItem(R.id.cart);
+        if(count!=0)
+            menuItem.setIcon(buildCounterDrawable(count, R.drawable.ic_full_cart));
+        else menuItem.setIcon(R.drawable.empty_cart);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -75,8 +85,11 @@ public class ChooseActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.cart:
-                Intent checkout = new Intent(ChooseActivity.this, CartActivity.class);
-                startActivity(checkout);
+                if (count!=0) {
+                    Intent checkout = new Intent(ChooseActivity.this, CartActivity.class);
+                    startActivity(checkout);
+                } else
+                    Toast.makeText(this, R.string.empty_cart, Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();
@@ -205,6 +218,31 @@ public class ChooseActivity extends BaseActivity {
                         }
                     });
 
+                    mUserReference.child("cart").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            cart.clear();
+                            count=0;
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                                GroupItem item = new GroupItem();
+                                item.title=snapshot.getKey();
+                                for (DataSnapshot snapshot1 : snapshot.getChildren()){
+                                    CartItem cart = snapshot1.getValue(CartItem.class);
+                                    ChildItem child = new ChildItem(cart);
+                                    item.items.add(child);
+                                    count++;
+                                }
+                                cart.add(item);
+                            }
+                            invalidateOptionsMenu();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
 
                 } else {
                     // User is signed out
@@ -288,7 +326,6 @@ public class ChooseActivity extends BaseActivity {
             }
         });
 
-
     }
 
     @Override
@@ -322,4 +359,31 @@ public class ChooseActivity extends BaseActivity {
             }, 2000);
         }
     }
+
+    private Drawable buildCounterDrawable(int count, int backgroundImageId) {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View view = inflater.inflate(R.layout.counter_menuitem_layout, null);
+        view.setBackgroundResource(backgroundImageId);
+
+        if (count == 0) {
+            View counterTextPanel = view.findViewById(R.id.counterValuePanel);
+            counterTextPanel.setVisibility(View.GONE);
+        } else {
+            TextView textView = (TextView) view.findViewById(R.id.count);
+            textView.setText("" + count);
+        }
+
+        view.measure(
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+
+        view.setDrawingCacheEnabled(true);
+        view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
+        view.setDrawingCacheEnabled(false);
+
+        return new BitmapDrawable(getResources(), bitmap);
+    }
+
 }
