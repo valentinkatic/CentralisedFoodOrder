@@ -40,7 +40,7 @@ import com.katic.centralisedfoodorder.classes.Restaurant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RestaurantActivity extends AppCompatActivity {
+public class RestaurantActivity extends BaseActivity {
 
     private static final String TAG = "RestaurantActivity";
     public static List<GroupItem> items = new ArrayList<>();
@@ -54,6 +54,7 @@ public class RestaurantActivity extends AppCompatActivity {
     private FirebaseUser user;
     private FirebaseStorage storageRef;
     private StorageReference pathReference;
+    private ValueEventListener itemsListener;
 
     private List<Restaurant> res = ChooseActivity.restaurants;
     private Restaurant current;
@@ -100,7 +101,7 @@ public class RestaurantActivity extends AppCompatActivity {
                             .load(pathReference)
                             .into(imgView);
 
-                    mUserReference.child("cart").addListenerForSingleValueEvent(new ValueEventListener() {
+                    mUserReference.child("cart").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             cart.clear();
@@ -116,6 +117,7 @@ public class RestaurantActivity extends AppCompatActivity {
                                 }
                                 cart.add(item);
                             }
+                            adapter.notifyDataSetChanged();
                             invalidateOptionsMenu();
                         }
 
@@ -147,7 +149,7 @@ public class RestaurantActivity extends AppCompatActivity {
         actionBar.setElevation(4);
         actionBar.collapseActionView();
 
-        mDatabase.addValueEventListener(new ValueEventListener() {
+        itemsListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 items.clear();
@@ -162,13 +164,16 @@ public class RestaurantActivity extends AppCompatActivity {
 
                     items.add(item);
                 }
+                adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        };
+
+        mDatabase.addListenerForSingleValueEvent(itemsListener);
 
     }
 
@@ -179,7 +184,7 @@ public class RestaurantActivity extends AppCompatActivity {
             if (cart.get(i).title.equals(string)) {
                 for (int j = 0; j < cart.get(i).items.size(); j++) {
                     ChildItem current = cart.get(i).items.get(j);
-                    CartItem currentItem = new CartItem(current.title, current.ingredients, current.price, current.type);
+                    CartItem currentItem = new CartItem(current.title, current.ingredients, current.price, current.type, current.quantity);
                     cartItem.add(currentItem);
                 }
             }
@@ -228,6 +233,7 @@ public class RestaurantActivity extends AppCompatActivity {
         for(int i=0; i<items.size(); i++)
             if(items.get(i).clickedGroup)
                 listView.expandGroup(i);
+        mDatabase.addListenerForSingleValueEvent(itemsListener);
         super.onResume();
     }
 

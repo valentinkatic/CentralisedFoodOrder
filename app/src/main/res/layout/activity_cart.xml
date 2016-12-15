@@ -30,11 +30,43 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/subtotalText"
+            android:layout_centerVertical="true"
+            android:textSize="16sp"
+            android:text="@string/subtotal"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/subtotalText"
+            android:layout_toRightOf="@id/subtotalText"
+            android:layout_centerVertical="true"
+            android:id="@+id/subtotalNumber"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp"
+            android:text="@string/subtotal"/>
+
+    </RelativeLayout>
+
     <Button
         android:text="Proceed to checkout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/checkoutBtn"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:layout_gravity="center_horizontal"/>
 

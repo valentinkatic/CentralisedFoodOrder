@@ -11,15 +11,17 @@ public class ChildItem {
     public String type;
     public boolean clicked = false;
     public boolean addedToCart = false;
+    public int quantity = 0;
 
     public ChildItem() {
     }
 
-    public ChildItem(String title, String ingredients, float price, String type) {
+    public ChildItem(String title, String ingredients, float price, String type, int quantity) {
         this.title = title;
         this.ingredients = ingredients;
         this.price = price;
         this.type = type;
+        this.quantity = quantity;
     }
 
     public ChildItem(CartItem cart){
@@ -28,6 +30,7 @@ public class ChildItem {
         this.price = cart.price;
         this.type = cart.type;
         this.pizza = cart.pizza;
+        this.quantity = cart.quantity;
     }
 
 }

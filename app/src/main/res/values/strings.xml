@@ -13,6 +13,14 @@
     <string name="login_success">Sign in successful</string>
     <string name="logout">Odjava</string>
     <string name="cart">Košarica</string>
-    <string name="choose_size">Choose size</string>
+    <string name="choose_size">Izaberi veličinu (Pritisni na košaricu!)</string>
     <string name="empty_cart">Košarica je prazna</string>
+    <string name="remove">Ukloni</string>
+    <string name="set">Postavi</string>
+    <string name="cancel">Odustani</string>
+    <string name="quantity">Količina: </string>
+    <string name="are_you_sure">Jeste li sigurni?</string>
+    <string name="yes">Da</string>
+    <string name="no">Ne</string>
+    <string name="subtotal">Suma košarice</string>
 </resources>

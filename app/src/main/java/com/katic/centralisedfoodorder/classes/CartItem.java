@@ -9,16 +9,17 @@ public class CartItem {
     public float price;
     public String type;
     public List<Pizza> pizza = new ArrayList<>();
+    public int quantity = 0;
 
     public CartItem() {
     }
 
-    public CartItem(String title, String ingredients, float price, String type) {
+    public CartItem(String title, String ingredients, float price, String type, int quantity) {
         this.title = title;
         this.ingredients = ingredients;
         this.price = price;
         this.type = type;
-        this.pizza = pizza;
+        this.quantity = quantity;
     }
 
 }

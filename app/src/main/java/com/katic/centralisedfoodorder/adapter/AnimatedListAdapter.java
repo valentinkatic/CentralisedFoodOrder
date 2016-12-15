@@ -69,7 +69,8 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
         holder.price.setText(String.format("%.2f", item.price) + " kn");
         else {
             holder.price.setText(R.string.choose_size);
-            holder.addToCart.setOnClickListener(new View.OnClickListener() {
+
+            View.OnClickListener pizzaDialog = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     final Dialog dialog = new Dialog(context);
@@ -86,7 +87,8 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
 
                     dialog.show();
                 }
-            });
+            };
+            holder.addToCart.setOnClickListener(pizzaDialog);
         }
         holder.ingredients.setText(item.ingredients);
 
@@ -123,7 +125,7 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
                     item.addedToCart = true;
                     GroupItem groupItem = new GroupItem();
                     groupItem.title = resturantName;
-                    ChildItem cartItem = new ChildItem(item.title, item.ingredients, item.price, getGroup(groupPosition).title);
+                    ChildItem cartItem = new ChildItem(item.title, item.ingredients, item.price, getGroup(groupPosition).title, 1);
                     groupItem.items.add(cartItem);
                     cart.add(groupItem);
                     holder.addToCart.setImageResource(R.drawable.checkout);

@@ -86,7 +86,7 @@ public class CustomListAdapterDialog extends BaseAdapter {
                     item.addedToCart = true;
                     GroupItem groupItem = new GroupItem();
                     groupItem.title = restaurantTitle;
-                    ChildItem cartItem = new ChildItem(title+" ("+item.size+")", ingredients, item.price, "Pizze");
+                    ChildItem cartItem = new ChildItem(title+" ("+item.size+")", ingredients, item.price, "Pizze", 1);
                     groupItem.items.add(cartItem);
                     cart.add(groupItem);
                     holder.cartView.setImageResource(R.drawable.checkout);

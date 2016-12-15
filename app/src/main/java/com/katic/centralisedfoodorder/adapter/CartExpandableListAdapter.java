@@ -1,13 +1,20 @@
 package com.katic.centralisedfoodorder.adapter;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import com.katic.centralisedfoodorder.CartActivity;
 import com.katic.centralisedfoodorder.R;
+import com.katic.centralisedfoodorder.RestaurantActivity;
 import com.katic.centralisedfoodorder.classes.ChildHolder;
 import com.katic.centralisedfoodorder.classes.ChildItem;
 import com.katic.centralisedfoodorder.classes.GroupHolder;
@@ -20,10 +27,13 @@ public class CartExpandableListAdapter extends BaseExpandableListAdapter {
     private LayoutInflater inflater;
 
     private static List<GroupItem> items;
+    private List<GroupItem> cart = CartActivity.cart;
+    Context context;
 
     public CartExpandableListAdapter(Context context, List<GroupItem> items) {
         inflater = LayoutInflater.from(context);
         this.items = items;
+        this.context = context;
     }
 
     @Override
@@ -37,7 +47,7 @@ public class CartExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getChildView(int groupPosition, final int childPosition,
+    public View getChildView(final int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
 
         final ChildHolder holder;
@@ -50,6 +60,8 @@ public class CartExpandableListAdapter extends BaseExpandableListAdapter {
             holder.type = (TextView) convertView.findViewById(R.id.cartType);
             holder.price = (TextView) convertView.findViewById(R.id.cartPrice);
             holder.ingredients = (TextView) convertView.findViewById(R.id.cartIngredients);
+            holder.remove = (Button) convertView.findViewById(R.id.removeBtn);
+            holder.quantity = (Button) convertView.findViewById(R.id.quantityBtn);
             holder.ingredients.setVisibility(View.GONE);
             convertView.setTag(holder);
         } else {
@@ -58,8 +70,93 @@ public class CartExpandableListAdapter extends BaseExpandableListAdapter {
 
         holder.title.setText(item.title);
         holder.type.setText(item.type);
-        holder.price.setText(String.format("%.2f", item.price) + " kn");
+        holder.price.setText(String.format("%.2f", item.price*item.quantity) + " kn");
         holder.ingredients.setText(item.ingredients);
+        holder.quantity.setText(context.getText(R.string.quantity)+" "+Integer.toString(item.quantity));
+
+        final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        String restaurantTitle = getGroup(groupPosition).title;
+                        item.addedToCart = false;
+                        for (int i = 0; i < cart.size(); i++) {
+                            GroupItem current = cart.get(i);
+                            if (current.title.equals(restaurantTitle))
+                                for (int j = 0; j < current.items.size(); j++)
+                                    if (current.items.get(j).title.equals(item.title)) {
+                                        cart.get(i).items.remove(j);
+                                    }
+                        }
+                        ((CartActivity) context).addToCart(restaurantTitle, cart);
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        break;
+                }
+            }
+        };
+
+        holder.remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage(context.getText(R.string.are_you_sure)).setPositiveButton(context.getText(R.string.yes), dialogClickListener)
+                        .setNegativeButton(context.getText(R.string.no), dialogClickListener).show();
+            }
+        });
+
+        holder.quantity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(context);
+                View dialogView = inflater.inflate(R.layout.dialog_quantity_picker, null);
+                dialog.setTitle(context.getText(R.string.quantity));
+                Button b1 = (Button) dialogView.findViewById(R.id.setBtn);
+                Button b2 = (Button) dialogView.findViewById(R.id.cancelBtn);
+                final NumberPicker np = (NumberPicker) dialogView.findViewById(R.id.numberPicker);
+
+                np.setMaxValue(10);
+                np.setMinValue(1);
+                np.setValue(item.quantity);
+                np.setWrapSelectorWheel(false);
+                b1.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v) {
+                        item.quantity=np.getValue();
+                        holder.quantity.setText(context.getText(R.string.quantity)+" "+Integer.toString(item.quantity));
+
+                        String restaurantTitle = getGroup(groupPosition).title;
+                        item.addedToCart = false;
+                        for (int i = 0; i < cart.size(); i++) {
+                            GroupItem current = cart.get(i);
+                            if (current.title.equals(restaurantTitle))
+                                for (int j = 0; j < current.items.size(); j++)
+                                    if (current.items.get(j).title.equals(item.title)) {
+                                        cart.get(i).items.get(j).quantity=item.quantity;
+                                    }
+                        }
+                        ((CartActivity) context).addToCart(restaurantTitle, cart);
+                        holder.price.setText(String.format("%.2f", item.price*item.quantity) + " kn");
+
+                        dialog.dismiss();
+                    }
+                });
+                b2.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.setContentView(dialogView);
+                dialog.show();
+
+            }
+        });
 
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,5 +1,6 @@
 package com.katic.centralisedfoodorder.classes;
 
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -9,4 +10,6 @@ public class ChildHolder {
     public TextView price;
     public TextView ingredients;
     public ImageView addToCart;
+    public Button remove;
+    public Button quantity;
 }

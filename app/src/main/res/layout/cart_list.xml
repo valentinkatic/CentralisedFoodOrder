@@ -1,56 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
-    android:paddingStart="?android:attr/expandableListPreferredChildPaddingLeft">
+    android:orientation="vertical"
+    >
 
-    <TextView
-        android:id="@+id/cartTitle"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="title"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+        android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
+        android:paddingStart="?android:attr/expandableListPreferredChildPaddingLeft">
 
-    <TextView
-        android:id="@+id/cartType"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="type"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_below="@+id/cartTitle"
-        />
+        <TextView
+            android:id="@+id/cartTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="title"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
 
-    <TextView
-        android:id="@+id/cartPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="price"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_alignBottom="@id/cartType"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="20dp"
-        />
+        <TextView
+            android:id="@+id/cartType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="type"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_below="@+id/cartTitle"
+            />
+
+        <TextView
+            android:id="@+id/cartPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="price"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_alignBottom="@id/cartType"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cartType"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/cartIngredients"
+                android:text="Ingredients"
+                />
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/cartType"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
         >
 
-        <TextView
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/cartIngredients"
-            android:text="Ingredients"
+            android:id="@+id/removeBtn"
+            android:layout_weight="1"
+            android:layout_gravity="start"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:text="@string/remove"
+            android:textAllCaps="false"
+            android:layout_marginEnd="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="?android:attr/listDivider"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/quantityBtn"
+            android:layout_weight="1"
+            android:layout_gravity="end"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:text="@string/quantity"
+            android:textAllCaps="false"
+            android:layout_marginEnd="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
             />
 
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

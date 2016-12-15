@@ -107,6 +107,8 @@ public class ChooseActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose);
 
+        showProgressDialog();
+
         bookmarks = new ArrayList<>();
 
         mAuth = FirebaseAuth.getInstance();
@@ -202,6 +204,7 @@ public class ChooseActivity extends BaseActivity {
                                         restaurants.add(currentRes);
                                     }
                                     initializeAdapter();
+                                    hideProgressDialog();
                                 }
 
                                 @Override

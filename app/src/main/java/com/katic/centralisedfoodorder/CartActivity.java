@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,6 +40,7 @@ public class CartActivity extends BaseActivity {
 
     CartExpandableListAdapter adapter;
     ExpandableListView expListView;
+    TextView subtotalNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,8 @@ public class CartActivity extends BaseActivity {
         setContentView(R.layout.activity_cart);
 
         expListView = (ExpandableListView) findViewById(R.id.cartView);
+
+        subtotalNum = (TextView) findViewById(R.id.subtotalNumber);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("restaurants");
@@ -75,6 +79,7 @@ public class CartActivity extends BaseActivity {
                                 cart.add(item);
                             }
                             adapter.notifyDataSetChanged();
+                            setSubtotal();
                             for(int i=0; i<adapter.getGroupCount(); i++)
                                 expListView.expandGroup(i);
                         }
@@ -122,9 +127,36 @@ public class CartActivity extends BaseActivity {
 
     }
 
+    public void addToCart(String string, List<GroupItem> cart){
+        List<CartItem> cartItem = new ArrayList<>();
+        for(int i=0; i<cart.size(); i++) {
+            if (cart.get(i).title.equals(string)) {
+                for (int j = 0; j < cart.get(i).items.size(); j++) {
+                    ChildItem current = cart.get(i).items.get(j);
+                    CartItem currentItem = new CartItem(current.title, current.ingredients, current.price, current.type, current.quantity);
+                    cartItem.add(currentItem);
+                }
+                if (cart.get(i).items.size()==0) this.cart.remove(i);
+            }
+        }
+        mUserReference.child("cart").child(string).setValue(cartItem);
+        adapter.notifyDataSetChanged();
+        setSubtotal();
+    }
+
     private void initializeAdapter(){
         adapter = new CartExpandableListAdapter(this, cart);
         expListView.setAdapter(adapter);
+    }
+
+    private void setSubtotal(){
+        float subtotal=0;
+        for(int i=0; i<cart.size(); i++)
+            for (int j=0; j<cart.get(i).items.size(); j++) {
+                ChildItem current = cart.get(i).items.get(j);
+                subtotal += current.quantity*current.price;
+            }
+        subtotalNum.setText(String.format("%.2f", subtotal) + " kn");
     }
 
     @Override
@@ -132,6 +164,7 @@ public class CartActivity extends BaseActivity {
         super.onStart();
 
         initializeAdapter();
+        setSubtotal();
     }
 
     @Override
