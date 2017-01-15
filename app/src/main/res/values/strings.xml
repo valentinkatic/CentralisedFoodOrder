@@ -23,4 +23,16 @@
     <string name="yes">Da</string>
     <string name="no">Ne</string>
     <string name="subtotal">Suma košarice</string>
+    <string name="payment_method">Način narudžbe:</string>
+    <string name="onRecieve">Dostava</string>
+    <string name="pickup">Pick-up</string>
+    <string name="street">Ulica:</string>
+    <string name="streetNumber">Kućni broj:</string>
+    <string name="userLastName">Prezime:</string>
+    <string name="contactNumber">Kontakt broj:</string>
+    <string name="floor">Kat:</string>
+    <string name="apartmentNumber">Broj stana:</string>
+    <string name="necessarily">*</string>
+    <string name="choose">Odaberi</string>
+    <string name="required">Obavezno polje!</string>
 </resources>

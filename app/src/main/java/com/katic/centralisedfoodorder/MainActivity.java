@@ -183,7 +183,7 @@ public class MainActivity extends BaseActivity {
 
         String email = mEmail.getText().toString();
         if (TextUtils.isEmpty(email)) {
-            mEmail.setError("Required.");
+            mEmail.setError(getString(R.string.required));
             valid = false;
         } else {
             mEmail.setError(null);
@@ -191,7 +191,7 @@ public class MainActivity extends BaseActivity {
 
         String password = mPassword.getText().toString();
         if (TextUtils.isEmpty(password)) {
-            mPassword.setError("Required.");
+            mPassword.setError(getString(R.string.required));
             valid = false;
         } else {
             mPassword.setError(null);

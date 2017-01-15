@@ -81,7 +81,7 @@ public class RestaurantActivity extends BaseActivity {
         addressView = (TextView) findViewById(R.id.restaurantAddress);
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("restaurants").child(Long.toString(resID)).child("food_type");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("restaurants").child(Long.toString(resID)).child("food_list");
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override

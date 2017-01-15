@@ -24,7 +24,8 @@
             android:layout_alignEnd="@+id/passwordText"
             android:layout_alignLeft="@+id/passwordText"
             android:layout_alignStart="@+id/passwordText"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress|textAutoComplete"
+            />
 
         <EditText
             android:layout_width="wrap_content"
@@ -33,7 +34,8 @@
             android:ems="10"
             android:id="@+id/passwordText"
             android:layout_below="@+id/password"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            />
 
         <TextView
             android:layout_width="wrap_content"

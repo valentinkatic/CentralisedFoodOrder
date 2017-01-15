@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +51,14 @@ public class CartActivity extends BaseActivity {
         expListView = (ExpandableListView) findViewById(R.id.cartView);
 
         subtotalNum = (TextView) findViewById(R.id.subtotalNumber);
+        Button checkoutBtn = (Button) findViewById(R.id.checkoutBtn);
+        checkoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CartActivity.this, ConfirmActivity.class);
+                startActivity(intent);
+            }
+        });
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("restaurants");
@@ -178,8 +187,6 @@ public class CartActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.cart:
-                //Intent checkout = new Intent(RestaurantActivity.this, CartActivity.class);
-                //startActivity(checkout);
                 return true;
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();

@@ -61,8 +61,10 @@ public class ChooseActivity extends BaseActivity {
     private FirebaseUser user;
     private FirebaseStorage storageRef;
     private StorageReference pathReference;
+    private ValueEventListener itemsListener;
 
     public static List<Restaurant> restaurants;
+    public static List<Restaurant> restaurantsFilter = new ArrayList<>();
     public static List<Long> bookmarks;
     HorizontalListView listview;
     HorizontalListView listview2;
@@ -70,6 +72,9 @@ public class ChooseActivity extends BaseActivity {
     private RecyclerView rv2;
     private TabHost host;
     private ImageView image;
+
+    private ArrayList<Integer> items;
+    private boolean filtered;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -110,6 +115,7 @@ public class ChooseActivity extends BaseActivity {
         showProgressDialog();
 
         bookmarks = new ArrayList<>();
+        items = new ArrayList<>();
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference()
@@ -141,6 +147,18 @@ public class ChooseActivity extends BaseActivity {
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(items.size()!=0){
+                for (int j=items.size()-1; j>=0; j--){
+                    if(items.get(j)==i) {
+                        items.remove(j);
+                        break;
+                    } else {
+                        items.add(i);
+                        break;
+                    }
+                }} else
+                items.add(i);
+                if(items.size()==0) filtered=false; else filtered=true;
                 refresh(bookmarks);
             }
         });
@@ -149,6 +167,18 @@ public class ChooseActivity extends BaseActivity {
         listview2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(items.size()!=0){
+                    for (int j=items.size()-1; j>=0; j--){
+                        if(items.get(j)==i) {
+                            items.remove(j);
+                            break;
+                        } else {
+                            items.add(i);
+                            break;
+                        }
+                    }} else
+                    items.add(i);
+                if(items.size()==0) filtered=false; else filtered=true;
                 refresh(bookmarks);
             }
         });
@@ -253,25 +283,41 @@ public class ChooseActivity extends BaseActivity {
                 }
             }
         };
+
+
     }
 
     public void refresh(List<Long> bookmarks){
+        restaurantsFilter.clear();
+        for (int i=0; i<restaurants.size(); i++) {
+            int count=0;
+            for (int j = 0; j < restaurants.get(i).food_type.size(); j++){
+                for (int z = 0; z < items.size(); z++) {
+                    for (int y = 2; y < dataObjects.length; y += 3) {
+                        if (items.get(z) == Integer.parseInt(dataObjects[y])) {
+                            if (restaurants.get(i).food_type.get(j).equals(dataObjects[y-1]))
+                            count++;
+                        }
+                    }
+                }
+            }
+            if (count==items.size()) restaurantsFilter.add(restaurants.get(i));
+        }
         initializeAdapter();
         mUserReference.child("bookmarks").setValue(bookmarks);
     }
 
     private void initializeAdapter(){
-        rv.setAdapter(new RVAdapter(this, false));
-        rv2.setAdapter(new RVAdapter(this, true));
+        rv.setAdapter(new RVAdapter(this, false, filtered));
+        rv2.setAdapter(new RVAdapter(this, true, filtered));
     }
 
     private static String[] dataObjects = new String[]{
-            "Pizza", "pizza",
-            "Meksicka", "mexican",
-            "Talijanska", "italian",
-            "Kineska", "chinese",
-            "Indijska", "indian",
-            "#6", ""
+            "Pizza", "pizza", "0",
+            "Meksicka", "mexican", "1",
+            "Talijanska", "italian", "2",
+            "Kineska", "chinese", "3",
+            "Vegetarijanska", "vegetarian", "4"
     };
 
     private class HAdapter extends BaseAdapter {
@@ -281,7 +327,7 @@ public class ChooseActivity extends BaseActivity {
         }
 
         public int getCount() {
-            return dataObjects.length / 2;
+            return dataObjects.length / 3;
         }
 
         public Object getItem(int position) {
@@ -296,8 +342,8 @@ public class ChooseActivity extends BaseActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             View retval = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewitem, null);
             TextView title = (TextView) retval.findViewById(R.id.title);
-            title.setText(dataObjects[position * 2]);
-            String string = dataObjects[position * 2 + 1];
+            title.setText(dataObjects[position * 3]);
+            String string = dataObjects[position * 3 + 1];
             image = (ImageView) retval.findViewById(R.id.image);
             pathReference = storageRef.getReference("restaurants/"+string+".png");
             Glide.with(getApplicationContext())

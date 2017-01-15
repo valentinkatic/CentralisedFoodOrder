@@ -34,6 +34,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     private EditText mEmailField;
     private EditText mPasswordField;
     private EditText mAddressField;
+    private EditText mStreetNumberField;
     private EditText mPhoneNumField;
     private Button mSignUpButton;
 
@@ -52,6 +53,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         mEmailField = (EditText) findViewById(R.id.mailRegText);
         mPasswordField = (EditText) findViewById(R.id.passwordRegText);
         mAddressField = (EditText) findViewById(R.id.addressRegText);
+        mStreetNumberField = (EditText) findViewById(R.id.streetNumberRegText);
         mPhoneNumField = (EditText) findViewById(R.id.phoneNumberRegText);
         mSignUpButton = (Button) findViewById(R.id.registerButton);
 
@@ -80,8 +82,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-    private void writeNewUser(String email, String address, String phoneNum) {
-        User mUser = new User(email, address, phoneNum);
+    private void writeNewUser(String email, String address, String streetNumber, String phoneNum) {
+        User mUser = new User(email, address, streetNumber, phoneNum);
 
         mDatabase.child("users").child(user.getUid()).setValue(mUser);
     }
@@ -113,6 +115,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         final String email = mEmailField.getText().toString();
         String password = mPasswordField.getText().toString();
         final String address = mAddressField.getText().toString();
+        final String streetNumber = mStreetNumberField.getText().toString();
         final String phoneNum = mPhoneNumField.getText().toString();
 
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -131,11 +134,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                         if (task.isSuccessful()) {
                             Toast.makeText(RegisterActivity.this, R.string.auth_success,
                                     Toast.LENGTH_SHORT).show();
-                            writeNewUser(email, address, phoneNum);
-                            /*mDatabase.child("users").child(user.getUid()).child("email").setValue(email);
-                            mDatabase.child("users").child(user.getUid()).child("address").setValue(address);
-                            mDatabase.child("users").child(user.getUid()).child("phoneNum").setValue(phoneNum);
-                            mDatabase.child("users").child(user.getUid()).child("anon").setValue(false);*/
+                            writeNewUser(email, address, streetNumber, phoneNum);
                             Intent intent = new Intent(getApplicationContext(), ChooseActivity.class);
                             startActivity(intent);
                             finishAffinity();
@@ -148,31 +147,17 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     private boolean validateForm() {
         boolean result = true;
         if (TextUtils.isEmpty(mEmailField.getText().toString())) {
-            mEmailField.setError("Required");
+            mEmailField.setError(getString(R.string.required));
             result = false;
         } else {
             mEmailField.setError(null);
         }
 
         if (TextUtils.isEmpty(mPasswordField.getText().toString())) {
-            mPasswordField.setError("Required");
+            mPasswordField.setError(getString(R.string.required));
             result = false;
         } else {
             mPasswordField.setError(null);
-        }
-
-        if (TextUtils.isEmpty(mAddressField.getText().toString())) {
-            mAddressField.setError("Required");
-            result = false;
-        } else {
-            mAddressField.setError(null);
-        }
-
-        if (TextUtils.isEmpty(mPhoneNumField.getText().toString())) {
-            mPhoneNumField.setError("Required");
-            result = false;
-        } else {
-            mPhoneNumField.setError(null);
         }
 
         return result;

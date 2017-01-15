@@ -94,11 +94,13 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
     private List<Long> mBookmarks = ChooseActivity.bookmarks;
     private List<Integer> marks = new ArrayList<>();
     boolean bookmarks;
+    boolean filtered;
     Context context;
 
-    public RVAdapter(Context context, final boolean bookmarks) {
+    public RVAdapter(Context context, final boolean bookmarks, boolean filtered) {
         this.context = context;
         this.bookmarks = bookmarks;
+        if (filtered) res = ChooseActivity.restaurantsFilter;
     }
 
     @Override
@@ -113,7 +115,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
             }
             return bookmarked;
         } else
-        return res.size();
+            return res.size();
     }
 
     @Override
