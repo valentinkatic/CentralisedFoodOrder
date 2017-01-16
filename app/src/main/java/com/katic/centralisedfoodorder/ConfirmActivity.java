@@ -60,6 +60,7 @@ public class ConfirmActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm);
 
+        //Povezivanje s objektima na maketi
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
         delieveryRadio = (RadioButton) findViewById(R.id.delieveryRadio);
         final RelativeLayout delieveryLayout = (RelativeLayout) findViewById(R.id.delieveryLayout);
@@ -99,6 +100,7 @@ public class ConfirmActivity extends BaseActivity {
         Button addressAdd = (Button) findViewById(R.id.addressAdd);
         Button reset = (Button) findViewById(R.id.reset);
 
+        //Metode koje se izvršavaju prilikom klika na gumb
         addressChoose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -157,6 +159,7 @@ public class ConfirmActivity extends BaseActivity {
             }
         });
 
+        //Postavljanje naslova Action Baru
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Confirm");
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -165,6 +168,7 @@ public class ConfirmActivity extends BaseActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        //Povezivanje s Firebase bazom podataka
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -177,6 +181,7 @@ public class ConfirmActivity extends BaseActivity {
 
                     list.clear();
 
+                    //Učitavanje iz baze spremljene adrese korisnika
                     mUserReference.child("delieveryAddress").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -214,6 +219,7 @@ public class ConfirmActivity extends BaseActivity {
 
     }
 
+    //Metoda za dodavanje i brisanje adresa
     public void addAddress(List<DelieveryAddress> addresses, boolean add){
         mUserReference.child("delieveryAddress").setValue(addresses);
         if(add)
@@ -222,6 +228,7 @@ public class ConfirmActivity extends BaseActivity {
             Toast.makeText(this, "Uspješno ste obrisali adresu!", Toast.LENGTH_SHORT).show();
     }
 
+    //Metoda za postavljanje spremljenih podataka za adresu iz baze u tekstualne okvire
     public void setAddress(List<DelieveryAddress> addresses, int i){
         mLastName.setText(addresses.get(i).lastName);
         mStreet.setText(addresses.get(i).street);
@@ -235,6 +242,7 @@ public class ConfirmActivity extends BaseActivity {
         mUserReference.child("delieveryAddress").setValue(addresses);
     }
 
+
     private void choose(String lastName, String street, String streetNum, String phoneNum) {
         Log.d(TAG, "signIn:" + lastName);
         if (!validateForm()) {
@@ -245,6 +253,7 @@ public class ConfirmActivity extends BaseActivity {
         //ovdje upisati naredbu koja ce se odraditi nakon klika na tipku
     }
 
+    //Metoda kojom provjeravamo jesu li obavezna polja unešena
     private boolean validateForm() {
         boolean valid = true;
 

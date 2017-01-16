@@ -121,15 +121,111 @@ public class ChooseActivity extends BaseActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference()
                 .child("restaurants");
 
+        //Postavljanje naslova Action Baru
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Izbor restorana");
         actionBar.setElevation(4);
         actionBar.collapseActionView();
 
+        //Pozivanje metode za postavljanje tabova
+        setupTabs();
 
+        //Povezivanje s Firebase bazom podataka
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    mUserReference = FirebaseDatabase.getInstance().getReference()
+                            .child("users").child(user.getUid());
+                    storageRef = FirebaseStorage.getInstance();
+
+                    //Učitavanje iz baze ID-ova restorana koji su bookmark-ani
+                    mUserReference.child("bookmarks").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            bookmarks.clear();
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                Long item = (Long) snapshot.getValue();
+                                bookmarks.add(item);
+                            }
+
+                            //Učitavanje vrijednosti za sve restorane i postavljanje oznake ako su prethodno bookmark-ani
+                            mDatabase.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    restaurants.clear();
+                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                        Restaurant currentRes = snapshot.getValue(Restaurant.class);
+
+                                        for (int i = 0; i<bookmarks.size(); i++){
+                                            if (bookmarks.get(i)==currentRes.getRestaurantID())
+                                                currentRes.setBookmarked(true);
+                                        }
+
+                                        restaurants.add(currentRes);
+                                    }
+                                    initializeAdapter();
+                                    hideProgressDialog();
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    //Učitavanje stavki koje su u košarici i njihovo prebrojavanje za potrebe prikaza ikone košarice
+                    mUserReference.child("cart").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            cart.clear();
+                            count=0;
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                                GroupItem item = new GroupItem();
+                                item.title=snapshot.getKey();
+                                for (DataSnapshot snapshot1 : snapshot.getChildren()){
+                                    CartItem cart = snapshot1.getValue(CartItem.class);
+                                    ChildItem child = new ChildItem(cart);
+                                    item.items.add(child);
+                                    count++;
+                                }
+                                cart.add(item);
+                            }
+                            invalidateOptionsMenu();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+            }
+        };
+
+    }
+
+    //Metoda za postavljanje Tab-ova, povezivanje s maketom i definiranje funkcija prilikom klika na horizontalnu listu
+    private void setupTabs(){
         host = (TabHost)findViewById(tabHost);
         host.setup();
-
 
         //Tab 1
         TabHost.TabSpec spec = host.newTabSpec("TAB_1");
@@ -148,16 +244,16 @@ public class ChooseActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(items.size()!=0){
-                for (int j=items.size()-1; j>=0; j--){
-                    if(items.get(j)==i) {
-                        items.remove(j);
-                        break;
-                    } else {
-                        items.add(i);
-                        break;
-                    }
-                }} else
-                items.add(i);
+                    for (int j=items.size()-1; j>=0; j--){
+                        if(items.get(j)==i) {
+                            items.remove(j);
+                            break;
+                        } else {
+                            items.add(i);
+                            break;
+                        }
+                    }} else
+                    items.add(i);
                 if(items.size()==0) filtered=false; else filtered=true;
                 refresh(bookmarks);
             }
@@ -197,96 +293,9 @@ public class ChooseActivity extends BaseActivity {
                 refresh(bookmarks);
             }
         });
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                    mUserReference = FirebaseDatabase.getInstance().getReference()
-                            .child("users").child(user.getUid());
-                    storageRef = FirebaseStorage.getInstance();
-
-                    mUserReference.child("bookmarks").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-
-                            bookmarks.clear();
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                Long item = (Long) snapshot.getValue();
-                                bookmarks.add(item);
-                            }
-
-                            mDatabase.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    restaurants.clear();
-                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                        Restaurant currentRes = snapshot.getValue(Restaurant.class);
-
-                                        for (int i = 0; i<bookmarks.size(); i++){
-                                            if (bookmarks.get(i)==currentRes.getRestaurantID())
-                                                currentRes.setBookmarked(true);
-                                        }
-
-                                        restaurants.add(currentRes);
-                                    }
-                                    initializeAdapter();
-                                    hideProgressDialog();
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-
-                    mUserReference.child("cart").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            cart.clear();
-                            count=0;
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                                GroupItem item = new GroupItem();
-                                item.title=snapshot.getKey();
-                                for (DataSnapshot snapshot1 : snapshot.getChildren()){
-                                    CartItem cart = snapshot1.getValue(CartItem.class);
-                                    ChildItem child = new ChildItem(cart);
-                                    item.items.add(child);
-                                    count++;
-                                }
-                                cart.add(item);
-                            }
-                            invalidateOptionsMenu();
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-
-
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-            }
-        };
-
-
     }
 
+    //Metoda za osvježavanje prikaza restorana prilikom označavanja filtera ili bookmark zvijezdice
     public void refresh(List<Long> bookmarks){
         restaurantsFilter.clear();
         for (int i=0; i<restaurants.size(); i++) {
@@ -307,11 +316,13 @@ public class ChooseActivity extends BaseActivity {
         mUserReference.child("bookmarks").setValue(bookmarks);
     }
 
+    //Inicijalizacija adaptera za Recycle liste
     private void initializeAdapter(){
         rv.setAdapter(new RVAdapter(this, false, filtered));
         rv2.setAdapter(new RVAdapter(this, true, filtered));
     }
 
+    //Slog podataka znakovnog tipa
     private static String[] dataObjects = new String[]{
             "Pizza", "pizza", "0",
             "Meksicka", "mexican", "1",
@@ -320,6 +331,7 @@ public class ChooseActivity extends BaseActivity {
             "Vegetarijanska", "vegetarian", "4"
     };
 
+    //Definiranje horizontalnog adaptera
     private class HAdapter extends BaseAdapter {
 
         public HAdapter() {
@@ -338,7 +350,7 @@ public class ChooseActivity extends BaseActivity {
             return 0;
         }
 
-
+        //Povezivanje objekata u horizontalnoj listi s maketom te postavljanje teksta i slike na njima
         public View getView(int position, View convertView, ViewGroup parent) {
             View retval = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewitem, null);
             TextView title = (TextView) retval.findViewById(R.id.title);
@@ -409,6 +421,7 @@ public class ChooseActivity extends BaseActivity {
         }
     }
 
+    //Metoda koja mijenja ikonu košarici s obzirom na količinu stavki u njoj
     private Drawable buildCounterDrawable(int count, int backgroundImageId) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View view = inflater.inflate(R.layout.counter_menuitem_layout, null);

@@ -45,11 +45,23 @@ public class MainActivity extends BaseActivity {
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_main);
 
+        //Povezivanje s objektima na maketi
         mEmail = (EditText) findViewById(R.id.mailText);
         mPassword = (EditText) findViewById(R.id.passwordText);
         mEmail.setInputType(InputType.TYPE_CLASS_TEXT);
 
         registrationButton = (Button) findViewById(R.id.btnRegistration);
+        noLoginButton = (Button) findViewById(R.id.btnNoLogin);
+        loginButton = (Button) findViewById(R.id.btnLogin);
+
+        //Definiranje funkcija koje se izvršavaju pritiskanjem na gumbe
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signIn(mEmail.getText().toString(), mPassword.getText().toString());
+            }
+        });
+
         registrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,7 +70,6 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        noLoginButton = (Button) findViewById(R.id.btnNoLogin);
         noLoginButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -66,14 +77,7 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        loginButton = (Button) findViewById(R.id.btnLogin);
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signIn(mEmail.getText().toString(), mPassword.getText().toString());
-            }
-        });
-
+        //Povezivanje s Firebase bazom podataka
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -98,6 +102,7 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    //Metoda za prijavu s ulaznim parametrima
     private void signIn(String email, String password) {
         Log.d(TAG, "signIn:" + email);
         if (!validateForm()) {
@@ -106,7 +111,7 @@ public class MainActivity extends BaseActivity {
 
         showProgressDialog();
 
-// [START sign_in_with_email]
+        //Prijava pomoću e-maila i lozinke
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -137,6 +142,7 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    //Metoda za prijavu bez ulaznih parametra (neregistrirani korisnik)
     private void signIn() {
         Log.d(TAG, "signIn Anonymously");
 
@@ -178,6 +184,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    //Metoda kojom provjeravamo jesu li obavezna polja unešena
     private boolean validateForm() {
         boolean valid = true;
 

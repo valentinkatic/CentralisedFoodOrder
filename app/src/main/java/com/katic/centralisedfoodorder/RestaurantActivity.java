@@ -83,6 +83,7 @@ public class RestaurantActivity extends BaseActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("restaurants").child(Long.toString(resID)).child("food_list");
 
+        //Povezivanje s Firebase bazom podataka
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -93,6 +94,7 @@ public class RestaurantActivity extends BaseActivity {
                     mUserReference = FirebaseDatabase.getInstance().getReference()
                             .child("users").child(user.getUid());
 
+                    //Postavljanje slike restorana
                     storageRef = FirebaseStorage.getInstance();
                     pathReference = storageRef.
                             getReference("restaurants/"+current.restaurantID+"/"+current.name+"_large.png");
@@ -101,6 +103,7 @@ public class RestaurantActivity extends BaseActivity {
                             .load(pathReference)
                             .into(imgView);
 
+                    ////Učitavanje stavki koje su u košarici i njihovo prebrojavanje za potrebe prikaza ikone košarice
                     mUserReference.child("cart").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -143,12 +146,14 @@ public class RestaurantActivity extends BaseActivity {
             }
         }
 
+        //Postavljanje naslova Action Baru
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(title);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setElevation(4);
         actionBar.collapseActionView();
 
+        //Učitavanje iz baze jelovnik koji restoran nudi
         itemsListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -177,6 +182,7 @@ public class RestaurantActivity extends BaseActivity {
 
     }
 
+    //Metoda za ažuriranje stavki u košarici
     public void addToCart(String string, List<GroupItem> cart){
         List<CartItem> cartItem = new ArrayList<>();
         count=0;
@@ -277,6 +283,7 @@ public class RestaurantActivity extends BaseActivity {
         }
     }
 
+    //Metoda koja mijenja ikonu košarici s obzirom na količinu stavki u njoj
     private Drawable buildCounterDrawable(int count, int backgroundImageId) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View view = inflater.inflate(R.layout.counter_menuitem_layout, null);

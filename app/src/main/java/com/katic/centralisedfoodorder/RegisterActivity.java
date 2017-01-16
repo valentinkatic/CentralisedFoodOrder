@@ -45,6 +45,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
+        //Postavljanje naslova Action Baru
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(R.string.register);
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -64,6 +65,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
         mSignUpButton.setOnClickListener(this);
 
+        //Povezivanje s Firebase bazom podataka
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -85,6 +87,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     }
 
+    //Metoda za unos novog korisnika
     private void writeNewUser(String email, String lastName, String address, String streetNumber, String city, String phoneNum) {
         User mUser = new User(email, lastName, address, streetNumber, city, phoneNum);
 
@@ -123,6 +126,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         final String city = mCityField.getText().toString();
         final String phoneNum = mPhoneNumField.getText().toString();
 
+        //Metoda za kreiranje korisnika s e-mailom i lozinkom
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -149,6 +153,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     }
 
+    //Metoda kojom provjeravamo jesu li obavezna polja unešena
     private boolean validateForm() {
         boolean result = true;
         if (TextUtils.isEmpty(mEmailField.getText().toString())) {

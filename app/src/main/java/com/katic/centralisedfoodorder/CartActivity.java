@@ -48,6 +48,7 @@ public class CartActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
 
+        //Povezivanje s objektima na maketi
         expListView = (ExpandableListView) findViewById(R.id.cartView);
 
         subtotalNum = (TextView) findViewById(R.id.subtotalNumber);
@@ -63,6 +64,7 @@ public class CartActivity extends BaseActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("restaurants");
 
+        //Povezivanje s Firebase bazom podataka
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -73,6 +75,7 @@ public class CartActivity extends BaseActivity {
                     mUserReference = FirebaseDatabase.getInstance().getReference()
                             .child("users").child(user.getUid());
 
+                    //Učitavanje stavki iz baze koje su unešene u košaricu
                     mUserReference.child("cart").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -109,16 +112,12 @@ public class CartActivity extends BaseActivity {
 
         mAuth.addAuthStateListener(mAuthListener);
 
+        //Postavljanje naslova Action Baru
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Cart");
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setElevation(4);
         actionBar.collapseActionView();
-
-
-
-
-        //items = RestaurantActivity.items;
 
         expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
@@ -144,6 +143,7 @@ public class CartActivity extends BaseActivity {
         super.onResume();
     }
 
+    //Metoda kojom ažuriramo stavke u košarici
     public void addToCart(String string, List<GroupItem> cart){
         List<CartItem> cartItem = new ArrayList<>();
         for(int i=0; i<cart.size(); i++) {
@@ -161,11 +161,13 @@ public class CartActivity extends BaseActivity {
         setSubtotal();
     }
 
+    //Inicijalizacija adaptera
     private void initializeAdapter(){
         adapter = new CartExpandableListAdapter(this, cart);
         expListView.setAdapter(adapter);
     }
 
+    //Metoda za računanje ukupnog iznosa cijena
     private void setSubtotal(){
         float subtotal=0;
         for(int i=0; i<cart.size(); i++)
