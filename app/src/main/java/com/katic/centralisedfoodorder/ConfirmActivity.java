@@ -187,6 +187,7 @@ public class ConfirmActivity extends BaseActivity {
                                     mLastName.setText(da.lastName);
                                     mStreet.setText(da.street);
                                     mStreetNum.setText(da.streetNumber);
+                                    mCity.setText(da.city);
                                     mPhoneNum.setText(da.phoneNumber);
                                     mApartmentNum.setText(da.apartmentNumber);
                                     mFloor.setText(da.floor);
@@ -240,6 +241,7 @@ public class ConfirmActivity extends BaseActivity {
             return;
         }
 
+        Toast.makeText(ConfirmActivity.this, "U izradi", Toast.LENGTH_SHORT).show();
         //ovdje upisati naredbu koja ce se odraditi nakon klika na tipku
     }
 
