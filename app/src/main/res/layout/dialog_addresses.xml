@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="60dp"
+    android:layout_marginStart="60dp"
+    android:layout_marginRight="60dp"
+    android:layout_marginEnd="60dp"
+    android:background="@drawable/border_shadow"
+    android:id="@+id/addressDialog"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lastNameDialog"
+        android:text="Prezime"
+        android:textSize="20sp"
+        android:padding="5dp"
+        android:paddingLeft="10dp"
+        android:paddingStart="10dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/streetDialog"
+        android:text="Ulica"
+        android:layout_below="@+id/lastNameDialog"
+        android:textSize="18sp"
+        android:paddingLeft="15dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="5dp"
+        android:paddingRight="5dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/streetNumberDialog"
+        android:text="Kućni broj"
+        android:layout_below="@id/lastNameDialog"
+        android:layout_toRightOf="@id/streetDialog"
+        android:textSize="18sp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cityDialog"
+        android:text="Grad"
+        android:layout_below="@+id/streetDialog"
+        android:textSize="18sp"
+        android:paddingLeft="15dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="5dp"
+        android:paddingRight="5dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/phoneNumberDialog"
+        android:text="Broj mobitela"
+        android:layout_below="@id/cityDialog"
+        android:textSize="18sp"
+        android:paddingLeft="15dp"
+        android:paddingStart="15dp"
+        android:paddingBottom="5dp"
+        />
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/removeDialog"
+        android:src="@drawable/remove"
+        android:padding="5dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"/>
+
+</RelativeLayout>

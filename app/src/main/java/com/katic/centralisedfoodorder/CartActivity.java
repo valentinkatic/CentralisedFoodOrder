@@ -136,6 +136,14 @@ public class CartActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        for(int i=0; i<cart.size(); i++)
+            if(cart.get(i).clickedGroup)
+                expListView.expandGroup(i);
+        super.onResume();
+    }
+
     public void addToCart(String string, List<GroupItem> cart){
         List<CartItem> cartItem = new ArrayList<>();
         for(int i=0; i<cart.size(); i++) {

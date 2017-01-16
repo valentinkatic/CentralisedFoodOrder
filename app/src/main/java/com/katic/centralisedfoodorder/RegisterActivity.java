@@ -33,8 +33,10 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     private EditText mEmailField;
     private EditText mPasswordField;
+    private EditText mLastNameField;
     private EditText mAddressField;
     private EditText mStreetNumberField;
+    private EditText mCityField;
     private EditText mPhoneNumField;
     private Button mSignUpButton;
 
@@ -52,6 +54,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
         mEmailField = (EditText) findViewById(R.id.mailRegText);
         mPasswordField = (EditText) findViewById(R.id.passwordRegText);
+        mLastNameField = (EditText) findViewById(R.id.lastNameRegText);
         mAddressField = (EditText) findViewById(R.id.addressRegText);
         mStreetNumberField = (EditText) findViewById(R.id.streetNumberRegText);
         mPhoneNumField = (EditText) findViewById(R.id.phoneNumberRegText);
@@ -82,8 +85,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-    private void writeNewUser(String email, String address, String streetNumber, String phoneNum) {
-        User mUser = new User(email, address, streetNumber, phoneNum);
+    private void writeNewUser(String email, String lastName, String address, String streetNumber, String city, String phoneNum) {
+        User mUser = new User(email, lastName, address, streetNumber, city, phoneNum);
 
         mDatabase.child("users").child(user.getUid()).setValue(mUser);
     }
@@ -114,8 +117,10 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         showProgressDialog();
         final String email = mEmailField.getText().toString();
         String password = mPasswordField.getText().toString();
+        final String lastName = mLastNameField.getText().toString();
         final String address = mAddressField.getText().toString();
         final String streetNumber = mStreetNumberField.getText().toString();
+        final String city = mCityField.getText().toString();
         final String phoneNum = mPhoneNumField.getText().toString();
 
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -134,7 +139,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                         if (task.isSuccessful()) {
                             Toast.makeText(RegisterActivity.this, R.string.auth_success,
                                     Toast.LENGTH_SHORT).show();
-                            writeNewUser(email, address, streetNumber, phoneNum);
+                            writeNewUser(email, lastName, address, streetNumber, city, phoneNum);
                             Intent intent = new Intent(getApplicationContext(), ChooseActivity.class);
                             startActivity(intent);
                             finishAffinity();

@@ -5,16 +5,12 @@ import java.util.ArrayList;
 public class User {
 
     public String email;
-    public String address;
-    public String streetNumber;
-    public String phoneNumber;
+    public ArrayList<DelieveryAddress> delieveryAddress = new ArrayList<>();
     public ArrayList<Long> bookmarks;
 
-    public User(String email, String address, String streetNumber, String phoneNumber) {
+    public User(String email, String lastName, String street, String streetNumber, String city, String phoneNumber) {
         this.email = email;
-        this.address = address;
-        this.streetNumber = streetNumber;
-        this.phoneNumber = phoneNumber;
+        this.delieveryAddress.add(new DelieveryAddress(lastName, street, streetNumber, city, phoneNumber));
     }
 
     public User() {
@@ -23,18 +19,5 @@ public class User {
     public String getEmail() {
         return email;
     }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public String getStreetNumber() {
-        return streetNumber;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
 
 }

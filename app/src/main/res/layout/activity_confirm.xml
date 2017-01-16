@@ -77,9 +77,18 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@string/city"
+                android:id="@+id/cityText"
+                android:layout_below="@id/streetNumberText"
+                android:layout_marginTop="10dp"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/floor"
                 android:id="@+id/floorText"
-                android:layout_below="@id/streetNumberText"
+                android:layout_below="@id/cityText"
                 android:layout_marginTop="10dp"
                 android:textSize="20sp"/>
 
@@ -100,6 +109,39 @@
                 android:layout_below="@id/apartmentNumberText"
                 android:layout_marginTop="10dp"
                 android:textSize="20sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/phoneNumberText"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/addressChoose"
+                    android:text="@string/choose_address"
+                    android:layout_weight="1"
+                     />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/addressAdd"
+                    android:text="@string/save"
+                    android:layout_weight="1"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/reset"
+                    android:text="@string/reset"
+                    android:layout_weight="1"
+                    />
+
+            </LinearLayout>
 
             <EditText
                 android:layout_width="wrap_content"
@@ -141,6 +183,20 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:id="@+id/streetNumberEdit"
+                android:background="@drawable/edittext_bg"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="7"
+                android:textSize="20sp"
+                android:inputType="text"
+                android:layout_toRightOf="@+id/cityText"
+                android:layout_toEndOf="@+id/cityText"
+                android:layout_alignBaseline="@id/cityText"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/cityEdit"
                 android:background="@drawable/edittext_bg"/>
 
             <EditText

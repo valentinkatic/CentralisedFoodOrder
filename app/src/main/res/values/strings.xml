@@ -35,4 +35,8 @@
     <string name="necessarily">*</string>
     <string name="choose">Odaberi</string>
     <string name="required">Obavezno polje!</string>
+    <string name="choose_address">Izbor adrese</string>
+    <string name="save">Spremi</string>
+    <string name="reset">Reset</string>
+    <string name="city">Grad/naselje:</string>
 </resources>
