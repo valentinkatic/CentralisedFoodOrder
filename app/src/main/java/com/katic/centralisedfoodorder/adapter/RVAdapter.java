@@ -78,9 +78,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
         }
 
         private void checkID(){
-            pos = res.get(getAdapterPosition()).getRestaurantID();
+            pos = res.get(getAdapterPosition()).restaurantID;
             if (bookmarks) {
-                pos = res.get(marks.get(getAdapterPosition())).getRestaurantID();
+                pos = res.get(marks.get(getAdapterPosition())).restaurantID;
             }
         }
     }
@@ -94,7 +94,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
     private List<Long> mBookmarks = ChooseActivity.bookmarks;
     private List<Integer> marks = new ArrayList<>();
     boolean bookmarks;
-    boolean filtered;
     Context context;
 
     public RVAdapter(Context context, final boolean bookmarks, boolean filtered) {
@@ -108,7 +107,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
         if (bookmarks) {
             int bookmarked = 0;
             for (int i = 0; i < res.size() ; i++) {
-                if (res.get(i).isBookmarked()) {
+                if (res.get(i).bookmarked) {
                     bookmarked++;
                     marks.add(i);
                 }
@@ -137,7 +136,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
                 .using(new FirebaseImageLoader())
                 .load(pathReference)
                 .into(restaurantViewHolder.restaurantPhoto);
-            if (!current.isBookmarked()) {
+            if (!current.bookmarked) {
                 restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_off);
             } else {
                 restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_on);
@@ -147,13 +146,13 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
                 public void onClick(View view) {
                     int pos = restaurantViewHolder.getAdapterPosition();
                     if (bookmarks) {pos = marks.get(pos);}
-                    if (!res.get(pos).isBookmarked()) {
+                    if (!res.get(pos).bookmarked) {
                         restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_on);
-                        res.get(pos).setBookmarked(true);
+                        res.get(pos).bookmarked=true;
                         mBookmarks.add(res.get(pos).restaurantID);
                     } else {
                         restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_off);
-                        res.get(pos).setBookmarked(false);
+                        res.get(pos).bookmarked=false;
                         for(int i=0; i<mBookmarks.size(); i++){
                             if(mBookmarks.get(i)==res.get(pos).restaurantID)mBookmarks.remove(i);
                         }

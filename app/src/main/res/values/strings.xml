@@ -39,4 +39,5 @@
     <string name="save">Spremi</string>
     <string name="reset">Reset</string>
     <string name="city">Grad/naselje:</string>
+    <string name="instructions">Želite li upute do lokacije/a?</string>
 </resources>

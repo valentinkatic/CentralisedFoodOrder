@@ -80,6 +80,9 @@ public class ChooseActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.mymenu, menu);
         MenuItem menuItem = menu.findItem(R.id.cart);
+        if(user.isAnonymous()) {
+            menuItem.setVisible(false);
+        } else
         if(count!=0)
             menuItem.setIcon(buildCounterDrawable(count, R.drawable.ic_full_cart));
         else menuItem.setIcon(R.drawable.empty_cart);
@@ -162,8 +165,8 @@ public class ChooseActivity extends BaseActivity {
                                         Restaurant currentRes = snapshot.getValue(Restaurant.class);
 
                                         for (int i = 0; i<bookmarks.size(); i++){
-                                            if (bookmarks.get(i)==currentRes.getRestaurantID())
-                                                currentRes.setBookmarked(true);
+                                            if (bookmarks.get(i)==currentRes.restaurantID)
+                                                currentRes.bookmarked=true;
                                         }
 
                                         restaurants.add(currentRes);

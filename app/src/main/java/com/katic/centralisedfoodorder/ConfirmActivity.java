@@ -50,6 +50,7 @@ public class ConfirmActivity extends BaseActivity {
     private EditText mPhoneNum;
     private EditText mFloor;
     private EditText mApartmentNum;
+    private EditText mLastNamePickup;
 
     private ArrayList<DelieveryAddress> list = new ArrayList<>();
     private Dialog chooseDialog;
@@ -71,9 +72,15 @@ public class ConfirmActivity extends BaseActivity {
                 if (i == R.id.delieveryRadio){
                     delieveryLayout.setVisibility(View.VISIBLE);
                     pickupLayout.setVisibility(View.GONE);
+                    mLastNamePickup.setError(null);
                 } else if (i == R.id.pickupRadio) {
                     delieveryLayout.setVisibility(View.GONE);
                     pickupLayout.setVisibility(View.VISIBLE);
+                    mLastName.setError(null);
+                    mStreet.setError(null);
+                    mStreetNum.setError(null);
+                    mCity.setError(null);
+                    mPhoneNum.setError(null);
                 }
             }
         });
@@ -85,22 +92,30 @@ public class ConfirmActivity extends BaseActivity {
         mPhoneNum = (EditText) findViewById(R.id.phoneNumberEdit);
         mFloor = (EditText) findViewById(R.id.floorEdit);
         mApartmentNum = (EditText) findViewById(R.id.apartmentNumberEdit);
+        mLastNamePickup = (EditText) findViewById(R.id.lastNamePickupEdit);
 
         Button confirmBtn = (Button) findViewById(R.id.confirmBtn);
-        confirmBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (delieveryRadio.isChecked())
-                choose(mLastName.getText().toString(), mStreet.getText().toString(), mStreetNum.getText().toString(), mPhoneNum.getText().toString());
-                else Toast.makeText(ConfirmActivity.this, "U izradi", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         Button addressChoose = (Button) findViewById(R.id.addressChoose);
         Button addressAdd = (Button) findViewById(R.id.addressAdd);
         Button reset = (Button) findViewById(R.id.reset);
 
         //Metode koje se izvršavaju prilikom klika na gumb
+        confirmBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "confirm:" + mLastName.getText().toString());
+                if (delieveryRadio.isChecked()){
+                    if (!validateForm(true)) return;
+                    Toast.makeText(ConfirmActivity.this, "U izradi", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    if (!validateForm(false)) return;
+                    setLastNamePickup(mLastNamePickup.getText().toString());
+                    Toast.makeText(ConfirmActivity.this, "U izradi", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         addressChoose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -123,7 +138,7 @@ public class ConfirmActivity extends BaseActivity {
         addressAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!validateForm()) {
+                if (!validateForm(true)) {
                     return;
                 } else
                 {
@@ -207,6 +222,19 @@ public class ConfirmActivity extends BaseActivity {
                         }
                     });
 
+                    mUserReference.child("lastNamePickup").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.getValue()!=null)
+                            mLastNamePickup.setText(dataSnapshot.getValue().toString());
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
 
                 } else {
                     // User is signed out
@@ -219,6 +247,8 @@ public class ConfirmActivity extends BaseActivity {
 
     }
 
+
+
     //Metoda za dodavanje i brisanje adresa
     public void addAddress(List<DelieveryAddress> addresses, boolean add){
         mUserReference.child("delieveryAddress").setValue(addresses);
@@ -226,6 +256,11 @@ public class ConfirmActivity extends BaseActivity {
         Toast.makeText(this, "Uspješno ste spremili adresu!", Toast.LENGTH_SHORT).show();
         else
             Toast.makeText(this, "Uspješno ste obrisali adresu!", Toast.LENGTH_SHORT).show();
+    }
+
+    //Metoda koja sprema upisano prezime prilikom pickup narudžbe
+    private void setLastNamePickup(String string){
+        mUserReference.child("lastNamePickup").setValue(string);
     }
 
     //Metoda za postavljanje spremljenih podataka za adresu iz baze u tekstualne okvire
@@ -243,58 +278,58 @@ public class ConfirmActivity extends BaseActivity {
     }
 
 
-    private void choose(String lastName, String street, String streetNum, String phoneNum) {
-        Log.d(TAG, "signIn:" + lastName);
-        if (!validateForm()) {
-            return;
-        }
-
-        Toast.makeText(ConfirmActivity.this, "U izradi", Toast.LENGTH_SHORT).show();
-        //ovdje upisati naredbu koja ce se odraditi nakon klika na tipku
-    }
-
     //Metoda kojom provjeravamo jesu li obavezna polja unešena
-    private boolean validateForm() {
+    private boolean validateForm(boolean choice) {
         boolean valid = true;
 
-        String lastName = mLastName.getText().toString();
-        if (TextUtils.isEmpty(lastName)) {
-            mLastName.setError(getString(R.string.required));
-            valid = false;
-        } else {
-            mLastName.setError(null);
-        }
+        if (choice) {
+            String lastName = mLastName.getText().toString();
+            if (TextUtils.isEmpty(lastName)) {
+                mLastName.setError(getString(R.string.required));
+                valid = false;
+            } else {
+                mLastName.setError(null);
+            }
 
-        String street = mStreet.getText().toString();
-        if (TextUtils.isEmpty(street)) {
-            mStreet.setError(getString(R.string.required));
-            valid = false;
-        } else {
-            mStreet.setError(null);
-        }
+            String street = mStreet.getText().toString();
+            if (TextUtils.isEmpty(street)) {
+                mStreet.setError(getString(R.string.required));
+                valid = false;
+            } else {
+                mStreet.setError(null);
+            }
 
-        String streetNum = mStreetNum.getText().toString();
-        if (TextUtils.isEmpty(streetNum)) {
-            mStreetNum.setError(getString(R.string.required));
-            valid = false;
-        } else {
-            mStreetNum.setError(null);
-        }
+            String streetNum = mStreetNum.getText().toString();
+            if (TextUtils.isEmpty(streetNum)) {
+                mStreetNum.setError(getString(R.string.required));
+                valid = false;
+            } else {
+                mStreetNum.setError(null);
+            }
 
-        String city = mCity.getText().toString();
-        if (TextUtils.isEmpty(city)) {
-            mCity.setError(getString(R.string.required));
-            valid = false;
-        } else {
-            mCity.setError(null);
-        }
+            String city = mCity.getText().toString();
+            if (TextUtils.isEmpty(city)) {
+                mCity.setError(getString(R.string.required));
+                valid = false;
+            } else {
+                mCity.setError(null);
+            }
 
-        String phoneNum = mPhoneNum.getText().toString();
-        if (TextUtils.isEmpty(phoneNum)) {
-            mPhoneNum.setError(getString(R.string.required));
-            valid = false;
+            String phoneNum = mPhoneNum.getText().toString();
+            if (TextUtils.isEmpty(phoneNum)) {
+                mPhoneNum.setError(getString(R.string.required));
+                valid = false;
+            } else {
+                mPhoneNum.setError(null);
+            }
         } else {
-            mPhoneNum.setError(null);
+            String lastName = mLastNamePickup.getText().toString();
+            if (TextUtils.isEmpty(lastName)) {
+                mLastNamePickup.setError(getString(R.string.required));
+                valid = false;
+            } else {
+                mLastNamePickup.setError(null);
+            }
         }
 
         return valid;
@@ -302,9 +337,7 @@ public class ConfirmActivity extends BaseActivity {
 
     @Override
     protected void onStart() {
-
         super.onStart();
-
     }
 
     @Override

@@ -1,13 +1,16 @@
 package com.katic.centralisedfoodorder;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -138,11 +141,11 @@ public class RestaurantActivity extends BaseActivity {
         };
 
         for (int i=0; i<res.size(); i++){
-            if (res.get(i).getRestaurantID()==resID) {
+            if (res.get(i).restaurantID==resID) {
                 current=res.get(i);
-                title=current.getName();
+                title=current.name;
                 titleView.setText(title);
-                addressView.setText(current.getAddress());
+                addressView.setText(current.address);
             }
         }
 
@@ -182,6 +185,10 @@ public class RestaurantActivity extends BaseActivity {
 
     }
 
+    public boolean checkAnon(){
+        if(user.isAnonymous()) return true; else return false;
+    }
+
     //Metoda za ažuriranje stavki u košarici
     public void addToCart(String string, List<GroupItem> cart){
         List<CartItem> cartItem = new ArrayList<>();
@@ -198,6 +205,18 @@ public class RestaurantActivity extends BaseActivity {
         }
         mUserReference.child("cart").child(string).setValue(cartItem);
         invalidateOptionsMenu();
+    }
+
+    //Metoda za pozivanje restorana
+    private void makeCall(){
+        Intent callIntent = new Intent(Intent.ACTION_DIAL);
+        String phone = "tel:" + current.phone;
+        callIntent.setData(Uri.parse(phone));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            return;
+        }
+        startActivity(Intent.createChooser(callIntent, "Izaberite klijenta :"));
     }
 
     @Override
@@ -255,6 +274,9 @@ public class RestaurantActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.mymenu, menu);
         MenuItem menuItem = menu.findItem(R.id.cart);
+        if(user.isAnonymous()){
+            menuItem.setIcon(R.drawable.phone);
+        } else
         if(count!=0)
         menuItem.setIcon(buildCounterDrawable(count, R.drawable.ic_full_cart));
         else menuItem.setIcon(R.drawable.empty_cart);
@@ -265,6 +287,9 @@ public class RestaurantActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.cart:
+                if(user.isAnonymous()){
+                    makeCall();
+                } else
                 if (count!=0) {
                     Intent checkout = new Intent(RestaurantActivity.this, CartActivity.class);
                     startActivity(checkout);

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.katic.centralisedfoodorder.R;
 import com.katic.centralisedfoodorder.RestaurantActivity;
@@ -25,7 +26,7 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
     private List<GroupItem> items;
     private String resturantName;
     private List<GroupItem> cart = RestaurantActivity.cart;
-    Context context;
+    private Context context;
 
     public AnimatedListAdapter(Context context, String resturantName) {
         inflater = LayoutInflater.from(context);
@@ -58,6 +59,7 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
             holder.price = (TextView) convertView.findViewById(R.id.textHint);
             holder.ingredients = (TextView) convertView.findViewById(R.id.invisible);
             holder.addToCart = (ImageView) convertView.findViewById(R.id.addToCart) ;
+            if (((RestaurantActivity) context).checkAnon()) holder.addToCart.setVisibility(View.GONE);
             holder.ingredients.setVisibility(View.GONE);
             convertView.setTag(holder);
         } else {
