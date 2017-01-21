@@ -1,10 +1,14 @@
 package com.katic.centralisedfoodorder;
 
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -27,7 +31,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.katic.centralisedfoodorder.adapter.ChooseDelieveryAddressAdapter;
+import com.katic.centralisedfoodorder.classes.CartItem;
+import com.katic.centralisedfoodorder.classes.ChildItem;
 import com.katic.centralisedfoodorder.classes.DelieveryAddress;
+import com.katic.centralisedfoodorder.classes.GroupItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +50,7 @@ public class ConfirmActivity extends BaseActivity {
 
     private RadioGroup radioGroup;
     private RadioButton delieveryRadio;
+    private RadioButton pickupRadio;
     private EditText mLastName;
     private EditText mStreet;
     private EditText mStreetNum;
@@ -53,6 +61,8 @@ public class ConfirmActivity extends BaseActivity {
     private EditText mLastNamePickup;
 
     private ArrayList<DelieveryAddress> list = new ArrayList<>();
+    private List<GroupItem> cart = new ArrayList<>();
+    private List<GroupItem> orderHistory = new ArrayList<>();
     private Dialog chooseDialog;
 
     @Override
@@ -64,6 +74,7 @@ public class ConfirmActivity extends BaseActivity {
         //Povezivanje s objektima na maketi
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
         delieveryRadio = (RadioButton) findViewById(R.id.delieveryRadio);
+        pickupRadio = (RadioButton) findViewById(R.id.pickupRadio);
         final RelativeLayout delieveryLayout = (RelativeLayout) findViewById(R.id.delieveryLayout);
         final RelativeLayout pickupLayout = (RelativeLayout) findViewById(R.id.pickupLayout);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -106,12 +117,22 @@ public class ConfirmActivity extends BaseActivity {
                 Log.d(TAG, "confirm:" + mLastName.getText().toString());
                 if (delieveryRadio.isChecked()){
                     if (!validateForm(true)) return;
-                    Toast.makeText(ConfirmActivity.this, "U izradi", Toast.LENGTH_SHORT).show();
+                    notification();
+                    removeCart();
+                    Intent intent = new Intent(ConfirmActivity.this, OrderHistoryActivity.class);
+                    intent.putExtra(TAG, true);
+                    startActivity(intent);
+                    finishAffinity();
                 }
-                else {
+                else if (pickupRadio.isChecked()) {
                     if (!validateForm(false)) return;
                     setLastNamePickup(mLastNamePickup.getText().toString());
-                    Toast.makeText(ConfirmActivity.this, "U izradi", Toast.LENGTH_SHORT).show();
+                    notification();
+                    removeCart();
+                    Intent intent = new Intent(ConfirmActivity.this, OrderHistoryActivity.class);
+                    intent.putExtra(TAG, true);
+                    startActivity(intent);
+                    finishAffinity();
                 }
             }
         });
@@ -222,6 +243,46 @@ public class ConfirmActivity extends BaseActivity {
                         }
                     });
 
+                    //Učitavanje stavki iz baze koje su unešene u košaricu
+                    mUserReference.child("cart").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            cart.clear();
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                                GroupItem item = new GroupItem();
+                                item.title=snapshot.getKey();
+                                for (DataSnapshot snapshot1 : snapshot.getChildren()){
+                                    CartItem cart = snapshot1.getValue(CartItem.class);
+                                    ChildItem child = new ChildItem(cart);
+                                    item.items.add(child);
+                                }
+                                cart.add(item);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    orderHistory.clear();
+                    mUserReference.child("orderHistory").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                                GroupItem item = snapshot.getValue(GroupItem.class);
+                                orderHistory.add(item);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    //Učitavanje iz baze prezimena koji je spremljen pri Pickup metodi dostave
                     mUserReference.child("lastNamePickup").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -247,7 +308,23 @@ public class ConfirmActivity extends BaseActivity {
 
     }
 
+    private void removeCart(){
+        for(int i=0; i<orderHistory.size(); i++)
+            cart.add(orderHistory.get(i));
+        mUserReference.child("orderHistory").setValue(cart);
+        mUserReference.child("cart").setValue(null);
+    }
 
+    private void notification(){
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(ConfirmActivity.this)
+                .setSmallIcon(R.drawable.ic_checkout)
+                .setContentTitle("Centralised Food Order")
+                .setContentText("Vaša narudžba je zaprimljena!")
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(0, mBuilder.build());
+    }
 
     //Metoda za dodavanje i brisanje adresa
     public void addAddress(List<DelieveryAddress> addresses, boolean add){
@@ -344,6 +421,7 @@ public class ConfirmActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.mymenu, menu);
         menu.getItem(0).setVisible(false);
+        menu.getItem(1).setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -351,6 +429,10 @@ public class ConfirmActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.cart:
+                return true;
+            case R.id.orderHistory:
+                Intent historyIntent = new Intent(ConfirmActivity.this, OrderHistoryActivity.class);
+                startActivity(historyIntent);
                 return true;
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();

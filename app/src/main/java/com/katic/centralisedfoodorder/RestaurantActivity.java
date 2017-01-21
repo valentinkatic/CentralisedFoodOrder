@@ -63,6 +63,7 @@ public class RestaurantActivity extends BaseActivity {
     private Restaurant current;
 
     private Long resID;
+    private boolean anon;
     private String title="";
 
     private ImageView imgView;
@@ -78,6 +79,7 @@ public class RestaurantActivity extends BaseActivity {
         setContentView(R.layout.activity_restaurant);
 
         resID = getIntent().getLongExtra(RVAdapter.ID, 0);
+        anon = getIntent().getBooleanExtra("anon", false);
 
         imgView = (ImageView) findViewById(R.id.restaurantImageView);
         titleView = (TextView) findViewById(R.id.restaurantName);
@@ -185,10 +187,6 @@ public class RestaurantActivity extends BaseActivity {
 
     }
 
-    public boolean checkAnon(){
-        if(user.isAnonymous()) return true; else return false;
-    }
-
     //Metoda za ažuriranje stavki u košarici
     public void addToCart(String string, List<GroupItem> cart){
         List<CartItem> cartItem = new ArrayList<>();
@@ -225,7 +223,7 @@ public class RestaurantActivity extends BaseActivity {
 
         mAuth.addAuthStateListener(mAuthListener);
 
-        adapter = new AnimatedListAdapter(this, title);
+        adapter = new AnimatedListAdapter(this, title, anon);
         adapter.setData(items);
 
         listView = (AnimatedExpandableListView) findViewById(R.id.animatedList);
@@ -273,28 +271,34 @@ public class RestaurantActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.mymenu, menu);
-        MenuItem menuItem = menu.findItem(R.id.cart);
+        MenuItem cartMenu = menu.findItem(R.id.cart);
+        MenuItem phoneMenu = menu.findItem(R.id.phone);
+        phoneMenu.setIcon(R.drawable.phone);
         if(user.isAnonymous()){
-            menuItem.setIcon(R.drawable.phone);
+            cartMenu.setVisible(false);
         } else
         if(count!=0)
-        menuItem.setIcon(buildCounterDrawable(count, R.drawable.ic_full_cart));
-        else menuItem.setIcon(R.drawable.empty_cart);
+            cartMenu.setIcon(buildCounterDrawable(count, R.drawable.ic_full_cart));
+        else cartMenu.setIcon(R.drawable.empty_cart);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.phone:
+                makeCall();
+                return true;
             case R.id.cart:
-                if(user.isAnonymous()){
-                    makeCall();
-                } else
                 if (count!=0) {
                     Intent checkout = new Intent(RestaurantActivity.this, CartActivity.class);
                     startActivity(checkout);
                 } else
                     Toast.makeText(this, R.string.empty_cart, Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.orderHistory:
+                Intent historyIntent = new Intent(RestaurantActivity.this, OrderHistoryActivity.class);
+                startActivity(historyIntent);
                 return true;
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();

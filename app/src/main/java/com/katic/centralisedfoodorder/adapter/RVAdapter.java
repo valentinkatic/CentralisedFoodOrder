@@ -64,6 +64,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
                         restaurantPressed = false;
                         Intent intent = new Intent(context, RestaurantActivity.class);
                         checkID();
+                        intent.putExtra("anon",((ChooseActivity)context).checkAnon());
                         intent.putExtra(ID, pos);
                         context.startActivity(intent);
                     }

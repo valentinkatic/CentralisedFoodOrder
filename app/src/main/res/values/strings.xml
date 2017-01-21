@@ -40,4 +40,15 @@
     <string name="reset">Reset</string>
     <string name="city">Grad/naselje:</string>
     <string name="instructions">Želite li upute do lokacije/a?</string>
+    <string name="quickstart_message">Click the SUBSCRIBE TO NEWS button below to subscribe to the
+        news topic. Messages sent to the news topic will be received. The LOG TOKEN button logs the
+        InstanceID token to logcat.</string>
+    <string name="log_token">Log Token</string>
+    <string name="subscribe_to_news">Subscribe To News</string>
+    <string name="msg_subscribed">Subscribed to news topic</string>
+    <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
+    <string name="menuPhone">Nazovi</string>
+    <string name="orderHistory">Povijest narudžbi</string>
+    <string name="noItems">Vaša košarica je prazna.</string>
+    <string name="fillIt">Napunite ju!</string>
 </resources>

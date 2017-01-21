@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +36,6 @@ public class CartActivity extends BaseActivity {
     private static final String TAG = "CartActivity";
     public static List<GroupItem> cart = new ArrayList<>();
 
-    private DatabaseReference mDatabase;
     private DatabaseReference mUserReference;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -56,13 +58,21 @@ public class CartActivity extends BaseActivity {
         checkoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CartActivity.this, ConfirmActivity.class);
-                startActivity(intent);
+                if (cart.size()>1){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(CartActivity.this);
+                    builder.setMessage("Ne možete imati više od jednog restorana u košarici!")
+                            .setTitle("Pogreška!")
+                            .setPositiveButton(android.R.string.ok, null);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                } else {
+                    Intent intent = new Intent(CartActivity.this, ConfirmActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("restaurants");
 
         //Povezivanje s Firebase bazom podataka
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -137,9 +147,8 @@ public class CartActivity extends BaseActivity {
 
     @Override
     protected void onResume() {
-        for(int i=0; i<cart.size(); i++)
-            if(cart.get(i).clickedGroup)
-                expListView.expandGroup(i);
+        for(int i=0; i<adapter.getGroupCount(); i++)
+            expListView.expandGroup(i);
         super.onResume();
     }
 
@@ -153,7 +162,13 @@ public class CartActivity extends BaseActivity {
                     CartItem currentItem = new CartItem(current.title, current.ingredients, current.price, current.type, current.quantity);
                     cartItem.add(currentItem);
                 }
-                if (cart.get(i).items.size()==0) this.cart.remove(i);
+                if (cart.get(i).items.size()==0) {
+                    this.cart.remove(i);
+                    LinearLayout withItems = (LinearLayout) findViewById(R.id.layoutWithItems);
+                    withItems.setVisibility(View.GONE);
+                    RelativeLayout withoutItems = (RelativeLayout) findViewById(R.id.layoutWithoutItems);
+                    withoutItems.setVisibility(View.VISIBLE);
+                }
             }
         }
         mUserReference.child("cart").child(string).setValue(cartItem);
@@ -190,6 +205,7 @@ public class CartActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.mymenu, menu);
         menu.getItem(0).setVisible(false);
+        menu.getItem(1).setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
 

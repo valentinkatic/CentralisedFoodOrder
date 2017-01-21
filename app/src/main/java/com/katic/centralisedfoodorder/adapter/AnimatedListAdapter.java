@@ -27,11 +27,13 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
     private String resturantName;
     private List<GroupItem> cart = RestaurantActivity.cart;
     private Context context;
+    private boolean anon;
 
-    public AnimatedListAdapter(Context context, String resturantName) {
+    public AnimatedListAdapter(Context context, String resturantName, boolean anon) {
         inflater = LayoutInflater.from(context);
         this.resturantName = resturantName;
         this.context = context;
+        this.anon = anon;
     }
 
     public void setData(List<GroupItem> items) {
@@ -59,7 +61,7 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
             holder.price = (TextView) convertView.findViewById(R.id.textHint);
             holder.ingredients = (TextView) convertView.findViewById(R.id.invisible);
             holder.addToCart = (ImageView) convertView.findViewById(R.id.addToCart) ;
-            if (((RestaurantActivity) context).checkAnon()) holder.addToCart.setVisibility(View.GONE);
+            if (anon) holder.addToCart.setVisibility(View.GONE);
             holder.ingredients.setVisibility(View.GONE);
             convertView.setTag(holder);
         } else {

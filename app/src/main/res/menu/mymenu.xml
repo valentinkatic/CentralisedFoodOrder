@@ -3,14 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/phone"
+        android:title="@string/menuPhone"
+        android:orderInCategory="0"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/cart"
         android:title="@string/cart"
-        app:showAsAction="ifRoom" />
+        android:orderInCategory="1"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/orderHistory"
+        android:title="@string/orderHistory"
+        android:orderInCategory="2"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/logout"
         android:title="@string/logout"
-        android:orderInCategory="100"
+        android:orderInCategory="3"
         app:showAsAction="never"  />
 
 </menu>

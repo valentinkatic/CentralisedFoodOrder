@@ -79,13 +79,15 @@ public class ChooseActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.mymenu, menu);
-        MenuItem menuItem = menu.findItem(R.id.cart);
+        MenuItem cartMenu = menu.findItem(R.id.cart);
+        MenuItem phoneMenu = menu.findItem(R.id.phone);
+        phoneMenu.setVisible(false);
         if(user.isAnonymous()) {
-            menuItem.setVisible(false);
+            cartMenu.setVisible(false);
         } else
         if(count!=0)
-            menuItem.setIcon(buildCounterDrawable(count, R.drawable.ic_full_cart));
-        else menuItem.setIcon(R.drawable.empty_cart);
+            cartMenu.setIcon(buildCounterDrawable(count, R.drawable.ic_full_cart));
+        else cartMenu.setIcon(R.drawable.empty_cart);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -98,6 +100,10 @@ public class ChooseActivity extends BaseActivity {
                     startActivity(checkout);
                 } else
                     Toast.makeText(this, R.string.empty_cart, Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.orderHistory:
+                Intent historyIntent = new Intent(ChooseActivity.this, OrderHistoryActivity.class);
+                startActivity(historyIntent);
                 return true;
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();
@@ -296,6 +302,10 @@ public class ChooseActivity extends BaseActivity {
                 refresh(bookmarks);
             }
         });
+    }
+
+    public boolean checkAnon(){
+        return user.isAnonymous();
     }
 
     //Metoda za osvježavanje prikaza restorana prilikom označavanja filtera ili bookmark zvijezdice
