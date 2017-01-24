@@ -95,11 +95,8 @@ public class ChooseActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.cart:
-                if (count!=0) {
-                    Intent checkout = new Intent(ChooseActivity.this, CartActivity.class);
-                    startActivity(checkout);
-                } else
-                    Toast.makeText(this, R.string.empty_cart, Toast.LENGTH_SHORT).show();
+                Intent checkout = new Intent(ChooseActivity.this, CartActivity.class);
+                startActivity(checkout);
                 return true;
             case R.id.orderHistory:
                 Intent historyIntent = new Intent(ChooseActivity.this, OrderHistoryActivity.class);
@@ -132,7 +129,7 @@ public class ChooseActivity extends BaseActivity {
 
         //Postavljanje naslova Action Baru
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Izbor restorana");
+        actionBar.setTitle(R.string.choose_restaurant);
         actionBar.setElevation(4);
         actionBar.collapseActionView();
 
@@ -304,9 +301,9 @@ public class ChooseActivity extends BaseActivity {
         });
     }
 
-    public boolean checkAnon(){
+    /*public boolean checkAnon(){
         return user.isAnonymous();
-    }
+    }*/
 
     //Metoda za osvježavanje prikaza restorana prilikom označavanja filtera ili bookmark zvijezdice
     public void refresh(List<Long> bookmarks){

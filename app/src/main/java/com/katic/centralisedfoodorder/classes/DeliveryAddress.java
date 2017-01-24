@@ -1,6 +1,6 @@
 package com.katic.centralisedfoodorder.classes;
 
-public class DelieveryAddress {
+public class DeliveryAddress {
 
     public String lastName;
     public String street;
@@ -11,10 +11,10 @@ public class DelieveryAddress {
     public String phoneNumber;
     public boolean defaultAddress;
 
-    public DelieveryAddress() {
+    public DeliveryAddress() {
     }
 
-    public DelieveryAddress(String lastName, String street, String streetNumber, String city, String floor, String apartmentNumber, String phoneNumber) {
+    public DeliveryAddress(String lastName, String street, String streetNumber, String city, String floor, String apartmentNumber, String phoneNumber) {
         this.lastName = lastName;
         this.street = street;
         this.streetNumber = streetNumber;
@@ -25,7 +25,7 @@ public class DelieveryAddress {
         this.defaultAddress = true;
     }
 
-    public DelieveryAddress(DelieveryAddress da) {
+    public DeliveryAddress(DeliveryAddress da) {
         this.lastName = da.lastName;
         this.street = da.street;
         this.streetNumber = da.streetNumber;
@@ -34,7 +34,7 @@ public class DelieveryAddress {
         this.phoneNumber = da.phoneNumber;
     }
 
-    public DelieveryAddress(String lastName, String street, String streetNumber, String city, String phoneNumber) {
+    public DeliveryAddress(String lastName, String street, String streetNumber, String city, String phoneNumber) {
         this.lastName = lastName;
         this.street = street;
         this.streetNumber = streetNumber;

@@ -64,7 +64,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
                         restaurantPressed = false;
                         Intent intent = new Intent(context, RestaurantActivity.class);
                         checkID();
-                        intent.putExtra("anon",((ChooseActivity)context).checkAnon());
                         intent.putExtra(ID, pos);
                         context.startActivity(intent);
                     }
@@ -94,8 +93,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
     private List<Restaurant> res = ChooseActivity.restaurants;
     private List<Long> mBookmarks = ChooseActivity.bookmarks;
     private List<Integer> marks = new ArrayList<>();
-    boolean bookmarks;
-    Context context;
+    private boolean bookmarks;
+    private Context context;
 
     public RVAdapter(Context context, final boolean bookmarks, boolean filtered) {
         this.context = context;

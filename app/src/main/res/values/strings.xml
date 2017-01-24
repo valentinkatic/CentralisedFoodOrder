@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Centralized Food Order</string>
+    <string name="app_name">Centralizirana Dostava Hrane</string>
     <string name="password">Zaporka:</string>
     <string name="mail">Elektronička pošta:</string>
     <string name="address">Adresa:</string>
@@ -8,9 +8,9 @@
     <string name="titleReg">Forma za registraciju</string>
     <string name="login">Prijava</string>
     <string name="run">Pokreni bez prijave</string>
-    <string name="auth_failed">Authentication Failed</string>
-    <string name="auth_success">Registration successful</string>
-    <string name="login_success">Sign in successful</string>
+    <string name="auth_failed">Provjera autentičnosti nije uspjela</string>
+    <string name="auth_success">Registracija uspješna</string>
+    <string name="login_success">Prijava uspješna</string>
     <string name="logout">Odjava</string>
     <string name="cart">Košarica</string>
     <string name="choose_size">Izaberi veličinu (Pritisni na košaricu!)</string>
@@ -40,15 +40,16 @@
     <string name="reset">Reset</string>
     <string name="city">Grad/naselje:</string>
     <string name="instructions">Želite li upute do lokacije/a?</string>
-    <string name="quickstart_message">Click the SUBSCRIBE TO NEWS button below to subscribe to the
-        news topic. Messages sent to the news topic will be received. The LOG TOKEN button logs the
-        InstanceID token to logcat.</string>
-    <string name="log_token">Log Token</string>
-    <string name="subscribe_to_news">Subscribe To News</string>
-    <string name="msg_subscribed">Subscribed to news topic</string>
-    <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
     <string name="menuPhone">Nazovi</string>
     <string name="orderHistory">Povijest narudžbi</string>
     <string name="noItems">Vaša košarica je prazna.</string>
     <string name="fillIt">Napunite ju!</string>
+    <string name="comment">Komentar:</string>
+    <string name="proceed">Nastavi</string>
+    <string name="address_set">Adresa postavljena</string>
+    <string name="address_save">Uspješno ste spremili adresu</string>
+    <string name="address_delete">Uspješno ste obrisali adresu</string>
+    <string name="empty_order_history">Povijest narudžbi je prazna, \nnaručite nešto!</string>
+    <string name="confirm">Potvrda</string>
+    <string name="choose_restaurant">Izbor restorana</string>
 </resources>

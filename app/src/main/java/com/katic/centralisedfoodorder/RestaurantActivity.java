@@ -63,7 +63,6 @@ public class RestaurantActivity extends BaseActivity {
     private Restaurant current;
 
     private Long resID;
-    private boolean anon;
     private String title="";
 
     private ImageView imgView;
@@ -79,7 +78,6 @@ public class RestaurantActivity extends BaseActivity {
         setContentView(R.layout.activity_restaurant);
 
         resID = getIntent().getLongExtra(RVAdapter.ID, 0);
-        anon = getIntent().getBooleanExtra("anon", false);
 
         imgView = (ImageView) findViewById(R.id.restaurantImageView);
         titleView = (TextView) findViewById(R.id.restaurantName);
@@ -174,7 +172,7 @@ public class RestaurantActivity extends BaseActivity {
 
                     items.add(item);
                 }
-                adapter.notifyDataSetChanged();
+                initializeAdapter();
             }
 
             @Override
@@ -217,20 +215,13 @@ public class RestaurantActivity extends BaseActivity {
         startActivity(Intent.createChooser(callIntent, "Izaberite klijenta :"));
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        mAuth.addAuthStateListener(mAuthListener);
-
-        adapter = new AnimatedListAdapter(this, title, anon);
+    private void initializeAdapter(){
+        adapter = new AnimatedListAdapter(this, title, user.isAnonymous());
         adapter.setData(items);
 
         listView = (AnimatedExpandableListView) findViewById(R.id.animatedList);
         listView.setAdapter(adapter);
 
-        // In order to show animations, we need to use a custom click handler
-        // for our ExpandableListView.
         listView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
             @Override
@@ -249,6 +240,14 @@ public class RestaurantActivity extends BaseActivity {
             }
 
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mAuth.addAuthStateListener(mAuthListener);
+
     }
 
     @Override
@@ -290,11 +289,8 @@ public class RestaurantActivity extends BaseActivity {
                 makeCall();
                 return true;
             case R.id.cart:
-                if (count!=0) {
-                    Intent checkout = new Intent(RestaurantActivity.this, CartActivity.class);
-                    startActivity(checkout);
-                } else
-                    Toast.makeText(this, R.string.empty_cart, Toast.LENGTH_SHORT).show();
+                Intent checkout = new Intent(RestaurantActivity.this, CartActivity.class);
+                startActivity(checkout);
                 return true;
             case R.id.orderHistory:
                 Intent historyIntent = new Intent(RestaurantActivity.this, OrderHistoryActivity.class);

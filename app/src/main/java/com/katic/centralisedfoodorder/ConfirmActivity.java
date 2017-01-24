@@ -30,20 +30,26 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.katic.centralisedfoodorder.adapter.ChooseDelieveryAddressAdapter;
 import com.katic.centralisedfoodorder.classes.CartItem;
 import com.katic.centralisedfoodorder.classes.ChildItem;
-import com.katic.centralisedfoodorder.classes.DelieveryAddress;
+import com.katic.centralisedfoodorder.classes.DeliveryAddress;
 import com.katic.centralisedfoodorder.classes.GroupItem;
+import com.katic.centralisedfoodorder.classes.OrderData;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class ConfirmActivity extends BaseActivity {
 
     private static final String TAG = "ConfirmActivity";
 
     private DatabaseReference mUserReference;
+    private DatabaseReference mRestaurantDataReference;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser user;
@@ -60,16 +66,18 @@ public class ConfirmActivity extends BaseActivity {
     private EditText mApartmentNum;
     private EditText mLastNamePickup;
 
-    private ArrayList<DelieveryAddress> list = new ArrayList<>();
+    private ArrayList<DeliveryAddress> list = new ArrayList<>();
     private List<GroupItem> cart = new ArrayList<>();
     private List<GroupItem> orderHistory = new ArrayList<>();
     private Dialog chooseDialog;
+    private String comment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm);
+        comment = getIntent().getStringExtra("comment");
 
         //Povezivanje s objektima na maketi
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
@@ -117,22 +125,18 @@ public class ConfirmActivity extends BaseActivity {
                 Log.d(TAG, "confirm:" + mLastName.getText().toString());
                 if (delieveryRadio.isChecked()){
                     if (!validateForm(true)) return;
-                    notification();
+                    //notification();
+                    sendDataToDatabase(true);
                     removeCart();
-                    Intent intent = new Intent(ConfirmActivity.this, OrderHistoryActivity.class);
-                    intent.putExtra(TAG, true);
-                    startActivity(intent);
-                    finishAffinity();
+                    startIntent();
                 }
                 else if (pickupRadio.isChecked()) {
                     if (!validateForm(false)) return;
                     setLastNamePickup(mLastNamePickup.getText().toString());
-                    notification();
+                    //notification();
+                    sendDataToDatabase(false);
                     removeCart();
-                    Intent intent = new Intent(ConfirmActivity.this, OrderHistoryActivity.class);
-                    intent.putExtra(TAG, true);
-                    startActivity(intent);
-                    finishAffinity();
+                    startIntent();
                 }
             }
         });
@@ -148,7 +152,7 @@ public class ConfirmActivity extends BaseActivity {
 
                 lv.setAdapter(clad);
 
-                chooseDialog.setTitle("Izaberi adresu");
+                chooseDialog.setTitle(R.string.choose_address);
                 chooseDialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_box);
                 chooseDialog.setContentView(dialogView);
 
@@ -171,7 +175,7 @@ public class ConfirmActivity extends BaseActivity {
                     String apartmentNum = mApartmentNum.getText().toString();
                     String phoneNum = mPhoneNum.getText().toString();
 
-                    DelieveryAddress address = new DelieveryAddress(lastName,street,streetNum,city,floor,apartmentNum,phoneNum);
+                    DeliveryAddress address = new DeliveryAddress(lastName,street,streetNum,city,floor,apartmentNum,phoneNum);
                     for(int i=0; i<list.size(); i++){
                         list.get(i).defaultAddress=false;
                     }
@@ -197,7 +201,7 @@ public class ConfirmActivity extends BaseActivity {
 
         //Postavljanje naslova Action Baru
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Confirm");
+        actionBar.setTitle(R.string.confirm);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setElevation(4);
         actionBar.collapseActionView();
@@ -214,15 +218,16 @@ public class ConfirmActivity extends BaseActivity {
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     mUserReference = FirebaseDatabase.getInstance().getReference()
                             .child("users").child(user.getUid());
+                    mRestaurantDataReference = FirebaseDatabase.getInstance().getReference().child("restaurantData");
 
                     list.clear();
 
                     //Učitavanje iz baze spremljene adrese korisnika
-                    mUserReference.child("delieveryAddress").addListenerForSingleValueEvent(new ValueEventListener() {
+                    mUserReference.child("deliveryAddress").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                                DelieveryAddress da = snapshot.getValue(DelieveryAddress.class);
+                                DeliveryAddress da = snapshot.getValue(DeliveryAddress.class);
                                 list.add(da);
                                 if (da.defaultAddress) {
                                     mLastName.setText(da.lastName);
@@ -308,9 +313,52 @@ public class ConfirmActivity extends BaseActivity {
 
     }
 
+    private void sendDataToDatabase(boolean isDelivery){
+        String phoneToken = FirebaseInstanceId.getInstance().getToken();
+        mUserReference.child("phoneToken").setValue(phoneToken);
+        OrderData orderData;
+        if(isDelivery){
+            String lastName = mLastName.getText().toString();
+            String street = mStreet.getText().toString();
+            String streetNum = mStreetNum.getText().toString();
+            String city = mCity.getText().toString();
+            String floor = mFloor.getText().toString();
+            String apartmentNum = mApartmentNum.getText().toString();
+            String phoneNum = mPhoneNum.getText().toString();
+
+            DeliveryAddress address = new DeliveryAddress(lastName,street,streetNum,city,floor,apartmentNum,phoneNum);
+
+            orderData = new OrderData(
+                    phoneToken, cart.get(0).items, address, isDelivery, comment
+            );
+        } else {
+            String lastNamePickup = mLastNamePickup.getText().toString();
+            orderData = new OrderData(
+                    phoneToken, cart.get(0).items, isDelivery, lastNamePickup, comment
+            );
+        }
+
+        mRestaurantDataReference.child(cart.get(0).title).push().setValue(orderData);
+    }
+
+    private void startIntent(){
+        Intent intent = new Intent(ConfirmActivity.this, OrderHistoryActivity.class);
+        intent.putExtra(TAG, true);
+        startActivity(intent);
+        finishAffinity();
+    }
+
     private void removeCart(){
-        for(int i=0; i<orderHistory.size(); i++)
-            cart.add(orderHistory.get(i));
+        for(int i=0; i<orderHistory.size(); i++){
+            GroupItem current = orderHistory.get(i);
+            for (int j=0; j<current.items.size(); j++){
+                current.items.get(j).quantity=1;
+            }
+            cart.add(current);
+        }
+        Calendar currentDay = Calendar.getInstance();
+        DateFormat df = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+        cart.get(0).orderTime=df.format(currentDay.getTime());
         mUserReference.child("orderHistory").setValue(cart);
         mUserReference.child("cart").setValue(null);
     }
@@ -327,12 +375,12 @@ public class ConfirmActivity extends BaseActivity {
     }
 
     //Metoda za dodavanje i brisanje adresa
-    public void addAddress(List<DelieveryAddress> addresses, boolean add){
-        mUserReference.child("delieveryAddress").setValue(addresses);
+    public void addAddress(List<DeliveryAddress> addresses, boolean add){
+        mUserReference.child("deliveryAddress").setValue(addresses);
         if(add)
-        Toast.makeText(this, "Uspješno ste spremili adresu!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.address_save, Toast.LENGTH_SHORT).show();
         else
-            Toast.makeText(this, "Uspješno ste obrisali adresu!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.address_delete, Toast.LENGTH_SHORT).show();
     }
 
     //Metoda koja sprema upisano prezime prilikom pickup narudžbe
@@ -341,7 +389,7 @@ public class ConfirmActivity extends BaseActivity {
     }
 
     //Metoda za postavljanje spremljenih podataka za adresu iz baze u tekstualne okvire
-    public void setAddress(List<DelieveryAddress> addresses, int i){
+    public void setAddress(List<DeliveryAddress> addresses, int i){
         mLastName.setText(addresses.get(i).lastName);
         mStreet.setText(addresses.get(i).street);
         mStreetNum.setText(addresses.get(i).streetNumber);
@@ -350,8 +398,8 @@ public class ConfirmActivity extends BaseActivity {
         mApartmentNum.setText(addresses.get(i).apartmentNumber);
         mFloor.setText(addresses.get(i).floor);
         chooseDialog.dismiss();
-        Toast.makeText(this, "Adresa postavljena!", Toast.LENGTH_SHORT).show();
-        mUserReference.child("delieveryAddress").setValue(addresses);
+        Toast.makeText(this, R.string.address_set, Toast.LENGTH_SHORT).show();
+        mUserReference.child("deliveryAddres").setValue(addresses);
     }
 
 

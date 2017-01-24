@@ -58,6 +58,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         mLastNameField = (EditText) findViewById(R.id.lastNameRegText);
         mAddressField = (EditText) findViewById(R.id.addressRegText);
         mStreetNumberField = (EditText) findViewById(R.id.streetNumberRegText);
+        mCityField = (EditText) findViewById(R.id.cityRegText);
         mPhoneNumField = (EditText) findViewById(R.id.phoneNumberRegText);
         mSignUpButton = (Button) findViewById(R.id.registerButton);
 

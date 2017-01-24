@@ -29,7 +29,19 @@
             android:layout_alignParentStart="true"
             android:groupIndicator="@android:color/transparent"
             android:id="@+id/orderHistoryView"
+            android:visibility="gone"
             />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:textAlignment="center"
+            android:text="@string/empty_order_history"
+            android:textSize="20sp"
+            android:id="@+id/empty_order_history"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 

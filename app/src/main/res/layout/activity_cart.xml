@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:id="@+id/layoutWithItems">
+        android:id="@+id/layoutWithItems"
+        android:visibility="gone">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -36,7 +37,25 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/comment"
+            android:id="@+id/comment"
+            android:textSize="16sp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/commentEdit"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textSize="16sp"/>
+
+
+        <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
@@ -68,7 +87,7 @@
     </RelativeLayout>
 
     <Button
-        android:text="Proceed to checkout"
+        android:text="@string/proceed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/checkoutBtn"

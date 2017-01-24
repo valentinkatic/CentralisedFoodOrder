@@ -6,4 +6,6 @@ import android.widget.TextView;
 public class GroupHolder {
     public TextView title;
     public ImageView groupImageView;
+    public ImageView groupImageAdditionalView;
+    public TextView date;
 }

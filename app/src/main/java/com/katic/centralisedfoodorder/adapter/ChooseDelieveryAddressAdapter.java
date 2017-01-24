@@ -1,7 +1,6 @@
 package com.katic.centralisedfoodorder.adapter;
 
 import android.content.Context;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,22 +11,18 @@ import android.widget.TextView;
 
 import com.katic.centralisedfoodorder.ConfirmActivity;
 import com.katic.centralisedfoodorder.R;
-import com.katic.centralisedfoodorder.RestaurantActivity;
-import com.katic.centralisedfoodorder.classes.ChildItem;
-import com.katic.centralisedfoodorder.classes.DelieveryAddress;
-import com.katic.centralisedfoodorder.classes.GroupItem;
-import com.katic.centralisedfoodorder.classes.Pizza;
+import com.katic.centralisedfoodorder.classes.DeliveryAddress;
 
 import java.util.List;
 
 public class ChooseDelieveryAddressAdapter extends BaseAdapter {
 
-    private List<DelieveryAddress> listData;
+    private List<DeliveryAddress> listData;
 
     private LayoutInflater layoutInflater;
     Context context;
 
-    public ChooseDelieveryAddressAdapter(Context context, List<DelieveryAddress> listData) {
+    public ChooseDelieveryAddressAdapter(Context context, List<DeliveryAddress> listData) {
         this.listData = listData;
         layoutInflater = LayoutInflater.from(context);
         this.context = context;
@@ -50,7 +45,7 @@ public class ChooseDelieveryAddressAdapter extends BaseAdapter {
 
     public View getView(final int position, View convertView, ViewGroup parent) {
         final ViewHolder holder;
-        final DelieveryAddress item = listData.get(position);
+        final DeliveryAddress item = listData.get(position);
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.dialog_addresses, null);
             holder = new ViewHolder();

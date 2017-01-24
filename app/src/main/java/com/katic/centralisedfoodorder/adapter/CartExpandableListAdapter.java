@@ -21,6 +21,7 @@ import com.katic.centralisedfoodorder.classes.GroupHolder;
 import com.katic.centralisedfoodorder.classes.GroupItem;
 
 import java.util.List;
+import java.util.Locale;
 
 public class CartExpandableListAdapter extends BaseExpandableListAdapter {
 
@@ -70,7 +71,7 @@ public class CartExpandableListAdapter extends BaseExpandableListAdapter {
 
         holder.title.setText(item.title);
         holder.type.setText(item.type);
-        holder.price.setText(String.format("%.2f", item.price*item.quantity) + " kn");
+        holder.price.setText(String.format(Locale.getDefault(),"%.2f kn", item.price*item.quantity));
         holder.ingredients.setText(item.ingredients);
         holder.quantity.setText(context.getText(R.string.quantity)+" "+Integer.toString(item.quantity));
 
@@ -139,7 +140,7 @@ public class CartExpandableListAdapter extends BaseExpandableListAdapter {
                                     }
                         }
                         ((CartActivity) context).addToCart(restaurantTitle, cart);
-                        holder.price.setText(String.format("%.2f", item.price*item.quantity) + " kn");
+                        holder.price.setText(String.format(Locale.getDefault(),"%.2f kn", item.price*item.quantity));
 
                         dialog.dismiss();
                     }

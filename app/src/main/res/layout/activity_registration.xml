@@ -72,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="textPostalAddress"
-            android:ems="2"
+            android:ems="10"
             android:id="@+id/cityRegText"
             android:layout_below="@+id/city"
             android:layout_centerHorizontal="true"

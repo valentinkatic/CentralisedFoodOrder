@@ -10,11 +10,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -41,14 +41,21 @@ public class CartActivity extends BaseActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser user;
 
-    CartExpandableListAdapter adapter;
-    ExpandableListView expListView;
-    TextView subtotalNum;
+    private CartExpandableListAdapter adapter;
+    private ExpandableListView expListView;
+    private TextView subtotalNum;
+    private LinearLayout withItems;
+    private RelativeLayout withoutItems;
+    private EditText mComment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
+
+        withItems = (LinearLayout) findViewById(R.id.layoutWithItems);
+        withoutItems = (RelativeLayout) findViewById(R.id.layoutWithoutItems);
+        mComment = (EditText) findViewById(R.id.commentEdit);
 
         //Povezivanje s objektima na maketi
         expListView = (ExpandableListView) findViewById(R.id.cartView);
@@ -67,6 +74,7 @@ public class CartActivity extends BaseActivity {
                     dialog.show();
                 } else {
                     Intent intent = new Intent(CartActivity.this, ConfirmActivity.class);
+                    intent.putExtra("comment", mComment.getText().toString());
                     startActivity(intent);
                 }
             }
@@ -104,6 +112,11 @@ public class CartActivity extends BaseActivity {
                             setSubtotal();
                             for(int i=0; i<adapter.getGroupCount(); i++)
                                 expListView.expandGroup(i);
+
+                            if (cart.size()!=0)
+                                withItems.setVisibility(View.VISIBLE);
+                            else if (cart.size()==0)
+                                withoutItems.setVisibility(View.VISIBLE);
                         }
 
                         @Override
@@ -124,7 +137,7 @@ public class CartActivity extends BaseActivity {
 
         //Postavljanje naslova Action Baru
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Cart");
+        actionBar.setTitle(R.string.cart);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setElevation(4);
         actionBar.collapseActionView();
@@ -142,7 +155,6 @@ public class CartActivity extends BaseActivity {
                 return true;
             }
         });
-
     }
 
     @Override
@@ -164,12 +176,12 @@ public class CartActivity extends BaseActivity {
                 }
                 if (cart.get(i).items.size()==0) {
                     this.cart.remove(i);
-                    LinearLayout withItems = (LinearLayout) findViewById(R.id.layoutWithItems);
-                    withItems.setVisibility(View.GONE);
-                    RelativeLayout withoutItems = (RelativeLayout) findViewById(R.id.layoutWithoutItems);
-                    withoutItems.setVisibility(View.VISIBLE);
                 }
             }
+        }
+        if (cart.size()==0) {
+            withItems.setVisibility(View.GONE);
+            withoutItems.setVisibility(View.VISIBLE);
         }
         mUserReference.child("cart").child(string).setValue(cartItem);
         adapter.notifyDataSetChanged();
@@ -213,6 +225,10 @@ public class CartActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.cart:
+                return true;
+            case R.id.orderHistory:
+                Intent historyIntent = new Intent(CartActivity.this, OrderHistoryActivity.class);
+                startActivity(historyIntent);
                 return true;
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();

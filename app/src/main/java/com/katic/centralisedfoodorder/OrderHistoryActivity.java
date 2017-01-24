@@ -9,11 +9,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,9 +19,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.katic.centralisedfoodorder.adapter.CartExpandableListAdapter;
+import com.katic.centralisedfoodorder.adapter.OrderHistoryExpandableListAdapter;
+import com.katic.centralisedfoodorder.classes.CartItem;
+import com.katic.centralisedfoodorder.classes.ChildItem;
 import com.katic.centralisedfoodorder.classes.GroupItem;
 
 import java.util.ArrayList;
@@ -41,8 +38,9 @@ public class OrderHistoryActivity extends BaseActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser user;
 
-    CartExpandableListAdapter adapter;
+    OrderHistoryExpandableListAdapter adapter;
     ExpandableListView orderHistoryView;
+    TextView orderHistoryEmpty;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,6 +49,7 @@ public class OrderHistoryActivity extends BaseActivity {
         orderCompleted = getIntent().getBooleanExtra("ConfirmActivity", false);
 
         orderHistoryView = (ExpandableListView) findViewById(R.id.orderHistoryView);
+        orderHistoryEmpty = (TextView) findViewById(R.id.empty_order_history);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -74,6 +73,8 @@ public class OrderHistoryActivity extends BaseActivity {
                                 orderHistory.add(item);
                             }
                             adapter.notifyDataSetChanged();
+                            if (orderHistory.size()>0) orderHistoryView.setVisibility(View.VISIBLE);
+                            else orderHistoryEmpty.setVisibility(View.VISIBLE);
                         }
 
                         @Override
@@ -92,7 +93,7 @@ public class OrderHistoryActivity extends BaseActivity {
 
         //Postavljanje naslova Action Baru
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Order History");
+        actionBar.setTitle(R.string.orderHistory);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setElevation(4);
         actionBar.collapseActionView();
@@ -101,8 +102,32 @@ public class OrderHistoryActivity extends BaseActivity {
 
     //Inicijalizacija adaptera
     private void initializeAdapter(){
-        adapter = new CartExpandableListAdapter(this, orderHistory);
+        adapter = new OrderHistoryExpandableListAdapter(this, orderHistory);
         orderHistoryView.setAdapter(adapter);
+    }
+
+    //Metoda za brisanje stavke iz povijesti
+    public void removeFromHistory(List<GroupItem> orderHistory){
+        mUserReference.child("orderHistory").setValue(orderHistory);
+        adapter.notifyDataSetChanged();
+        if(orderHistory.size()==0){
+            orderHistoryEmpty.setVisibility(View.VISIBLE);
+            orderHistoryView.setVisibility(View.GONE);
+        }
+    }
+
+    //Metoda za dodavanje stare narudžbe u košaricu
+    public void addToCart(GroupItem cart){
+        List<CartItem> cartItem = new ArrayList<>();
+        for(int i=0; i<cart.items.size(); i++){
+            ChildItem current = cart.items.get(i);
+            CartItem currentItem = new CartItem(current.title, current.ingredients, current.price, current.type, current.quantity);
+            cartItem.add(currentItem);
+        }
+        mUserReference.child("cart").child(cart.title).setValue(cartItem);
+        Intent intent = new Intent(OrderHistoryActivity.this, CartActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
