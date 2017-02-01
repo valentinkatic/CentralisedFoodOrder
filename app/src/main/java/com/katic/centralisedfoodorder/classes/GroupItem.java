@@ -9,6 +9,8 @@ public class GroupItem {
     public List<ChildItem> items = new ArrayList<>();
     public boolean clickedGroup = false;
     public String orderTime;
+    public String address;
+    public String city;
 
     public GroupItem() {
     }

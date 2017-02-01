@@ -1,6 +1,10 @@
 package com.katic.centralisedfoodorder.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +12,6 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.katic.centralisedfoodorder.CartActivity;
 import com.katic.centralisedfoodorder.OrderHistoryActivity;
 import com.katic.centralisedfoodorder.R;
 import com.katic.centralisedfoodorder.classes.ChildHolder;
@@ -16,7 +19,6 @@ import com.katic.centralisedfoodorder.classes.ChildItem;
 import com.katic.centralisedfoodorder.classes.GroupHolder;
 import com.katic.centralisedfoodorder.classes.GroupItem;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -104,6 +106,8 @@ public class OrderHistoryExpandableListAdapter extends BaseExpandableListAdapter
         return groupPosition;
     }
 
+    int pos;
+
     @Override
     public View getGroupView(final int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
@@ -115,6 +119,7 @@ public class OrderHistoryExpandableListAdapter extends BaseExpandableListAdapter
             holder.title = (TextView) convertView.findViewById(R.id.order_history_group);
             holder.groupImageView = (ImageView) convertView.findViewById(R.id.order_history_remove);
             holder.groupImageAdditionalView = (ImageView) convertView.findViewById(R.id.order_history_addToCart);
+            holder.navigationView = (ImageView) convertView.findViewById(R.id.order_history_navigation);
             holder.date = (TextView) convertView.findViewById(R.id.order_history_date);
             convertView.setTag(holder);
         } else {
@@ -139,8 +144,46 @@ public class OrderHistoryExpandableListAdapter extends BaseExpandableListAdapter
             }
         });
 
+        holder.navigationView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pos = groupPosition;
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.
+                        setMessage(context.getText(R.string.instructions))
+                        .setPositiveButton(context.getText(R.string.yes), dialogClickListener)
+                        .setNegativeButton(context.getText(R.string.no), dialogClickListener)
+                        .show();
+
+            }
+        });
+
         return convertView;
     }
+
+    private DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    MapMethod();
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    break;
+            }
+        }
+    };
+
+    public void MapMethod() {
+        Uri gmmIntentUri = Uri.parse("google.navigation:q="+ items.get(pos).address+" "+items.get(pos).city +"&mode=d");
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(mapIntent);
+        }
+    }
+
 
     @Override
     public boolean hasStableIds() {

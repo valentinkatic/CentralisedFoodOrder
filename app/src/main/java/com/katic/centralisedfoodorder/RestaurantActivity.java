@@ -216,7 +216,7 @@ public class RestaurantActivity extends BaseActivity {
     }
 
     private void initializeAdapter(){
-        adapter = new AnimatedListAdapter(this, title, user.isAnonymous());
+        adapter = new AnimatedListAdapter(this, title);
         adapter.setData(items);
 
         listView = (AnimatedExpandableListView) findViewById(R.id.animatedList);

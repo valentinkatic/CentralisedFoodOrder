@@ -33,13 +33,13 @@
     <string name="floor">Kat:</string>
     <string name="apartmentNumber">Broj stana:</string>
     <string name="necessarily">*</string>
-    <string name="choose">Odaberi</string>
+    <string name="choose">Naruči</string>
     <string name="required">Obavezno polje!</string>
     <string name="choose_address">Izbor adrese</string>
     <string name="save">Spremi</string>
     <string name="reset">Reset</string>
     <string name="city">Grad/naselje:</string>
-    <string name="instructions">Želite li upute do lokacije/a?</string>
+    <string name="instructions">Želite li upute do lokacije?</string>
     <string name="menuPhone">Nazovi</string>
     <string name="orderHistory">Povijest narudžbi</string>
     <string name="noItems">Vaša košarica je prazna.</string>
@@ -52,4 +52,6 @@
     <string name="empty_order_history">Povijest narudžbi je prazna, \nnaručite nešto!</string>
     <string name="confirm">Potvrda</string>
     <string name="choose_restaurant">Izbor restorana</string>
+    <string name="orderConfirm">Potvrditi narudžbu?</string>
+    <string name="pickMethod">Izaberite način narudžbe</string>
 </resources>

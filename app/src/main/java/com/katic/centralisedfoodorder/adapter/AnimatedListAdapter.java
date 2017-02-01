@@ -3,6 +3,7 @@ package com.katic.centralisedfoodorder.adapter;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.katic.centralisedfoodorder.R;
 import com.katic.centralisedfoodorder.RestaurantActivity;
 import com.katic.centralisedfoodorder.classes.ChildHolder;
@@ -21,6 +24,8 @@ import com.katic.centralisedfoodorder.classes.GroupItem;
 import java.util.List;
 
 public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpandableListAdapter {
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
     private LayoutInflater inflater;
 
     private List<GroupItem> items;
@@ -29,11 +34,18 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
     private Context context;
     private boolean anon;
 
-    public AnimatedListAdapter(Context context, String resturantName, boolean anon) {
+    public AnimatedListAdapter(Context context, String resturantName) {
         inflater = LayoutInflater.from(context);
         this.resturantName = resturantName;
         this.context = context;
-        this.anon = anon;
+
+        mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                anon = user == null || user.isAnonymous();
+            }
+        });
     }
 
     public void setData(List<GroupItem> items) {

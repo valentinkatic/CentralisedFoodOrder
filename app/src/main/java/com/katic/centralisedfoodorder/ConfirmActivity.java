@@ -1,15 +1,13 @@
 package com.katic.centralisedfoodorder;
 
 import android.app.Dialog;
-import android.app.NotificationManager;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -37,6 +35,7 @@ import com.katic.centralisedfoodorder.classes.ChildItem;
 import com.katic.centralisedfoodorder.classes.DeliveryAddress;
 import com.katic.centralisedfoodorder.classes.GroupItem;
 import com.katic.centralisedfoodorder.classes.OrderData;
+import com.katic.centralisedfoodorder.classes.Restaurant;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -49,6 +48,7 @@ public class ConfirmActivity extends BaseActivity {
     private static final String TAG = "ConfirmActivity";
 
     private DatabaseReference mUserReference;
+    private DatabaseReference mRestaurantReference;
     private DatabaseReference mRestaurantDataReference;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -71,6 +71,8 @@ public class ConfirmActivity extends BaseActivity {
     private List<GroupItem> orderHistory = new ArrayList<>();
     private Dialog chooseDialog;
     private String comment;
+    private String resAddress;
+    private String resCity;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -122,22 +124,12 @@ public class ConfirmActivity extends BaseActivity {
         confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "confirm:" + mLastName.getText().toString());
-                if (delieveryRadio.isChecked()){
-                    if (!validateForm(true)) return;
-                    //notification();
-                    sendDataToDatabase(true);
-                    removeCart();
-                    startIntent();
-                }
-                else if (pickupRadio.isChecked()) {
-                    if (!validateForm(false)) return;
-                    setLastNamePickup(mLastNamePickup.getText().toString());
-                    //notification();
-                    sendDataToDatabase(false);
-                    removeCart();
-                    startIntent();
-                }
+                Log.d(TAG, "confirm:" + mLastName.getText().toString());if(delieveryRadio.isChecked() || pickupRadio.isChecked()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ConfirmActivity.this);
+                    builder.setMessage(getText(R.string.orderConfirm)).setPositiveButton(getText(R.string.yes), dialogClickListener)
+                            .setNegativeButton(getText(R.string.no), dialogClickListener).show();
+                } else
+                    Toast.makeText(ConfirmActivity.this, R.string.pickMethod, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -219,6 +211,7 @@ public class ConfirmActivity extends BaseActivity {
                     mUserReference = FirebaseDatabase.getInstance().getReference()
                             .child("users").child(user.getUid());
                     mRestaurantDataReference = FirebaseDatabase.getInstance().getReference().child("restaurantData");
+                    mRestaurantReference = FirebaseDatabase.getInstance().getReference().child("restaurants");
 
                     list.clear();
 
@@ -263,6 +256,7 @@ public class ConfirmActivity extends BaseActivity {
                                 }
                                 cart.add(item);
                             }
+                            mRestaurantReference.addListenerForSingleValueEvent(getAddress);
                         }
 
                         @Override
@@ -300,7 +294,6 @@ public class ConfirmActivity extends BaseActivity {
 
                         }
                     });
-
 
                 } else {
                     // User is signed out
@@ -341,6 +334,24 @@ public class ConfirmActivity extends BaseActivity {
         mRestaurantDataReference.child(cart.get(0).title).push().setValue(orderData);
     }
 
+    ValueEventListener getAddress = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                Restaurant res = snapshot.getValue(Restaurant.class);
+                if(res.name.equals(cart.get(0).title)) {
+                    resAddress = res.address;
+                    resCity = res.city;
+                }
+            }
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+
     private void startIntent(){
         Intent intent = new Intent(ConfirmActivity.this, OrderHistoryActivity.class);
         intent.putExtra(TAG, true);
@@ -356,6 +367,10 @@ public class ConfirmActivity extends BaseActivity {
             }
             cart.add(current);
         }
+
+        cart.get(0).address = resAddress;
+        cart.get(0).city = resCity;
+
         Calendar currentDay = Calendar.getInstance();
         DateFormat df = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
         cart.get(0).orderTime=df.format(currentDay.getTime());
@@ -363,16 +378,31 @@ public class ConfirmActivity extends BaseActivity {
         mUserReference.child("cart").setValue(null);
     }
 
-    private void notification(){
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(ConfirmActivity.this)
-                .setSmallIcon(R.drawable.ic_checkout)
-                .setContentTitle("Centralised Food Order")
-                .setContentText("Vaša narudžba je zaprimljena!")
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+    private DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    if (delieveryRadio.isChecked()){
+                        if (!validateForm(true)) return;
+                        sendDataToDatabase(true);
+                        removeCart();
+                        startIntent();
+                    }
+                    else if (pickupRadio.isChecked()) {
+                        if (!validateForm(false)) return;
+                        setLastNamePickup(mLastNamePickup.getText().toString());
+                        sendDataToDatabase(false);
+                        removeCart();
+                        startIntent();
+                    }
+                    break;
 
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(0, mBuilder.build());
-    }
+                case DialogInterface.BUTTON_NEGATIVE:
+                    break;
+            }
+        }
+    };
 
     //Metoda za dodavanje i brisanje adresa
     public void addAddress(List<DeliveryAddress> addresses, boolean add){

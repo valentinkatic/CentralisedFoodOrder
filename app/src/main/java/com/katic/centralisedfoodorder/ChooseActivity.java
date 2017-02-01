@@ -1,7 +1,5 @@
 package com.katic.centralisedfoodorder;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -9,12 +7,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.katic.centralisedfoodorder.adapter.HorizontalListView;
+import com.katic.centralisedfoodorder.adapter.HorizontalAdapter;
 import com.katic.centralisedfoodorder.adapter.RVAdapter;
 import com.katic.centralisedfoodorder.classes.CartItem;
 import com.katic.centralisedfoodorder.classes.ChildItem;
+import com.katic.centralisedfoodorder.classes.FilterData;
 import com.katic.centralisedfoodorder.classes.GroupItem;
 import com.katic.centralisedfoodorder.classes.Restaurant;
 
@@ -33,10 +30,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,22 +52,21 @@ public class ChooseActivity extends BaseActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser user;
-    private FirebaseStorage storageRef;
-    private StorageReference pathReference;
-    private ValueEventListener itemsListener;
 
-    public static List<Restaurant> restaurants;
+    public static List<Restaurant> restaurants = new ArrayList<>();
     public static List<Restaurant> restaurantsFilter = new ArrayList<>();
+    public static List<Restaurant> restaurantsFilterBookmarks = new ArrayList<>();
     public static List<Long> bookmarks;
-    HorizontalListView listview;
-    HorizontalListView listview2;
+    private List<FilterData> filterData = new ArrayList<>();
+
+    private RecyclerView listview;
+    private RecyclerView listview2;
     private RecyclerView rv;
     private RecyclerView rv2;
     private TabHost host;
-    private ImageView image;
 
-    private ArrayList<Integer> items;
-    private boolean filtered;
+    private boolean filtered = false;
+    private boolean bookmarksFiltered = false;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -121,11 +113,10 @@ public class ChooseActivity extends BaseActivity {
         showProgressDialog();
 
         bookmarks = new ArrayList<>();
-        items = new ArrayList<>();
+        //filterData = fill_with_data();
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference()
-                .child("restaurants");
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         //Postavljanje naslova Action Baru
         ActionBar actionBar = getSupportActionBar();
@@ -146,7 +137,6 @@ public class ChooseActivity extends BaseActivity {
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     mUserReference = FirebaseDatabase.getInstance().getReference()
                             .child("users").child(user.getUid());
-                    storageRef = FirebaseStorage.getInstance();
 
                     //Učitavanje iz baze ID-ova restorana koji su bookmark-ani
                     mUserReference.child("bookmarks").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -160,7 +150,7 @@ public class ChooseActivity extends BaseActivity {
                             }
 
                             //Učitavanje vrijednosti za sve restorane i postavljanje oznake ako su prethodno bookmark-ani
-                            mDatabase.addValueEventListener(new ValueEventListener() {
+                            mDatabase.child("restaurants").addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     restaurants.clear();
@@ -176,6 +166,24 @@ public class ChooseActivity extends BaseActivity {
                                     }
                                     initializeAdapter();
                                     hideProgressDialog();
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
+                            mDatabase.child("filterData").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    filterData.clear();
+                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                                        FilterData data = snapshot.getValue(FilterData.class);
+
+                                        filterData.add(data);
+                                    }
+                                    initializeHorizontalAdapter();
                                 }
 
                                 @Override
@@ -245,45 +253,8 @@ public class ChooseActivity extends BaseActivity {
         spec.setIndicator("Bookmarks");
         host.addTab(spec);
 
-        listview = (HorizontalListView) findViewById(R.id.listview);
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(items.size()!=0){
-                    for (int j=items.size()-1; j>=0; j--){
-                        if(items.get(j)==i) {
-                            items.remove(j);
-                            break;
-                        } else {
-                            items.add(i);
-                            break;
-                        }
-                    }} else
-                    items.add(i);
-                if(items.size()==0) filtered=false; else filtered=true;
-                refresh(bookmarks);
-            }
-        });
-
-        listview2 = (HorizontalListView) findViewById(R.id.listview2);
-        listview2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(items.size()!=0){
-                    for (int j=items.size()-1; j>=0; j--){
-                        if(items.get(j)==i) {
-                            items.remove(j);
-                            break;
-                        } else {
-                            items.add(i);
-                            break;
-                        }
-                    }} else
-                    items.add(i);
-                if(items.size()==0) filtered=false; else filtered=true;
-                refresh(bookmarks);
-            }
-        });
+        listview = (RecyclerView) findViewById(R.id.listview);
+        listview2 = (RecyclerView) findViewById(R.id.listview2);
 
         rv = (RecyclerView) findViewById(R.id.restaurantList);
         LinearLayoutManager llm = new LinearLayoutManager(this);
@@ -294,108 +265,101 @@ public class ChooseActivity extends BaseActivity {
         LinearLayoutManager llm2 = new LinearLayoutManager(this);
         rv2.setLayoutManager(llm2);
 
-        host.setOnTabChangedListener(new TabHost.OnTabChangeListener(){
-            public void onTabChanged(String tabId) {
-                refresh(bookmarks);
-            }
-        });
     }
 
-    /*public boolean checkAnon(){
-        return user.isAnonymous();
-    }*/
-
     //Metoda za osvježavanje prikaza restorana prilikom označavanja filtera ili bookmark zvijezdice
+    public void refresh(List<Long> bookmarks, boolean bookmarksTag){
+        initializeAdapter(bookmarksTag);
+        mUserReference.child("bookmarks").setValue(bookmarks);
+    }
+
     public void refresh(List<Long> bookmarks){
-        restaurantsFilter.clear();
-        for (int i=0; i<restaurants.size(); i++) {
-            int count=0;
-            for (int j = 0; j < restaurants.get(i).food_type.size(); j++){
-                for (int z = 0; z < items.size(); z++) {
-                    for (int y = 2; y < dataObjects.length; y += 3) {
-                        if (items.get(z) == Integer.parseInt(dataObjects[y])) {
-                            if (restaurants.get(i).food_type.get(j).equals(dataObjects[y-1]))
-                            count++;
+        initializeAdapter();
+        mUserReference.child("bookmarks").setValue(bookmarks);
+    }
+
+    public void refresh(ArrayList<Integer> items, boolean bookmarks, boolean filtered){
+        if (!bookmarks){
+            this.filtered = filtered;
+            restaurantsFilter.clear();
+            for (int i=0; i<restaurants.size(); i++) {
+                int count=0;
+                for (int j = 0; j < restaurants.get(i).food_type.size(); j++){
+                    for (int z = 0; z < items.size(); z++) {
+                        for (int y = 0; y < filterData.size(); y ++) {
+                            if (items.get(z) == y) {
+                                if (restaurants.get(i).food_type.get(j).equals(filterData.get(y).id))
+                                    count++;
+                            }
                         }
                     }
                 }
+                if (count==items.size()) restaurantsFilter.add(restaurants.get(i));
             }
-            if (count==items.size()) restaurantsFilter.add(restaurants.get(i));
+        } else if(bookmarks) {
+            bookmarksFiltered = filtered;
+            restaurantsFilterBookmarks.clear();
+            for (int i = 0; i < restaurants.size(); i++) {
+                int count = 0;
+                for (int j = 0; j < restaurants.get(i).food_type.size(); j++) {
+                    for (int z = 0; z < items.size(); z++) {
+                        for (int y = 0; y < filterData.size(); y++) {
+                            if (items.get(z) == y) {
+                                if (restaurants.get(i).food_type.get(j).equals(filterData.get(y).id))
+                                    count++;
+                            }
+                        }
+                    }
+                }
+                if (count == items.size()) restaurantsFilterBookmarks.add(restaurants.get(i));
+            }
         }
         initializeAdapter();
-        mUserReference.child("bookmarks").setValue(bookmarks);
     }
 
     //Inicijalizacija adaptera za Recycle liste
     private void initializeAdapter(){
         rv.setAdapter(new RVAdapter(this, false, filtered));
-        rv2.setAdapter(new RVAdapter(this, true, filtered));
+        rv2.setAdapter(new RVAdapter(this, true, bookmarksFiltered));
     }
 
-    //Slog podataka znakovnog tipa
-    private static String[] dataObjects = new String[]{
-            "Pizza", "pizza", "0",
-            "Meksicka", "mexican", "1",
-            "Talijanska", "italian", "2",
-            "Kineska", "chinese", "3",
-            "Vegetarijanska", "vegetarian", "4"
-    };
-
-    //Definiranje horizontalnog adaptera
-    private class HAdapter extends BaseAdapter {
-
-        public HAdapter() {
-            super();
-        }
-
-        public int getCount() {
-            return dataObjects.length / 3;
-        }
-
-        public Object getItem(int position) {
-            return null;
-        }
-
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        //Povezivanje objekata u horizontalnoj listi s maketom te postavljanje teksta i slike na njima
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View retval = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewitem, null);
-            TextView title = (TextView) retval.findViewById(R.id.title);
-            title.setText(dataObjects[position * 3]);
-            String string = dataObjects[position * 3 + 1];
-            image = (ImageView) retval.findViewById(R.id.image);
-            pathReference = storageRef.getReference("restaurants/"+string+".png");
-            Glide.with(getApplicationContext())
-                    .using(new FirebaseImageLoader())
-                    .load(pathReference)
-                    .into(image);
-            return retval;
-        }
-
+    private void initializeAdapter(boolean bookmarksTag){
+        if(bookmarksTag)
+        rv.setAdapter(new RVAdapter(this, false, filtered));
+        else
+        rv2.setAdapter(new RVAdapter(this, true, bookmarksFiltered));
     }
+
+    private void initializeHorizontalAdapter(){
+        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(ChooseActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager horizontalLayoutManager2 = new LinearLayoutManager(ChooseActivity.this, LinearLayoutManager.HORIZONTAL, false);
+
+        listview.setLayoutManager(horizontalLayoutManager);
+        listview2.setLayoutManager(horizontalLayoutManager2);
+
+        listview.setAdapter(new HorizontalAdapter(filterData, false, ChooseActivity.this));
+        listview2.setAdapter(new HorizontalAdapter(filterData, true, ChooseActivity.this));
+    }
+
+    /*public List<FilterData> fill_with_data() {
+
+        List<FilterData> data = new ArrayList<>();
+
+        data.add(new FilterData("Pizza", "pizza"));
+        data.add(new FilterData("Meksicka", "mexican"));
+        data.add(new FilterData("Talijanska", "italian"));
+        data.add(new FilterData("Kineska", "chinese"));
+        data.add(new FilterData("Vegetarijanska", "vegetarian"));
+
+        return data;
+    }*/
+
 
     @Override
     public void onStart() {
         super.onStart();
-        restaurants = new ArrayList<>();
 
         mAuth.addAuthStateListener(mAuthListener);
-
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                listview.setAdapter(new HAdapter());
-                listview2.setAdapter(new HAdapter());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
     }
 
@@ -457,5 +421,7 @@ public class ChooseActivity extends BaseActivity {
 
         return new BitmapDrawable(getResources(), bitmap);
     }
+
+
 
 }

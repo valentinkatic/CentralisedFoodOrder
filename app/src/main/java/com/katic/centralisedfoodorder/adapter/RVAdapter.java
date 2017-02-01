@@ -99,7 +99,10 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
     public RVAdapter(Context context, final boolean bookmarks, boolean filtered) {
         this.context = context;
         this.bookmarks = bookmarks;
-        if (filtered) res = ChooseActivity.restaurantsFilter;
+        if (filtered) {
+            if (!bookmarks) res = ChooseActivity.restaurantsFilter;
+            else if (bookmarks) res = ChooseActivity.restaurantsFilterBookmarks;
+        }
     }
 
     @Override
@@ -157,7 +160,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
                             if(mBookmarks.get(i)==res.get(pos).restaurantID)mBookmarks.remove(i);
                         }
                     }
-                    ((ChooseActivity)context).refresh(mBookmarks);
+                    ((ChooseActivity)context).refresh(mBookmarks, bookmarks);
                 }
             });
     }

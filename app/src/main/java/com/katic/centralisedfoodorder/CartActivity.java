@@ -161,6 +161,7 @@ public class CartActivity extends BaseActivity {
     protected void onResume() {
         for(int i=0; i<adapter.getGroupCount(); i++)
             expListView.expandGroup(i);
+        //urediti ako se vrati iz povijesti
         super.onResume();
     }
 
