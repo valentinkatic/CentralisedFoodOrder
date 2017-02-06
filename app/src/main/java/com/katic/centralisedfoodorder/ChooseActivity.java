@@ -234,6 +234,8 @@ public class ChooseActivity extends BaseActivity {
             }
         };
 
+        mAuth.addAuthStateListener(mAuthListener);
+
     }
 
     //Metoda za postavljanje Tab-ova, povezivanje s maketom i definiranje funkcija prilikom klika na horizontalnu listu
@@ -273,10 +275,6 @@ public class ChooseActivity extends BaseActivity {
         mUserReference.child("bookmarks").setValue(bookmarks);
     }
 
-    public void refresh(List<Long> bookmarks){
-        initializeAdapter();
-        mUserReference.child("bookmarks").setValue(bookmarks);
-    }
 
     public void refresh(ArrayList<Integer> items, boolean bookmarks, boolean filtered){
         if (!bookmarks){
@@ -358,9 +356,6 @@ public class ChooseActivity extends BaseActivity {
     @Override
     public void onStart() {
         super.onStart();
-
-        mAuth.addAuthStateListener(mAuthListener);
-
     }
 
     @Override

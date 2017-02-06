@@ -151,8 +151,8 @@ public class OrderHistoryExpandableListAdapter extends BaseExpandableListAdapter
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.
                         setMessage(context.getText(R.string.instructions))
-                        .setPositiveButton(context.getText(R.string.yes), dialogClickListener)
                         .setNegativeButton(context.getText(R.string.no), dialogClickListener)
+                        .setPositiveButton(context.getText(R.string.yes), dialogClickListener)
                         .show();
 
             }

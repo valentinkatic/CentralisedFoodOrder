@@ -429,7 +429,7 @@ public class ConfirmActivity extends BaseActivity {
         mFloor.setText(addresses.get(i).floor);
         chooseDialog.dismiss();
         Toast.makeText(this, R.string.address_set, Toast.LENGTH_SHORT).show();
-        mUserReference.child("deliveryAddres").setValue(addresses);
+        mUserReference.child("deliveryAddress").setValue(addresses);
     }
 
 

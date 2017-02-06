@@ -159,9 +159,17 @@ public class CartActivity extends BaseActivity {
 
     @Override
     protected void onResume() {
+        if (cart.size()!=0) {
+            withItems.setVisibility(View.VISIBLE);
+            withoutItems.setVisibility(View.GONE);
+        }
+        else if (cart.size()==0) {
+            withoutItems.setVisibility(View.VISIBLE);
+            withItems.setVisibility(View.GONE);
+        }
         for(int i=0; i<adapter.getGroupCount(); i++)
             expListView.expandGroup(i);
-        //urediti ako se vrati iz povijesti
+
         super.onResume();
     }
 

@@ -1,6 +1,7 @@
 package com.katic.centralisedfoodorder;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -76,12 +78,26 @@ public class RestaurantActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant);
+        Log.d(TAG, "CreatingActivity");
 
         resID = getIntent().getLongExtra(RVAdapter.ID, 0);
 
         imgView = (ImageView) findViewById(R.id.restaurantImageView);
         titleView = (TextView) findViewById(R.id.restaurantName);
         addressView = (TextView) findViewById(R.id.restaurantAddress);
+        listView = (AnimatedExpandableListView) findViewById(R.id.animatedList);
+
+        addressView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(RestaurantActivity.this);
+                builder.
+                        setMessage(getText(R.string.instructions))
+                        .setNegativeButton(getText(R.string.no), dialogClickListener)
+                        .setPositiveButton(getText(R.string.yes), dialogClickListener)
+                        .show();
+            }
+        });
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("restaurants").child(Long.toString(resID)).child("food_list");
@@ -181,8 +197,29 @@ public class RestaurantActivity extends BaseActivity {
             }
         };
 
-        mDatabase.addListenerForSingleValueEvent(itemsListener);
+    }
 
+    private DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    MapMethod();
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    break;
+            }
+        }
+    };
+
+    private void MapMethod() {
+        Uri gmmIntentUri = Uri.parse("google.navigation:q="+ current.address+" "+current.city +"&mode=d");
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        if (mapIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(mapIntent);
+        }
     }
 
     //Metoda za ažuriranje stavki u košarici
@@ -219,7 +256,6 @@ public class RestaurantActivity extends BaseActivity {
         adapter = new AnimatedListAdapter(this, title);
         adapter.setData(items);
 
-        listView = (AnimatedExpandableListView) findViewById(R.id.animatedList);
         listView.setAdapter(adapter);
 
         listView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
@@ -247,15 +283,15 @@ public class RestaurantActivity extends BaseActivity {
         super.onStart();
 
         mAuth.addAuthStateListener(mAuthListener);
+        mDatabase.addListenerForSingleValueEvent(itemsListener);
 
     }
 
     @Override
     protected void onResume() {
-        for(int i=0; i<items.size(); i++)
+       /*for(int i=0; i<items.size(); i++)
             if(items.get(i).clickedGroup)
-                listView.expandGroup(i);
-        mDatabase.addListenerForSingleValueEvent(itemsListener);
+                listView.expandGroup(i);*/
         super.onResume();
     }
 
