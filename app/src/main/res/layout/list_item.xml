@@ -14,8 +14,9 @@
         android:id="@+id/textTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="text1"
+        android:text="@string/name"
         android:layout_toLeftOf="@+id/addToCart"
+        android:layout_toStartOf="@+id/addToCart"
         android:textColor="@android:color/white"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_alignParentStart="true"
@@ -23,10 +24,10 @@
         android:layout_alignParentTop="true"/>
 
     <TextView
-        android:id="@+id/textHint"
+        android:id="@+id/textPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="text2"
+        android:text="@string/price"
         android:textColor="@android:color/white"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_below="@+id/textTitle"
@@ -40,13 +41,13 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@id/textTitle"
-        android:layout_alignBottom="@id/textHint"
+        android:layout_alignBottom="@id/textPrice"
         />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textHint"
+        android:layout_below="@+id/textPrice"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
        >
@@ -54,9 +55,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/invisible"
+            android:id="@+id/ingredients"
             android:textColor="@android:color/white"
-            android:text="Invisible"
+            android:text="@string/ingredients"
             />
 
     </LinearLayout>

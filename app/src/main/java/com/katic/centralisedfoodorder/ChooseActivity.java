@@ -339,20 +339,6 @@ public class ChooseActivity extends BaseActivity {
         listview2.setAdapter(new HorizontalAdapter(filterData, true, ChooseActivity.this));
     }
 
-    /*public List<FilterData> fill_with_data() {
-
-        List<FilterData> data = new ArrayList<>();
-
-        data.add(new FilterData("Pizza", "pizza"));
-        data.add(new FilterData("Meksicka", "mexican"));
-        data.add(new FilterData("Talijanska", "italian"));
-        data.add(new FilterData("Kineska", "chinese"));
-        data.add(new FilterData("Vegetarijanska", "vegetarian"));
-
-        return data;
-    }*/
-
-
     @Override
     public void onStart() {
         super.onStart();

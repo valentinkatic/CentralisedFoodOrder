@@ -54,4 +54,7 @@
     <string name="choose_restaurant">Izbor restorana</string>
     <string name="orderConfirm">Potvrditi narudžbu?</string>
     <string name="pickMethod">Izaberite način narudžbe</string>
+    <string name="name">Naziv</string>
+    <string name="price">Cijena</string>
+    <string name="ingredients">Sastojci</string>
 </resources>

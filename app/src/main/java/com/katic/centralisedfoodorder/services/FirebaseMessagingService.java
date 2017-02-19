@@ -59,8 +59,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
      * Create and show a simple notification containing the received FCM message.
      *
      * @param messageBody FCM message body received.
-     */
-    private void sendNotification(String messageBody) {
+     */private void sendNotification(String messageBody) {
         Intent intent = new Intent(this, OrderHistoryActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
@@ -70,7 +69,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_checkout)
-                .setContentTitle("FCM Message")
+                .setContentTitle(getText(R.string.app_name))
                 .setContentText(messageBody)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
@@ -81,4 +80,5 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
+
 }

@@ -70,8 +70,8 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
             holder = new ChildHolder();
             convertView = inflater.inflate(R.layout.list_item, parent, false);
             holder.title = (TextView) convertView.findViewById(R.id.textTitle);
-            holder.price = (TextView) convertView.findViewById(R.id.textHint);
-            holder.ingredients = (TextView) convertView.findViewById(R.id.invisible);
+            holder.price = (TextView) convertView.findViewById(R.id.textPrice);
+            holder.ingredients = (TextView) convertView.findViewById(R.id.ingredients);
             holder.addToCart = (ImageView) convertView.findViewById(R.id.addToCart) ;
             if (anon) holder.addToCart.setVisibility(View.GONE);
             holder.ingredients.setVisibility(View.GONE);

@@ -20,6 +20,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/mailText"
             android:layout_below="@+id/mail"
+            android:ems="10"
             android:layout_alignRight="@+id/passwordText"
             android:layout_alignEnd="@+id/passwordText"
             android:layout_alignLeft="@+id/passwordText"
@@ -35,7 +36,7 @@
             android:id="@+id/passwordText"
             android:layout_below="@+id/password"
             android:layout_centerHorizontal="true"
-            />
+            android:selectAllOnFocus="false" />
 
         <TextView
             android:layout_width="wrap_content"

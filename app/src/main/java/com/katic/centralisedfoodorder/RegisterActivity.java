@@ -120,7 +120,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
         showProgressDialog();
         final String email = mEmailField.getText().toString();
-        String password = mPasswordField.getText().toString();
+        final String password = mPasswordField.getText().toString();
         final String lastName = mLastNameField.getText().toString();
         final String address = mAddressField.getText().toString();
         final String streetNumber = mStreetNumberField.getText().toString();
