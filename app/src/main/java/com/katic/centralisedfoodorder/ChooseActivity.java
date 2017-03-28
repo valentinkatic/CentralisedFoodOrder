@@ -202,7 +202,7 @@ public class ChooseActivity extends BaseActivity {
 
                     //Učitavanje stavki koje su u košarici i njihovo prebrojavanje za potrebe prikaza ikone košarice
                     mUserReference.child("cart").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
+                            @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             cart.clear();
                             count=0;
