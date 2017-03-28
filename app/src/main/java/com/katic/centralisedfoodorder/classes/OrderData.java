@@ -4,12 +4,12 @@ import java.util.List;
 
 public class OrderData{
 
-    public String phoneToken;
-    public List<ChildItem> orderItems;
-    public DeliveryAddress deliveryAddress;
-    public boolean isDelivery;
-    public String lastNamePickup;
-    public String comment;
+    private String phoneToken;
+    private List<ChildItem> orderItems;
+    private DeliveryAddress deliveryAddress;
+    private boolean isDelivery;
+    private String lastNamePickup;
+    private String comment;
 
     public OrderData(String phoneToken, List<ChildItem> orderItems, DeliveryAddress deliveryAddress, boolean isDelivery, String comment) {
         this.phoneToken = phoneToken;
@@ -30,4 +30,51 @@ public class OrderData{
     public OrderData() {
     }
 
+    public String getPhoneToken() {
+        return phoneToken;
+    }
+
+    public void setPhoneToken(String phoneToken) {
+        this.phoneToken = phoneToken;
+    }
+
+    public List<ChildItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<ChildItem> orderItems) {
+        this.orderItems = orderItems;
+    }
+
+    public DeliveryAddress getDeliveryAddress() {
+        return deliveryAddress;
+    }
+
+    public void setDeliveryAddress(DeliveryAddress deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
+    }
+
+    public boolean isDelivery() {
+        return isDelivery;
+    }
+
+    public void setDelivery(boolean delivery) {
+        isDelivery = delivery;
+    }
+
+    public String getLastNamePickup() {
+        return lastNamePickup;
+    }
+
+    public void setLastNamePickup(String lastNamePickup) {
+        this.lastNamePickup = lastNamePickup;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 }

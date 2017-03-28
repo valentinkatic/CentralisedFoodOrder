@@ -158,8 +158,8 @@ public class ChooseActivity extends BaseActivity {
                                         Restaurant currentRes = snapshot.getValue(Restaurant.class);
 
                                         for (int i = 0; i<bookmarks.size(); i++){
-                                            if (bookmarks.get(i)==currentRes.restaurantID)
-                                                currentRes.bookmarked=true;
+                                            if (bookmarks.get(i)==currentRes.getRestaurantID())
+                                                currentRes.setBookmarked(true);
                                         }
 
                                         restaurants.add(currentRes);
@@ -208,11 +208,11 @@ public class ChooseActivity extends BaseActivity {
                             count=0;
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                                 GroupItem item = new GroupItem();
-                                item.title=snapshot.getKey();
+                                item.setTitle(snapshot.getKey());
                                 for (DataSnapshot snapshot1 : snapshot.getChildren()){
                                     CartItem cart = snapshot1.getValue(CartItem.class);
                                     ChildItem child = new ChildItem(cart);
-                                    item.items.add(child);
+                                    item.getItems().add(child);
                                     count++;
                                 }
                                 cart.add(item);
@@ -282,11 +282,11 @@ public class ChooseActivity extends BaseActivity {
             restaurantsFilter.clear();
             for (int i=0; i<restaurants.size(); i++) {
                 int count=0;
-                for (int j = 0; j < restaurants.get(i).food_type.size(); j++){
+                for (int j = 0; j < restaurants.get(i).getFood_type().size(); j++){
                     for (int z = 0; z < items.size(); z++) {
                         for (int y = 0; y < filterData.size(); y ++) {
                             if (items.get(z) == y) {
-                                if (restaurants.get(i).food_type.get(j).equals(filterData.get(y).id))
+                                if (restaurants.get(i).getFood_type().get(j).equals(filterData.get(y).getId()))
                                     count++;
                             }
                         }
@@ -299,11 +299,11 @@ public class ChooseActivity extends BaseActivity {
             restaurantsFilterBookmarks.clear();
             for (int i = 0; i < restaurants.size(); i++) {
                 int count = 0;
-                for (int j = 0; j < restaurants.get(i).food_type.size(); j++) {
+                for (int j = 0; j < restaurants.get(i).getFood_type().size(); j++) {
                     for (int z = 0; z < items.size(); z++) {
                         for (int y = 0; y < filterData.size(); y++) {
                             if (items.get(z) == y) {
-                                if (restaurants.get(i).food_type.get(j).equals(filterData.get(y).id))
+                                if (restaurants.get(i).getFood_type().get(j).equals(filterData.get(y).getId()))
                                     count++;
                             }
                         }

@@ -39,7 +39,7 @@ public class CartExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public ChildItem getChild(int groupPosition, int childPosition) {
-        return items.get(groupPosition).items.get(childPosition);
+        return items.get(groupPosition).getItems().get(childPosition);
     }
 
     @Override
@@ -69,25 +69,25 @@ public class CartExpandableListAdapter extends BaseExpandableListAdapter {
             holder = (ChildHolder) convertView.getTag();
         }
 
-        holder.title.setText(item.title);
-        holder.type.setText(item.type);
-        holder.price.setText(String.format(Locale.getDefault(),"%.2f kn", item.price*item.quantity));
-        holder.ingredients.setText(item.ingredients);
-        holder.quantity.setText(context.getText(R.string.quantity)+" "+Integer.toString(item.quantity));
+        holder.title.setText(item.getTitle());
+        holder.type.setText(item.getType());
+        holder.price.setText(String.format(Locale.getDefault(),"%.2f kn", item.getPrice()*item.getQuantity()));
+        holder.ingredients.setText(item.getIngredients());
+        holder.quantity.setText(context.getText(R.string.quantity)+" "+Integer.toString(item.getQuantity()));
 
         final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which){
                     case DialogInterface.BUTTON_POSITIVE:
-                        String restaurantTitle = getGroup(groupPosition).title;
-                        item.addedToCart = false;
+                        String restaurantTitle = getGroup(groupPosition).getTitle();
+                        item.setAddedToCart(false);
                         for (int i = 0; i < cart.size(); i++) {
                             GroupItem current = cart.get(i);
-                            if (current.title.equals(restaurantTitle))
-                                for (int j = 0; j < current.items.size(); j++)
-                                    if (current.items.get(j).title.equals(item.title)) {
-                                        cart.get(i).items.remove(j);
+                            if (current.getTitle().equals(restaurantTitle))
+                                for (int j = 0; j < current.getItems().size(); j++)
+                                    if (current.getItems().get(j).getTitle().equals(item.getTitle())) {
+                                        cart.get(i).getItems().remove(j);
                                     }
                         }
                         ((CartActivity) context).addToCart(restaurantTitle, cart);
@@ -120,27 +120,27 @@ public class CartExpandableListAdapter extends BaseExpandableListAdapter {
 
                 np.setMaxValue(10);
                 np.setMinValue(1);
-                np.setValue(item.quantity);
+                np.setValue(item.getQuantity());
                 np.setWrapSelectorWheel(false);
                 b1.setOnClickListener(new View.OnClickListener()
                 {
                     @Override
                     public void onClick(View v) {
-                        item.quantity=np.getValue();
-                        holder.quantity.setText(context.getText(R.string.quantity)+" "+Integer.toString(item.quantity));
+                        item.setQuantity(np.getValue());
+                        holder.quantity.setText(context.getText(R.string.quantity)+" "+Integer.toString(item.getQuantity()));
 
-                        String restaurantTitle = getGroup(groupPosition).title;
-                        item.addedToCart = false;
+                        String restaurantTitle = getGroup(groupPosition).getTitle();
+                        item.setAddedToCart(false);
                         for (int i = 0; i < cart.size(); i++) {
                             GroupItem current = cart.get(i);
-                            if (current.title.equals(restaurantTitle))
-                                for (int j = 0; j < current.items.size(); j++)
-                                    if (current.items.get(j).title.equals(item.title)) {
-                                        cart.get(i).items.get(j).quantity=item.quantity;
+                            if (current.getTitle().equals(restaurantTitle))
+                                for (int j = 0; j < current.getItems().size(); j++)
+                                    if (current.getItems().get(j).getTitle().equals(item.getTitle())) {
+                                        cart.get(i).getItems().get(j).setQuantity(item.getQuantity());
                                     }
                         }
                         ((CartActivity) context).addToCart(restaurantTitle, cart);
-                        holder.price.setText(String.format(Locale.getDefault(),"%.2f kn", item.price*item.quantity));
+                        holder.price.setText(String.format(Locale.getDefault(),"%.2f kn", item.getPrice()*item.getQuantity()));
 
                         dialog.dismiss();
                     }
@@ -162,11 +162,11 @@ public class CartExpandableListAdapter extends BaseExpandableListAdapter {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!item.clicked) {
-                    item.clicked=true;
+                if (!item.isClicked()) {
+                    item.setClicked(true);
                     holder.ingredients.setVisibility(View.VISIBLE);
                 } else {
-                    item.clicked=false;
+                    item.setClicked(false);
                     holder.ingredients.setVisibility(View.GONE);
                 }
             }
@@ -177,7 +177,7 @@ public class CartExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return items.get(groupPosition).items.size();
+        return items.get(groupPosition).getItems().size();
     }
 
     @Override
@@ -209,7 +209,7 @@ public class CartExpandableListAdapter extends BaseExpandableListAdapter {
             holder = (GroupHolder) convertView.getTag();
         }
 
-        holder.title.setText(item.title);
+        holder.title.setText(item.getTitle());
         return convertView;
     }
 

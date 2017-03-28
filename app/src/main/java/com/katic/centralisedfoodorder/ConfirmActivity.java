@@ -169,7 +169,7 @@ public class ConfirmActivity extends BaseActivity {
 
                     DeliveryAddress address = new DeliveryAddress(lastName,street,streetNum,city,floor,apartmentNum,phoneNum);
                     for(int i=0; i<list.size(); i++){
-                        list.get(i).defaultAddress=false;
+                        list.get(i).setDefaultAddress(false);
                     }
 
                     list.add(address);
@@ -222,14 +222,14 @@ public class ConfirmActivity extends BaseActivity {
                             for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                                 DeliveryAddress da = snapshot.getValue(DeliveryAddress.class);
                                 list.add(da);
-                                if (da.defaultAddress) {
-                                    mLastName.setText(da.lastName);
-                                    mStreet.setText(da.street);
-                                    mStreetNum.setText(da.streetNumber);
-                                    mCity.setText(da.city);
-                                    mPhoneNum.setText(da.phoneNumber);
-                                    mApartmentNum.setText(da.apartmentNumber);
-                                    mFloor.setText(da.floor);
+                                if (da.isDefaultAddress()) {
+                                    mLastName.setText(da.getLastName());
+                                    mStreet.setText(da.getStreet());
+                                    mStreetNum.setText(da.getStreetNumber());
+                                    mCity.setText(da.getCity());
+                                    mPhoneNum.setText(da.getPhoneNumber());
+                                    mApartmentNum.setText(da.getApartmentNumber());
+                                    mFloor.setText(da.getFloor());
                                 }
                             }
 
@@ -248,11 +248,11 @@ public class ConfirmActivity extends BaseActivity {
                             cart.clear();
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                                 GroupItem item = new GroupItem();
-                                item.title=snapshot.getKey();
+                                item.setTitle(snapshot.getKey());
                                 for (DataSnapshot snapshot1 : snapshot.getChildren()){
                                     CartItem cart = snapshot1.getValue(CartItem.class);
                                     ChildItem child = new ChildItem(cart);
-                                    item.items.add(child);
+                                    item.getItems().add(child);
                                 }
                                 cart.add(item);
                             }
@@ -322,16 +322,16 @@ public class ConfirmActivity extends BaseActivity {
             DeliveryAddress address = new DeliveryAddress(lastName,street,streetNum,city,floor,apartmentNum,phoneNum);
 
             orderData = new OrderData(
-                    phoneToken, cart.get(0).items, address, isDelivery, comment
+                    phoneToken, cart.get(0).getItems(), address, isDelivery, comment
             );
         } else {
             String lastNamePickup = mLastNamePickup.getText().toString();
             orderData = new OrderData(
-                    phoneToken, cart.get(0).items, isDelivery, lastNamePickup, comment
+                    phoneToken, cart.get(0).getItems(), isDelivery, lastNamePickup, comment
             );
         }
 
-        mRestaurantDataReference.child(cart.get(0).title).push().setValue(orderData);
+        mRestaurantDataReference.child(cart.get(0).getTitle()).push().setValue(orderData);
     }
 
     ValueEventListener getAddress = new ValueEventListener() {
@@ -339,9 +339,9 @@ public class ConfirmActivity extends BaseActivity {
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                 Restaurant res = snapshot.getValue(Restaurant.class);
-                if(res.name.equals(cart.get(0).title)) {
-                    resAddress = res.address;
-                    resCity = res.city;
+                if(res.getName().equals(cart.get(0).getTitle())) {
+                    resAddress = res.getAddress();
+                    resCity = res.getCity();
                 }
             }
         }
@@ -362,18 +362,18 @@ public class ConfirmActivity extends BaseActivity {
     private void removeCart(){
         for(int i=0; i<orderHistory.size(); i++){
             GroupItem current = orderHistory.get(i);
-            for (int j=0; j<current.items.size(); j++){
-                current.items.get(j).quantity=1;
+            for (int j=0; j<current.getItems().size(); j++){
+                current.getItems().get(j).setQuantity(1);
             }
             cart.add(current);
         }
 
-        cart.get(0).address = resAddress;
-        cart.get(0).city = resCity;
+        cart.get(0).setAddress(resAddress);
+        cart.get(0).setCity(resCity);
 
         Calendar currentDay = Calendar.getInstance();
         DateFormat df = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
-        cart.get(0).orderTime=df.format(currentDay.getTime());
+        cart.get(0).setOrderTime(df.format(currentDay.getTime()));
         mUserReference.child("orderHistory").setValue(cart);
         mUserReference.child("cart").setValue(null);
     }
@@ -420,13 +420,13 @@ public class ConfirmActivity extends BaseActivity {
 
     //Metoda za postavljanje spremljenih podataka za adresu iz baze u tekstualne okvire
     public void setAddress(List<DeliveryAddress> addresses, int i){
-        mLastName.setText(addresses.get(i).lastName);
-        mStreet.setText(addresses.get(i).street);
-        mStreetNum.setText(addresses.get(i).streetNumber);
-        mCity.setText(addresses.get(i).city);
-        mPhoneNum.setText(addresses.get(i).phoneNumber);
-        mApartmentNum.setText(addresses.get(i).apartmentNumber);
-        mFloor.setText(addresses.get(i).floor);
+        mLastName.setText(addresses.get(i).getLastName());
+        mStreet.setText(addresses.get(i).getStreet());
+        mStreetNum.setText(addresses.get(i).getStreetNumber());
+        mCity.setText(addresses.get(i).getCity());
+        mPhoneNum.setText(addresses.get(i).getPhoneNumber());
+        mApartmentNum.setText(addresses.get(i).getApartmentNumber());
+        mFloor.setText(addresses.get(i).getFloor());
         chooseDialog.dismiss();
         Toast.makeText(this, R.string.address_set, Toast.LENGTH_SHORT).show();
         mUserReference.child("deliveryAddress").setValue(addresses);

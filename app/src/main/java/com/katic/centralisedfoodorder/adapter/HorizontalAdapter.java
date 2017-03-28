@@ -71,13 +71,13 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
     public void onBindViewHolder(final HorizontalAdapter.MyViewHolder holder, final int position) {
 
         //Učitavanje slika iz baze u horizontalnu listu
-        pathReference = storageRef.getReference("filterPhotos/"+ filterData.get(position).id +".png");
+        pathReference = storageRef.getReference("filterPhotos/"+ filterData.get(position).getId() +".png");
         Glide.with(context)
                 .using(new FirebaseImageLoader())
                 .load(pathReference)
                 .into(holder.imageView);
 
-        holder.title.setText(filterData.get(position).title);
+        holder.title.setText(filterData.get(position).getTitle());
         holder.itemLayout.setSelected(selectedItems.get(position, false));
 
         //Spremanje pozicije kliknutog filtera u SparseBooleanArray

@@ -2,14 +2,14 @@ package com.katic.centralisedfoodorder.classes;
 
 public class DeliveryAddress {
 
-    public String lastName;
-    public String street;
-    public String streetNumber;
-    public String city;
-    public String floor;
-    public String apartmentNumber;
-    public String phoneNumber;
-    public boolean defaultAddress;
+    private String lastName;
+    private String street;
+    private String streetNumber;
+    private String city;
+    private String floor;
+    private String apartmentNumber;
+    private String phoneNumber;
+    private boolean defaultAddress;
 
     public DeliveryAddress() {
     }
@@ -41,5 +41,69 @@ public class DeliveryAddress {
         this.city = city;
         this.phoneNumber = phoneNumber;
         this.defaultAddress = true;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getStreetNumber() {
+        return streetNumber;
+    }
+
+    public void setStreetNumber(String streetNumber) {
+        this.streetNumber = streetNumber;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getFloor() {
+        return floor;
+    }
+
+    public void setFloor(String floor) {
+        this.floor = floor;
+    }
+
+    public String getApartmentNumber() {
+        return apartmentNumber;
+    }
+
+    public void setApartmentNumber(String apartmentNumber) {
+        this.apartmentNumber = apartmentNumber;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public boolean isDefaultAddress() {
+        return defaultAddress;
+    }
+
+    public void setDefaultAddress(boolean defaultAddress) {
+        this.defaultAddress = defaultAddress;
     }
 }

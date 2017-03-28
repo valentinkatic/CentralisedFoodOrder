@@ -22,6 +22,7 @@ import com.katic.centralisedfoodorder.classes.GroupHolder;
 import com.katic.centralisedfoodorder.classes.GroupItem;
 
 import java.util.List;
+import java.util.Locale;
 
 public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpandableListAdapter {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -54,7 +55,7 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
 
     @Override
     public ChildItem getChild(int groupPosition, int childPosition) {
-        return items.get(groupPosition).items.get(childPosition);
+        return items.get(groupPosition).getItems().get(childPosition);
     }
 
     @Override
@@ -80,9 +81,9 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
             holder = (ChildHolder) convertView.getTag();
         }
 
-        holder.title.setText(item.title);
-        if(item.price!=0)
-        holder.price.setText(String.format("%.2f", item.price) + " kn");
+        holder.title.setText(item.getTitle());
+        if(item.getPrice()!=0)
+        holder.price.setText(String.format(Locale.getDefault(), "%.2f kn", item.getPrice()));
         else {
             holder.price.setText(R.string.choose_size);
 
@@ -93,11 +94,11 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
                     View dialogView =inflater.inflate(R.layout.dialog_main, null);
                     ListView lv = (ListView) dialogView.findViewById(R.id.custom_list);
 
-                    CustomListAdapterDialog clad = new CustomListAdapterDialog(context, item.pizza, resturantName, item.title, item.ingredients);
+                    CustomListAdapterDialog clad = new CustomListAdapterDialog(context, item.getPizza(), resturantName, item.getTitle(), item.getIngredients());
 
                     lv.setAdapter(clad);
 
-                    dialog.setTitle(item.title);
+                    dialog.setTitle(item.getTitle());
                     dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_box);
                     dialog.setContentView(dialogView);
 
@@ -106,43 +107,43 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
             };
             holder.addToCart.setOnClickListener(pizzaDialog);
         }
-        holder.ingredients.setText(item.ingredients);
+        holder.ingredients.setText(item.getIngredients());
 
         for (int i=0; i<cart.size(); i++){
             GroupItem current = cart.get(i);
-            if(current.title.equals(resturantName))
-                for (int j=0; j<current.items.size(); j++)
-                    if(current.items.get(j).title.equals(item.title) && current.items.get(j).ingredients.equals(item.ingredients))
-                        item.addedToCart=true;
+            if(current.getTitle().equals(resturantName))
+                for (int j=0; j<current.getItems().size(); j++)
+                    if(current.getItems().get(j).getTitle().equals(item.getTitle()) && current.getItems().get(j).getIngredients().equals(item.getIngredients()))
+                        item.setAddedToCart(true);
         }
 
-        if (item.addedToCart) {
+        if (item.isAddedToCart()) {
             holder.addToCart.setImageResource(R.drawable.checkout);
         } else {
             holder.addToCart.setImageResource(R.drawable.add_to_cart);
         }
 
-        if(item.price!=0)
+        if(item.getPrice()!=0)
         holder.addToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (item.addedToCart) {
-                    item.addedToCart = false;
+                if (item.isAddedToCart()) {
+                    item.setAddedToCart(false);
                     for (int i = 0; i < cart.size(); i++) {
                         GroupItem current = cart.get(i);
-                        if (current.title.equals(resturantName))
-                            for (int j = 0; j < current.items.size(); j++)
-                                if (current.items.get(j).title.equals(item.title) && current.items.get(j).ingredients.equals(item.ingredients)) {
-                                    cart.get(i).items.remove(j);
+                        if (current.getTitle().equals(resturantName))
+                            for (int j = 0; j < current.getItems().size(); j++)
+                                if (current.getItems().get(j).getTitle().equals(item.getTitle()) && current.getItems().get(j).getIngredients().equals(item.getIngredients())) {
+                                    cart.get(i).getItems().remove(j);
                                     holder.addToCart.setImageResource(R.drawable.add_to_cart);
                                 }
                      }
                 } else {
-                    item.addedToCart = true;
+                    item.setAddedToCart(true);
                     GroupItem groupItem = new GroupItem();
-                    groupItem.title = resturantName;
-                    ChildItem cartItem = new ChildItem(item.title, item.ingredients, item.price, getGroup(groupPosition).title, 1);
-                    groupItem.items.add(cartItem);
+                    groupItem.setTitle(resturantName);
+                    ChildItem cartItem = new ChildItem(item.getTitle(), item.getIngredients(), item.getPrice(), getGroup(groupPosition).getTitle(), 1);
+                    groupItem.getItems().add(cartItem);
                     cart.add(groupItem);
                     holder.addToCart.setImageResource(R.drawable.checkout);
                 }
@@ -153,11 +154,11 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!item.clicked) {
-                    item.clicked=true;
+                if (!item.isClicked()) {
+                    item.setClicked(true);
                     holder.ingredients.setVisibility(View.VISIBLE);
                 } else {
-                    item.clicked=false;
+                    item.setClicked(false);
                     holder.ingredients.setVisibility(View.GONE);
                 }
             }
@@ -168,7 +169,7 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
 
     @Override
     public int getRealChildrenCount(int groupPosition) {
-        return items.get(groupPosition).items.size();
+        return items.get(groupPosition).getItems().size();
     }
 
     @Override
@@ -200,9 +201,9 @@ public class AnimatedListAdapter extends AnimatedExpandableListView.AnimatedExpa
             holder = (GroupHolder) convertView.getTag();
         }
 
-        holder.title.setText(item.title);
+        holder.title.setText(item.getTitle());
 
-        if(!item.clickedGroup) holder.groupImageView.setImageResource(R.drawable.right);
+        if(!item.isClickedGroup()) holder.groupImageView.setImageResource(R.drawable.right);
         else holder.groupImageView.setImageResource(R.drawable.down);
 
 

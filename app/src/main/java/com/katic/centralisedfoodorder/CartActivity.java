@@ -30,6 +30,7 @@ import com.katic.centralisedfoodorder.classes.GroupItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class CartActivity extends BaseActivity {
 
@@ -100,11 +101,11 @@ public class CartActivity extends BaseActivity {
                             cart.clear();
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                                 GroupItem item = new GroupItem();
-                                item.title=snapshot.getKey();
+                                item.setTitle(snapshot.getKey());
                                 for (DataSnapshot snapshot1 : snapshot.getChildren()){
                                     CartItem cart = snapshot1.getValue(CartItem.class);
                                     ChildItem child = new ChildItem(cart);
-                                    item.items.add(child);
+                                    item.getItems().add(child);
                                 }
                                 cart.add(item);
                             }
@@ -146,10 +147,10 @@ public class CartActivity extends BaseActivity {
             @Override
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int groupPosition, long l) {
                 if (expListView.isGroupExpanded(groupPosition)) {
-                    cart.get(groupPosition).clickedGroup = false;
+                    cart.get(groupPosition).setClickedGroup(false);
                     expListView.collapseGroup(groupPosition);
                 } else {
-                    cart.get(groupPosition).clickedGroup = true;
+                    cart.get(groupPosition).setClickedGroup(true);
                     expListView.expandGroup(groupPosition);
                 }
                 return true;
@@ -177,13 +178,13 @@ public class CartActivity extends BaseActivity {
     public void addToCart(String string, List<GroupItem> cart){
         List<CartItem> cartItem = new ArrayList<>();
         for(int i=0; i<cart.size(); i++) {
-            if (cart.get(i).title.equals(string)) {
-                for (int j = 0; j < cart.get(i).items.size(); j++) {
-                    ChildItem current = cart.get(i).items.get(j);
-                    CartItem currentItem = new CartItem(current.title, current.ingredients, current.price, current.type, current.quantity);
+            if (cart.get(i).getTitle().equals(string)) {
+                for (int j = 0; j < cart.get(i).getItems().size(); j++) {
+                    ChildItem current = cart.get(i).getItems().get(j);
+                    CartItem currentItem = new CartItem(current.getTitle(), current.getIngredients(), current.getPrice(), current.getType(), current.getQuantity());
                     cartItem.add(currentItem);
                 }
-                if (cart.get(i).items.size()==0) {
+                if (cart.get(i).getItems().size()==0) {
                     this.cart.remove(i);
                 }
             }
@@ -207,11 +208,11 @@ public class CartActivity extends BaseActivity {
     private void setSubtotal(){
         float subtotal=0;
         for(int i=0; i<cart.size(); i++)
-            for (int j=0; j<cart.get(i).items.size(); j++) {
-                ChildItem current = cart.get(i).items.get(j);
-                subtotal += current.quantity*current.price;
+            for (int j=0; j<cart.get(i).getItems().size(); j++) {
+                ChildItem current = cart.get(i).getItems().get(j);
+                subtotal += current.getQuantity()*current.getPrice();
             }
-        subtotalNum.setText(String.format("%.2f", subtotal) + " kn");
+        subtotalNum.setText(String.format(Locale.getDefault(), "%.2f kn", subtotal));
     }
 
     @Override

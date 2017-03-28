@@ -78,9 +78,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
         }
 
         private void checkID(){
-            pos = res.get(getAdapterPosition()).restaurantID;
+            pos = res.get(getAdapterPosition()).getRestaurantID();
             if (bookmarks) {
-                pos = res.get(marks.get(getAdapterPosition())).restaurantID;
+                pos = res.get(marks.get(getAdapterPosition())).getRestaurantID();
             }
         }
     }
@@ -110,7 +110,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
         if (bookmarks) {
             int bookmarked = 0;
             for (int i = 0; i < res.size() ; i++) {
-                if (res.get(i).bookmarked) {
+                if (res.get(i).isBookmarked()) {
                     bookmarked++;
                     marks.add(i);
                 }
@@ -132,14 +132,14 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
     public void onBindViewHolder(final RestaurantViewHolder restaurantViewHolder, int i) {
         if (bookmarks) {i = marks.get(i);}
             Restaurant current = res.get(i);
-            restaurantViewHolder.restaurantName.setText(current.name);
-            restaurantViewHolder.restaurantAddress.setText(current.address);
-            pathReference = storageRef.getReference("restaurants/"+current.restaurantID+"/"+current.name+".png");
+            restaurantViewHolder.restaurantName.setText(current.getName());
+            restaurantViewHolder.restaurantAddress.setText(current.getAddress());
+            pathReference = storageRef.getReference("restaurants/"+current.getRestaurantID()+"/"+current.getName()+".png");
             Glide.with(context)
                 .using(new FirebaseImageLoader())
                 .load(pathReference)
                 .into(restaurantViewHolder.restaurantPhoto);
-            if (!current.bookmarked) {
+            if (!current.isBookmarked()) {
                 restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_off);
             } else {
                 restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_on);
@@ -149,15 +149,15 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
                 public void onClick(View view) {
                     int pos = restaurantViewHolder.getAdapterPosition();
                     if (bookmarks) {pos = marks.get(pos);}
-                    if (!res.get(pos).bookmarked) {
+                    if (!res.get(pos).isBookmarked()) {
                         restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_on);
-                        res.get(pos).bookmarked=true;
-                        mBookmarks.add(res.get(pos).restaurantID);
+                        res.get(pos).setBookmarked(true);
+                        mBookmarks.add(res.get(pos).getRestaurantID());
                     } else {
                         restaurantViewHolder.bookmark.setImageResource(R.drawable.btn_pressed_off);
-                        res.get(pos).bookmarked=false;
+                        res.get(pos).setBookmarked(false);
                         for(int i=0; i<mBookmarks.size(); i++){
-                            if(mBookmarks.get(i)==res.get(pos).restaurantID)mBookmarks.remove(i);
+                            if(mBookmarks.get(i)==res.get(pos).getRestaurantID())mBookmarks.remove(i);
                         }
                     }
                     ((ChooseActivity)context).refresh(mBookmarks, bookmarks);

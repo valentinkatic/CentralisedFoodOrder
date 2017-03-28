@@ -16,6 +16,7 @@ import com.katic.centralisedfoodorder.classes.Pizza;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class CustomListAdapterDialog extends BaseAdapter {
 
@@ -66,28 +67,28 @@ public class CustomListAdapterDialog extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.sizeView.setText(item.size);
-        holder.priceView.setText(String.format("%.2f", item.price)+" kn");
+        holder.sizeView.setText(item.getSize());
+        holder.priceView.setText(String.format(Locale.getDefault(), "%.2f kn", item.getPrice()));
         holder.cartView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (item.addedToCart) {
-                    item.addedToCart = false;
+                if (item.isAddedToCart()) {
+                    item.setAddedToCart(false);
                     for (int i = 0; i < cart.size(); i++) {
                         GroupItem current = cart.get(i);
-                        if (current.title.equals(restaurantTitle))
-                            for (int j = 0; j < current.items.size(); j++)
-                                if (current.items.get(j).title.equals(title+" ("+item.size+")")) {
-                                    cart.get(i).items.remove(j);
+                        if (current.getTitle().equals(restaurantTitle))
+                            for (int j = 0; j < current.getItems().size(); j++)
+                                if (current.getItems().get(j).getTitle().equals(title+" ("+item.getSize()+")")) {
+                                    cart.get(i).getItems().remove(j);
                                     holder.cartView.setImageResource(R.drawable.add_to_cart);
                                 }
                     }
                 } else {
-                    item.addedToCart = true;
+                    item.setAddedToCart(true);
                     GroupItem groupItem = new GroupItem();
-                    groupItem.title = restaurantTitle;
-                    ChildItem cartItem = new ChildItem(title+" ("+item.size+")", ingredients, item.price, "Pizze", 1);
-                    groupItem.items.add(cartItem);
+                    groupItem.setTitle(restaurantTitle);
+                    ChildItem cartItem = new ChildItem(title+" ("+item.getSize()+")", ingredients, item.getPrice(), "Pizze", 1);
+                    groupItem.getItems().add(cartItem);
                     cart.add(groupItem);
                     holder.cartView.setImageResource(R.drawable.checkout);
                 }
@@ -97,13 +98,13 @@ public class CustomListAdapterDialog extends BaseAdapter {
 
         for (int i=0; i<cart.size(); i++){
             GroupItem current = cart.get(i);
-            if(current.title.equals(restaurantTitle))
-                for (int j=0; j<current.items.size(); j++)
-                    if(current.items.get(j).title.equals(title+" ("+item.size+")"))
-                        item.addedToCart=true;
+            if(current.getTitle().equals(restaurantTitle))
+                for (int j=0; j<current.getItems().size(); j++)
+                    if(current.getItems().get(j).getTitle().equals(title+" ("+item.getSize()+")"))
+                        item.setAddedToCart(true);
         }
 
-        if (item.addedToCart) {
+        if (item.isAddedToCart()) {
             holder.cartView.setImageResource(R.drawable.checkout);
         } else {
             holder.cartView.setImageResource(R.drawable.add_to_cart);
@@ -112,7 +113,7 @@ public class CustomListAdapterDialog extends BaseAdapter {
         return convertView;
     }
 
-    static class ViewHolder {
+    private static class ViewHolder {
         TextView sizeView;
         TextView priceView;
         ImageView cartView;

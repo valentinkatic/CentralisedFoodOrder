@@ -116,7 +116,7 @@ public class RestaurantActivity extends BaseActivity {
                     //Postavljanje slike restorana
                     storageRef = FirebaseStorage.getInstance();
                     pathReference = storageRef.
-                            getReference("restaurants/"+current.restaurantID+"/"+current.name+"_large.png");
+                            getReference("restaurants/"+current.getRestaurantID()+"/"+current.getName()+"_large.png");
                     Glide.with(getApplicationContext())
                             .using(new FirebaseImageLoader())
                             .load(pathReference)
@@ -130,11 +130,11 @@ public class RestaurantActivity extends BaseActivity {
                             count=0;
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                                 GroupItem item = new GroupItem();
-                                item.title=snapshot.getKey();
+                                item.setTitle(snapshot.getKey());
                                 for (DataSnapshot snapshot1 : snapshot.getChildren()){
                                     CartItem cart = snapshot1.getValue(CartItem.class);
                                     ChildItem child = new ChildItem(cart);
-                                    item.items.add(child);
+                                    item.getItems().add(child);
                                     count++;
                                 }
                                 cart.add(item);
@@ -157,11 +157,11 @@ public class RestaurantActivity extends BaseActivity {
         };
 
         for (int i=0; i<res.size(); i++){
-            if (res.get(i).restaurantID==resID) {
+            if (res.get(i).getRestaurantID()==resID) {
                 current=res.get(i);
-                title=current.name;
+                title=current.getName();
                 titleView.setText(title);
-                addressView.setText(current.address);
+                addressView.setText(current.getAddress());
             }
         }
 
@@ -179,11 +179,11 @@ public class RestaurantActivity extends BaseActivity {
                 items.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     GroupItem item = new GroupItem();
-                    item.title = snapshot.getKey();
+                    item.setTitle(snapshot.getKey());
 
                     for (DataSnapshot children : snapshot.getChildren()){
                         ChildItem child = children.getValue(ChildItem.class);
-                        item.items.add(child);
+                        item.getItems().add(child);
                     }
 
                     items.add(item);
@@ -214,7 +214,7 @@ public class RestaurantActivity extends BaseActivity {
     };
 
     private void MapMethod() {
-        Uri gmmIntentUri = Uri.parse("google.navigation:q="+ current.address+" "+current.city +"&mode=d");
+        Uri gmmIntentUri = Uri.parse("google.navigation:q="+ current.getAddress()+" "+current.getCity() +"&mode=d");
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
         if (mapIntent.resolveActivity(getPackageManager()) != null) {
@@ -227,14 +227,14 @@ public class RestaurantActivity extends BaseActivity {
         List<CartItem> cartItem = new ArrayList<>();
         count=0;
         for(int i=0; i<cart.size(); i++) {
-            if (cart.get(i).title.equals(string)) {
-                for (int j = 0; j < cart.get(i).items.size(); j++) {
-                    ChildItem current = cart.get(i).items.get(j);
-                    CartItem currentItem = new CartItem(current.title, current.ingredients, current.price, current.type, current.quantity);
+            if (cart.get(i).getTitle().equals(string)) {
+                for (int j = 0; j < cart.get(i).getItems().size(); j++) {
+                    ChildItem current = cart.get(i).getItems().get(j);
+                    CartItem currentItem = new CartItem(current.getTitle(), current.getIngredients(), current.getPrice(), current.getType(), current.getQuantity());
                     cartItem.add(currentItem);
                 }
             }
-            for (int j = 0; j < cart.get(i).items.size(); j++) count++;
+            for (int j = 0; j < cart.get(i).getItems().size(); j++) count++;
         }
         mUserReference.child("cart").child(string).setValue(cartItem);
         invalidateOptionsMenu();
@@ -243,7 +243,7 @@ public class RestaurantActivity extends BaseActivity {
     //Metoda za pozivanje restorana
     private void makeCall(){
         Intent callIntent = new Intent(Intent.ACTION_DIAL);
-        String phone = "tel:" + current.phone;
+        String phone = "tel:" + current.getPhone();
         callIntent.setData(Uri.parse(phone));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -266,10 +266,10 @@ public class RestaurantActivity extends BaseActivity {
                 // expandGroupWithAnimation(int) to animate group
                 // expansion/collapse.
                 if (listView.isGroupExpanded(groupPosition)) {
-                    items.get(groupPosition).clickedGroup = false;
+                    items.get(groupPosition).setClickedGroup(false);
                     listView.collapseGroupWithAnimation(groupPosition);
                 } else {
-                    items.get(groupPosition).clickedGroup = true;
+                    items.get(groupPosition).setClickedGroup(true);
                     listView.expandGroupWithAnimation(groupPosition);
                 }
                 return true;

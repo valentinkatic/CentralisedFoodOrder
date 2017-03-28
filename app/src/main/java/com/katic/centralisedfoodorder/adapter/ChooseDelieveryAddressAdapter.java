@@ -20,7 +20,7 @@ public class ChooseDelieveryAddressAdapter extends BaseAdapter {
     private List<DeliveryAddress> listData;
 
     private LayoutInflater layoutInflater;
-    Context context;
+    private Context context;
 
     public ChooseDelieveryAddressAdapter(Context context, List<DeliveryAddress> listData) {
         this.listData = listData;
@@ -65,8 +65,8 @@ public class ChooseDelieveryAddressAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 for(int i=0; i<listData.size(); i++)
-                    listData.get(i).defaultAddress=false;
-                listData.get(position).defaultAddress=true;
+                    listData.get(i).setDefaultAddress(false);
+                listData.get(position).setDefaultAddress(true);
                 ((ConfirmActivity) context).setAddress(listData, position);
             }
         });
@@ -80,16 +80,16 @@ public class ChooseDelieveryAddressAdapter extends BaseAdapter {
             }
         });
 
-        holder.lastNameView.setText(item.lastName);
-        holder.streetView.setText(item.street);
-        holder.streetNumView.setText(item.streetNumber);
-        holder.cityView.setText(item.city);
-        holder.phoneNumView.setText(item.phoneNumber);
+        holder.lastNameView.setText(item.getLastName());
+        holder.streetView.setText(item.getStreet());
+        holder.streetNumView.setText(item.getStreetNumber());
+        holder.cityView.setText(item.getCity());
+        holder.phoneNumView.setText(item.getPhoneNumber());
 
         return convertView;
     }
 
-    static class ViewHolder {
+    private static class ViewHolder {
         RelativeLayout addressDialogView;
         TextView lastNameView;
         TextView streetView;

@@ -119,12 +119,12 @@ public class OrderHistoryActivity extends BaseActivity {
     //Metoda za dodavanje stare narudžbe u košaricu
     public void addToCart(GroupItem cart){
         List<CartItem> cartItem = new ArrayList<>();
-        for(int i=0; i<cart.items.size(); i++){
-            ChildItem current = cart.items.get(i);
-            CartItem currentItem = new CartItem(current.title, current.ingredients, current.price, current.type, current.quantity);
+        for(int i=0; i<cart.getItems().size(); i++){
+            ChildItem current = cart.getItems().get(i);
+            CartItem currentItem = new CartItem(current.getTitle(), current.getIngredients(), current.getPrice(), current.getType(), current.getQuantity());
             cartItem.add(currentItem);
         }
-        mUserReference.child("cart").child(cart.title).setValue(cartItem);
+        mUserReference.child("cart").child(cart.getTitle()).setValue(cartItem);
         Intent intent = new Intent(OrderHistoryActivity.this, CartActivity.class);
         startActivity(intent);
         finish();

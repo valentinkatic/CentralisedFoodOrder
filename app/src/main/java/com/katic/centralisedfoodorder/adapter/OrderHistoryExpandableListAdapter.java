@@ -37,7 +37,7 @@ public class OrderHistoryExpandableListAdapter extends BaseExpandableListAdapter
 
     @Override
     public ChildItem getChild(int groupPosition, int childPosition) {
-        return items.get(groupPosition).items.get(childPosition);
+        return items.get(groupPosition).getItems().get(childPosition);
     }
 
     @Override
@@ -65,19 +65,19 @@ public class OrderHistoryExpandableListAdapter extends BaseExpandableListAdapter
             holder = (ChildHolder) convertView.getTag();
         }
 
-        holder.title.setText(item.title);
-        holder.type.setText(item.type);
-        holder.price.setText(String.format(Locale.getDefault(),"%.2f kn", item.price));
-        holder.ingredients.setText(item.ingredients);
+        holder.title.setText(item.getTitle());
+        holder.type.setText(item.getType());
+        holder.price.setText(String.format(Locale.getDefault(),"%.2f kn", item.getPrice()));
+        holder.ingredients.setText(item.getIngredients());
 
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!item.clicked) {
-                    item.clicked=true;
+                if (!item.isClicked()) {
+                    item.setClicked(true);
                     holder.ingredients.setVisibility(View.VISIBLE);
                 } else {
-                    item.clicked=false;
+                    item.setClicked(false);
                     holder.ingredients.setVisibility(View.GONE);
                 }
             }
@@ -88,7 +88,7 @@ public class OrderHistoryExpandableListAdapter extends BaseExpandableListAdapter
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return items.get(groupPosition).items.size();
+        return items.get(groupPosition).getItems().size();
     }
 
     @Override
@@ -126,8 +126,8 @@ public class OrderHistoryExpandableListAdapter extends BaseExpandableListAdapter
             holder = (GroupHolder) convertView.getTag();
         }
 
-        holder.title.setText(item.title);
-        holder.date.setText(item.orderTime);
+        holder.title.setText(item.getTitle());
+        holder.date.setText(item.getOrderTime());
 
         holder.groupImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,7 +176,7 @@ public class OrderHistoryExpandableListAdapter extends BaseExpandableListAdapter
     };
 
     public void MapMethod() {
-        Uri gmmIntentUri = Uri.parse("google.navigation:q="+ items.get(pos).address+" "+items.get(pos).city +"&mode=d");
+        Uri gmmIntentUri = Uri.parse("google.navigation:q="+ items.get(pos).getAddress()+" "+items.get(pos).getCity() +"&mode=d");
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
         if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
