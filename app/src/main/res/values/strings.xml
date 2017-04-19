@@ -57,4 +57,7 @@
     <string name="name">Naziv</string>
     <string name="price">Cijena</string>
     <string name="ingredients">Sastojci</string>
+    <string name="loading">Učitavanje...</string>
+    <string name="error">Pogreška!</string>
+    <string name="no_more_than_one">Ne možete imati više od jednog restorana u košarici!</string>
 </resources>

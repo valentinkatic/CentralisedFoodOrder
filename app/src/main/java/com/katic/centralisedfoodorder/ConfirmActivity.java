@@ -66,9 +66,9 @@ public class ConfirmActivity extends BaseActivity {
     private EditText mApartmentNum;
     private EditText mLastNamePickup;
 
-    private ArrayList<DeliveryAddress> list = new ArrayList<>();
-    private List<GroupItem> cart = new ArrayList<>();
-    private List<GroupItem> orderHistory = new ArrayList<>();
+    private List<DeliveryAddress> deliveryAddresses = new ArrayList<>();
+    private List<GroupItem> cart = getCart();
+    private List<GroupItem> orderHistory = getOrderHistory();
     private Dialog chooseDialog;
     private String comment;
     private String resAddress;
@@ -124,7 +124,8 @@ public class ConfirmActivity extends BaseActivity {
         confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "confirm:" + mLastName.getText().toString());if(delieveryRadio.isChecked() || pickupRadio.isChecked()) {
+                Log.d(TAG, "confirm:" + mLastName.getText().toString());
+                if(delieveryRadio.isChecked() || pickupRadio.isChecked()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(ConfirmActivity.this);
                     builder.setMessage(getText(R.string.orderConfirm)).setPositiveButton(getText(R.string.yes), dialogClickListener)
                             .setNegativeButton(getText(R.string.no), dialogClickListener).show();
@@ -140,7 +141,8 @@ public class ConfirmActivity extends BaseActivity {
                 View dialogView = getLayoutInflater().inflate(R.layout.dialog_main, null);
                 ListView lv = (ListView) dialogView.findViewById(R.id.custom_list);
 
-                ChooseDelieveryAddressAdapter clad = new ChooseDelieveryAddressAdapter(ConfirmActivity.this, list);
+                ChooseDelieveryAddressAdapter clad = new ChooseDelieveryAddressAdapter(
+                        ConfirmActivity.this, deliveryAddresses);
 
                 lv.setAdapter(clad);
 
@@ -168,12 +170,12 @@ public class ConfirmActivity extends BaseActivity {
                     String phoneNum = mPhoneNum.getText().toString();
 
                     DeliveryAddress address = new DeliveryAddress(lastName,street,streetNum,city,floor,apartmentNum,phoneNum);
-                    for(int i=0; i<list.size(); i++){
-                        list.get(i).setDefaultAddress(false);
+                    for(int i=0; i<deliveryAddresses.size(); i++){
+                        deliveryAddresses.get(i).setDefaultAddress(false);
                     }
 
-                    list.add(address);
-                    addAddress(list, true);
+                    deliveryAddresses.add(address);
+                    addAddress(deliveryAddresses, true);
                 }
             }
         });
@@ -213,15 +215,14 @@ public class ConfirmActivity extends BaseActivity {
                     mRestaurantDataReference = FirebaseDatabase.getInstance().getReference().child("restaurantData");
                     mRestaurantReference = FirebaseDatabase.getInstance().getReference().child("restaurants");
 
-                    list.clear();
-
                     //Učitavanje iz baze spremljene adrese korisnika
                     mUserReference.child("deliveryAddress").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+                            deliveryAddresses.clear();
                             for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                                 DeliveryAddress da = snapshot.getValue(DeliveryAddress.class);
-                                list.add(da);
+                                deliveryAddresses.add(da);
                                 if (da.isDefaultAddress()) {
                                     mLastName.setText(da.getLastName());
                                     mStreet.setText(da.getStreet());
@@ -242,37 +243,15 @@ public class ConfirmActivity extends BaseActivity {
                     });
 
                     //Učitavanje stavki iz baze koje su unešene u košaricu
-                    mUserReference.child("cart").addListenerForSingleValueEvent(new ValueEventListener() {
+                    mUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            cart.clear();
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                                GroupItem item = new GroupItem();
-                                item.setTitle(snapshot.getKey());
-                                for (DataSnapshot snapshot1 : snapshot.getChildren()){
-                                    CartItem cart = snapshot1.getValue(CartItem.class);
-                                    ChildItem child = new ChildItem(cart);
-                                    item.getItems().add(child);
-                                }
-                                cart.add(item);
-                            }
+                            mUserReference.child("cart").addListenerForSingleValueEvent(cartValueListener);
+                            cart = getCart();
                             mRestaurantReference.addListenerForSingleValueEvent(getAddress);
-                        }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-
-                    orderHistory.clear();
-                    mUserReference.child("orderHistory").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                                GroupItem item = snapshot.getValue(GroupItem.class);
-                                orderHistory.add(item);
-                            }
+                            mUserReference.child("orderHistory").addValueEventListener(orderHistoryListener);
+                            orderHistory = getOrderHistory();
                         }
 
                         @Override

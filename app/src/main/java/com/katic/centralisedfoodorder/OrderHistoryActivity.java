@@ -31,7 +31,7 @@ public class OrderHistoryActivity extends BaseActivity {
 
     private static final String TAG = "OrderHistoryActivity";
     private boolean orderCompleted;
-    public static List<GroupItem> orderHistory = new ArrayList<>();
+    public static List<GroupItem> orderHistory = getOrderHistory();
 
     private DatabaseReference mUserReference;
     private FirebaseAuth mAuth;
@@ -64,14 +64,11 @@ public class OrderHistoryActivity extends BaseActivity {
                     mUserReference = FirebaseDatabase.getInstance().getReference()
                             .child("users").child(user.getUid());
 
-                    orderHistory.clear();
-                    mUserReference.child("orderHistory").addListenerForSingleValueEvent(new ValueEventListener() {
+                    mUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                                GroupItem item = snapshot.getValue(GroupItem.class);
-                                orderHistory.add(item);
-                            }
+                            mUserReference.child("orderHistory").addValueEventListener(orderHistoryListener);
+                            orderHistory = getOrderHistory();
                             adapter.notifyDataSetChanged();
                             if (orderHistory.size()>0) orderHistoryView.setVisibility(View.VISIBLE);
                             else orderHistoryEmpty.setVisibility(View.VISIBLE);

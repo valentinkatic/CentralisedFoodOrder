@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import com.katic.centralisedfoodorder.BaseActivity;
 import com.katic.centralisedfoodorder.CartActivity;
 import com.katic.centralisedfoodorder.R;
 import com.katic.centralisedfoodorder.RestaurantActivity;
@@ -28,7 +29,7 @@ public class CartExpandableListAdapter extends BaseExpandableListAdapter {
     private LayoutInflater inflater;
 
     private static List<GroupItem> items;
-    private List<GroupItem> cart = CartActivity.cart;
+    private List<GroupItem> cart = BaseActivity.getCart();
     Context context;
 
     public CartExpandableListAdapter(Context context, List<GroupItem> items) {

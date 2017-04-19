@@ -49,8 +49,8 @@ public class RestaurantActivity extends BaseActivity {
 
     private static final String TAG = "RestaurantActivity";
     public static List<GroupItem> items = new ArrayList<>();
-    public static List<GroupItem> cart = new ArrayList<>();
-    private int count = 0;
+    public static List<GroupItem> cart = getCart();
+    private int count = getCount();
 
     private DatabaseReference mDatabase;
     private DatabaseReference mUserReference;
@@ -61,7 +61,7 @@ public class RestaurantActivity extends BaseActivity {
     private StorageReference pathReference;
     private ValueEventListener itemsListener;
 
-    private List<Restaurant> res = ChooseActivity.restaurants;
+    private List<Restaurant> restaurants = getRestaurants();
     private Restaurant current;
 
     private Long resID;
@@ -78,7 +78,6 @@ public class RestaurantActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant);
-        Log.d(TAG, "CreatingActivity");
 
         resID = getIntent().getLongExtra(RVAdapter.ID, 0);
 
@@ -102,6 +101,15 @@ public class RestaurantActivity extends BaseActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("restaurants").child(Long.toString(resID)).child("food_list");
 
+        for (int i=0; i<restaurants.size(); i++){
+            if (restaurants.get(i).getRestaurantID()==resID) {
+                current=restaurants.get(i);
+                title=current.getName();
+                titleView.setText(title);
+                addressView.setText(current.getAddress());
+            }
+        }
+
         //Povezivanje s Firebase bazom podataka
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -122,23 +130,17 @@ public class RestaurantActivity extends BaseActivity {
                             .load(pathReference)
                             .into(imgView);
 
+                    mDatabase.child("restaurants").addValueEventListener(restaurantsValueListener);
+                    restaurants = getRestaurants();
+
                     ////Učitavanje stavki koje su u košarici i njihovo prebrojavanje za potrebe prikaza ikone košarice
-                    mUserReference.child("cart").addValueEventListener(new ValueEventListener() {
+                    mUserReference.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            cart.clear();
-                            count=0;
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                                GroupItem item = new GroupItem();
-                                item.setTitle(snapshot.getKey());
-                                for (DataSnapshot snapshot1 : snapshot.getChildren()){
-                                    CartItem cart = snapshot1.getValue(CartItem.class);
-                                    ChildItem child = new ChildItem(cart);
-                                    item.getItems().add(child);
-                                    count++;
-                                }
-                                cart.add(item);
-                            }
+                            mUserReference.child("cart").addValueEventListener(cartValueListener);
+
+                            cart=getCart();
+                            count=getCount();
                             adapter.notifyDataSetChanged();
                             invalidateOptionsMenu();
                         }
@@ -155,15 +157,6 @@ public class RestaurantActivity extends BaseActivity {
                 }
             }
         };
-
-        for (int i=0; i<res.size(); i++){
-            if (res.get(i).getRestaurantID()==resID) {
-                current=res.get(i);
-                title=current.getName();
-                titleView.setText(title);
-                addressView.setText(current.getAddress());
-            }
-        }
 
         //Postavljanje naslova Action Baru
         ActionBar actionBar = getSupportActionBar();
@@ -283,7 +276,7 @@ public class RestaurantActivity extends BaseActivity {
         super.onStart();
 
         mAuth.addAuthStateListener(mAuthListener);
-        mDatabase.addListenerForSingleValueEvent(itemsListener);
+        mDatabase.addValueEventListener(itemsListener);
 
     }
 

@@ -35,7 +35,7 @@ import java.util.Locale;
 public class CartActivity extends BaseActivity {
 
     private static final String TAG = "CartActivity";
-    public static List<GroupItem> cart = new ArrayList<>();
+    private List<GroupItem> cart = getCart();
 
     private DatabaseReference mUserReference;
     private FirebaseAuth mAuth;
@@ -68,8 +68,8 @@ public class CartActivity extends BaseActivity {
             public void onClick(View view) {
                 if (cart.size()>1){
                     AlertDialog.Builder builder = new AlertDialog.Builder(CartActivity.this);
-                    builder.setMessage("Ne možete imati više od jednog restorana u košarici!")
-                            .setTitle("Pogreška!")
+                    builder.setMessage(R.string.no_more_than_one)
+                            .setTitle(R.string.error)
                             .setPositiveButton(android.R.string.ok, null);
                     AlertDialog dialog = builder.create();
                     dialog.show();
@@ -95,20 +95,12 @@ public class CartActivity extends BaseActivity {
                             .child("users").child(user.getUid());
 
                     //Učitavanje stavki iz baze koje su unešene u košaricu
-                    mUserReference.child("cart").addListenerForSingleValueEvent(new ValueEventListener() {
+                    mUserReference.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            cart.clear();
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                                GroupItem item = new GroupItem();
-                                item.setTitle(snapshot.getKey());
-                                for (DataSnapshot snapshot1 : snapshot.getChildren()){
-                                    CartItem cart = snapshot1.getValue(CartItem.class);
-                                    ChildItem child = new ChildItem(cart);
-                                    item.getItems().add(child);
-                                }
-                                cart.add(item);
-                            }
+                            mUserReference.child("cart").addValueEventListener(cartValueListener);
+                            cart=getCart();
+
                             adapter.notifyDataSetChanged();
                             setSubtotal();
                             for(int i=0; i<adapter.getGroupCount(); i++)

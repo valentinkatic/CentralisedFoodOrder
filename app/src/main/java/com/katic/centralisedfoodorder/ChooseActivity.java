@@ -15,6 +15,7 @@ import com.katic.centralisedfoodorder.classes.FilterData;
 import com.katic.centralisedfoodorder.classes.GroupItem;
 import com.katic.centralisedfoodorder.classes.Restaurant;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -44,7 +45,6 @@ public class ChooseActivity extends BaseActivity {
     private static final String TAG = "ChooseActivity";
 
     private boolean doubleBackToExitPressedOnce = false;
-    public static List<GroupItem> cart = new ArrayList<>();
     private int count = 0;
 
     private DatabaseReference mDatabase;
@@ -53,11 +53,10 @@ public class ChooseActivity extends BaseActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser user;
 
-    public static List<Restaurant> restaurants = new ArrayList<>();
+    private List<Restaurant> restaurants = getRestaurants();
+    private List<FilterData> filterData = getFilterData();
     public static List<Restaurant> restaurantsFilter = new ArrayList<>();
     public static List<Restaurant> restaurantsFilterBookmarks = new ArrayList<>();
-    public static List<Long> bookmarks;
-    private List<FilterData> filterData = new ArrayList<>();
 
     private RecyclerView listview;
     private RecyclerView listview2;
@@ -112,9 +111,6 @@ public class ChooseActivity extends BaseActivity {
 
         showProgressDialog();
 
-        bookmarks = new ArrayList<>();
-        //filterData = fill_with_data();
-
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -127,97 +123,33 @@ public class ChooseActivity extends BaseActivity {
         //Pozivanje metode za postavljanje tabova
         setupTabs();
 
-        //Povezivanje s Firebase bazom podataka
+        //Dohvaćanje podataka za filter i ažuriranje s obzirom na izmjene
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + getUid());
                     mUserReference = FirebaseDatabase.getInstance().getReference()
-                            .child("users").child(user.getUid());
+                            .child("users").child(getUid());
 
-                    //Učitavanje iz baze ID-ova restorana koji su bookmark-ani
-                    mUserReference.child("bookmarks").addListenerForSingleValueEvent(new ValueEventListener() {
+                    mDatabase.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+                            mUserReference.child("bookmarks").addValueEventListener(bookmarksValueListener);
+                            mDatabase.child("restaurants").addValueEventListener(restaurantsValueListener);
+                            mUserReference.child("cart").addValueEventListener(cartValueListener);
+                            mDatabase.child("filterData").addValueEventListener(filterDataValueListener);
 
-                            bookmarks.clear();
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                Long item = (Long) snapshot.getValue();
-                                bookmarks.add(item);
-                            }
-
-                            //Učitavanje vrijednosti za sve restorane i postavljanje oznake ako su prethodno bookmark-ani
-                            mDatabase.child("restaurants").addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    restaurants.clear();
-                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                        Restaurant currentRes = snapshot.getValue(Restaurant.class);
-
-                                        for (int i = 0; i<bookmarks.size(); i++){
-                                            if (bookmarks.get(i)==currentRes.getRestaurantID())
-                                                currentRes.setBookmarked(true);
-                                        }
-
-                                        restaurants.add(currentRes);
-                                    }
-                                    initializeAdapter();
-                                    hideProgressDialog();
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
-
-                            mDatabase.child("filterData").addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    filterData.clear();
-                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                                        FilterData data = snapshot.getValue(FilterData.class);
-
-                                        filterData.add(data);
-                                    }
-                                    initializeHorizontalAdapter();
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-
-                    //Učitavanje stavki koje su u košarici i njihovo prebrojavanje za potrebe prikaza ikone košarice
-                    mUserReference.child("cart").addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            cart.clear();
-                            count=0;
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                                GroupItem item = new GroupItem();
-                                item.setTitle(snapshot.getKey());
-                                for (DataSnapshot snapshot1 : snapshot.getChildren()){
-                                    CartItem cart = snapshot1.getValue(CartItem.class);
-                                    ChildItem child = new ChildItem(cart);
-                                    item.getItems().add(child);
-                                    count++;
-                                }
-                                cart.add(item);
-                            }
+                            filterData = getFilterData();
+                            restaurants = getRestaurants();
+                            count = getCount();
+                            initializeHorizontalAdapter();
+                            initializeAdapter();
                             invalidateOptionsMenu();
+
+                            hideProgressDialog();
                         }
 
                         @Override
@@ -235,7 +167,6 @@ public class ChooseActivity extends BaseActivity {
         };
 
         mAuth.addAuthStateListener(mAuthListener);
-
     }
 
     //Metoda za postavljanje Tab-ova, povezivanje s maketom i definiranje funkcija prilikom klika na horizontalnu listu
@@ -275,7 +206,6 @@ public class ChooseActivity extends BaseActivity {
         mUserReference.child("bookmarks").setValue(bookmarks);
     }
 
-
     public void refresh(ArrayList<Integer> items, boolean bookmarks, boolean filtered){
         if (!bookmarks){
             this.filtered = filtered;
@@ -286,8 +216,10 @@ public class ChooseActivity extends BaseActivity {
                     for (int z = 0; z < items.size(); z++) {
                         for (int y = 0; y < filterData.size(); y ++) {
                             if (items.get(z) == y) {
-                                if (restaurants.get(i).getFood_type().get(j).equals(filterData.get(y).getId()))
+                                if (restaurants.get(i).getFood_type().get(j).equals(filterData.get(y).getId())){
                                     count++;
+                                    setCount(count);
+                                }
                             }
                         }
                     }
@@ -303,8 +235,10 @@ public class ChooseActivity extends BaseActivity {
                     for (int z = 0; z < items.size(); z++) {
                         for (int y = 0; y < filterData.size(); y++) {
                             if (items.get(z) == y) {
-                                if (restaurants.get(i).getFood_type().get(j).equals(filterData.get(y).getId()))
+                                if (restaurants.get(i).getFood_type().get(j).equals(filterData.get(y).getId())) {
                                     count++;
+                                    setCount(count);
+                                }
                             }
                         }
                     }

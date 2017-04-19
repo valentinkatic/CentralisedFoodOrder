@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.katic.centralisedfoodorder.BaseActivity;
 import com.katic.centralisedfoodorder.ChooseActivity;
 import com.katic.centralisedfoodorder.R;
 import com.katic.centralisedfoodorder.classes.Restaurant;
@@ -90,8 +91,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
     private FirebaseStorage storageRef = FirebaseStorage.getInstance();
     private StorageReference pathReference;
 
-    private List<Restaurant> res = ChooseActivity.restaurants;
-    private List<Long> mBookmarks = ChooseActivity.bookmarks;
+    private List<Restaurant> res = BaseActivity.getRestaurants();
+    private List<Long> mBookmarks = BaseActivity.getBookmarks();
     private List<Integer> marks = new ArrayList<>();
     private boolean bookmarks;
     private Context context;
