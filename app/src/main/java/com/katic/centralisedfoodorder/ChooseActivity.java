@@ -7,15 +7,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.katic.centralisedfoodorder.adapter.FragmentAdapter;
 import com.katic.centralisedfoodorder.adapter.HorizontalAdapter;
 import com.katic.centralisedfoodorder.adapter.RVAdapter;
-import com.katic.centralisedfoodorder.classes.CartItem;
-import com.katic.centralisedfoodorder.classes.ChildItem;
 import com.katic.centralisedfoodorder.classes.FilterData;
-import com.katic.centralisedfoodorder.classes.GroupItem;
 import com.katic.centralisedfoodorder.classes.Restaurant;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -23,6 +20,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -62,7 +61,7 @@ public class ChooseActivity extends BaseActivity {
     private RecyclerView listview2;
     private RecyclerView rv;
     private RecyclerView rv2;
-    private TabHost host;
+    private ViewPager viewPager;
 
     private boolean filtered = false;
     private boolean bookmarksFiltered = false;
@@ -121,7 +120,7 @@ public class ChooseActivity extends BaseActivity {
         actionBar.collapseActionView();
 
         //Pozivanje metode za postavljanje tabova
-        setupTabs();
+//        setupTabs();
 
         //Dohvaćanje podataka za filter i ažuriranje s obzirom na izmjene
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -130,6 +129,7 @@ public class ChooseActivity extends BaseActivity {
                 user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
+//                    mUserReference.child("bookmarks").addValueEventListener(bookmarksValueListener);
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + getUid());
                     mUserReference = FirebaseDatabase.getInstance().getReference()
                             .child("users").child(getUid());
@@ -137,7 +137,6 @@ public class ChooseActivity extends BaseActivity {
                     mDatabase.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            mUserReference.child("bookmarks").addValueEventListener(bookmarksValueListener);
                             mDatabase.child("restaurants").addValueEventListener(restaurantsValueListener);
                             mUserReference.child("cart").addValueEventListener(cartValueListener);
                             mDatabase.child("filterData").addValueEventListener(filterDataValueListener);
@@ -145,9 +144,11 @@ public class ChooseActivity extends BaseActivity {
                             filterData = getFilterData();
                             restaurants = getRestaurants();
                             count = getCount();
-                            initializeHorizontalAdapter();
-                            initializeAdapter();
+                            /*initializeHorizontalAdapter();
+                            initializeAdapter();*/
                             invalidateOptionsMenu();
+
+                            viewPager.getAdapter().notifyDataSetChanged();
 
                             hideProgressDialog();
                         }
@@ -158,6 +159,7 @@ public class ChooseActivity extends BaseActivity {
                         }
                     });
 
+                    setupPager();
 
                 } else {
                     // User is signed out
@@ -169,8 +171,39 @@ public class ChooseActivity extends BaseActivity {
         mAuth.addAuthStateListener(mAuthListener);
     }
 
+    private void setupPager(){
+        ArrayList<String> tabTitles = new ArrayList<>();
+        tabTitles.add(getString(R.string.all));
+        tabTitles.add(getString(R.string.favorites));
+
+        // Get the ViewPager and set it's PagerAdapter so that it can display items
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager.setAdapter(new FragmentAdapter(ChooseActivity.this, tabTitles, filterData, restaurants));
+
+        // Give the TabLayout the ViewPager
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(viewPager);
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                viewPager.getAdapter().notifyDataSetChanged();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
     //Metoda za postavljanje Tab-ova, povezivanje s maketom i definiranje funkcija prilikom klika na horizontalnu listu
-    private void setupTabs(){
+    /*private void setupTabs(){
         host = (TabHost)findViewById(tabHost);
         host.setup();
 
@@ -198,15 +231,19 @@ public class ChooseActivity extends BaseActivity {
         LinearLayoutManager llm2 = new LinearLayoutManager(this);
         rv2.setLayoutManager(llm2);
 
+    }*/
+
+    public void refresh(){
+
     }
 
     //Metoda za osvježavanje prikaza restorana prilikom označavanja filtera ili bookmark zvijezdice
     public void refresh(List<Long> bookmarks, boolean bookmarksTag){
-        initializeAdapter(bookmarksTag);
+//        initializeAdapter(bookmarksTag);
         mUserReference.child("bookmarks").setValue(bookmarks);
     }
 
-    public void refresh(ArrayList<Integer> items, boolean bookmarks, boolean filtered){
+    /*public void refresh(ArrayList<Integer> items, boolean bookmarks, boolean filtered){
         if (!bookmarks){
             this.filtered = filtered;
             restaurantsFilter.clear();
@@ -246,10 +283,10 @@ public class ChooseActivity extends BaseActivity {
                 if (count == items.size()) restaurantsFilterBookmarks.add(restaurants.get(i));
             }
         }
-        initializeAdapter();
-    }
+//        initializeAdapter();
+    }*/
 
-    //Inicijalizacija adaptera za Recycle liste
+    /*//Inicijalizacija adaptera za Recycle liste
     private void initializeAdapter(){
         rv.setAdapter(new RVAdapter(this, false, filtered));
         rv2.setAdapter(new RVAdapter(this, true, bookmarksFiltered));
@@ -260,9 +297,9 @@ public class ChooseActivity extends BaseActivity {
         rv.setAdapter(new RVAdapter(this, false, filtered));
         else
         rv2.setAdapter(new RVAdapter(this, true, bookmarksFiltered));
-    }
+    }*/
 
-    private void initializeHorizontalAdapter(){
+    /*private void initializeHorizontalAdapter(){
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(ChooseActivity.this, LinearLayoutManager.HORIZONTAL, false);
         LinearLayoutManager horizontalLayoutManager2 = new LinearLayoutManager(ChooseActivity.this, LinearLayoutManager.HORIZONTAL, false);
 
@@ -271,11 +308,12 @@ public class ChooseActivity extends BaseActivity {
 
         listview.setAdapter(new HorizontalAdapter(filterData, false, ChooseActivity.this));
         listview2.setAdapter(new HorizontalAdapter(filterData, true, ChooseActivity.this));
-    }
+    }*/
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
+        setupPager();
     }
 
     @Override

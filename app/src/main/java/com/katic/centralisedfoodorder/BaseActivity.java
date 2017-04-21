@@ -39,11 +39,11 @@ public class BaseActivity extends AppCompatActivity {
     protected static DatabaseReference mUserReference;
     protected static FirebaseUser user;
 
-    protected ValueEventListener restaurantsValueListener;
-    protected ValueEventListener bookmarksValueListener;
-    protected ValueEventListener cartValueListener;
-    protected ValueEventListener filterDataValueListener;
-    protected ValueEventListener orderHistoryListener;
+    protected static ValueEventListener restaurantsValueListener;
+    protected static ValueEventListener bookmarksValueListener;
+    protected static ValueEventListener cartValueListener;
+    protected static ValueEventListener filterDataValueListener;
+    protected static ValueEventListener orderHistoryListener;
 
     private static List<Restaurant> restaurants;
     private static List<Restaurant> restaurantsFilter;

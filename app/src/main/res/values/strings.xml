@@ -60,4 +60,6 @@
     <string name="loading">Učitavanje...</string>
     <string name="error">Pogreška!</string>
     <string name="no_more_than_one">Ne možete imati više od jednog restorana u košarici!</string>
+    <string name="all">Svi restorani</string>
+    <string name="favorites">Favoriti</string>
 </resources>

@@ -2,8 +2,10 @@ package com.katic.centralisedfoodorder.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -14,6 +16,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.katic.centralisedfoodorder.BaseActivity;
@@ -87,23 +96,54 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
     }
 
     public final static String ID = "com.katic.centralisedfoodorded.ID";
+    private final static String TAG = "RVAdapter";
 
     private FirebaseStorage storageRef = FirebaseStorage.getInstance();
     private StorageReference pathReference;
+    private DatabaseReference mUserReference;
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
 
-    private List<Restaurant> res = BaseActivity.getRestaurants();
+    private List<Restaurant> res;
     private List<Long> mBookmarks = BaseActivity.getBookmarks();
     private List<Integer> marks = new ArrayList<>();
     private boolean bookmarks;
     private Context context;
 
-    public RVAdapter(Context context, final boolean bookmarks, boolean filtered) {
+    public RVAdapter(final Context context, List<Restaurant> restaurants, final boolean bookmarks) {
         this.context = context;
+        this.res = restaurants;
         this.bookmarks = bookmarks;
-        if (filtered) {
-            if (!bookmarks) res = ChooseActivity.restaurantsFilter;
-            else if (bookmarks) res = ChooseActivity.restaurantsFilterBookmarks;
-        }
+
+        mAuth = FirebaseAuth.getInstance();
+        mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                user = firebaseAuth.getCurrentUser();
+                if (user != null){
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    mUserReference = FirebaseDatabase.getInstance().getReference()
+                            .child("users").child(user.getUid());
+
+                    mUserReference.child("bookmarks").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            mBookmarks.clear();
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                Long item = (Long) snapshot.getValue();
+                                mBookmarks.add(item);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @Override
@@ -123,7 +163,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
 
     @Override
     public RestaurantViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        RestaurantViewHolder rvh = null;
+        RestaurantViewHolder rvh;
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_restaurant, viewGroup, false);
         rvh = new RestaurantViewHolder(v);
         return rvh;
@@ -161,9 +201,13 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
                             if(mBookmarks.get(i)==res.get(pos).getRestaurantID())mBookmarks.remove(i);
                         }
                     }
-                    ((ChooseActivity)context).refresh(mBookmarks, bookmarks);
+                    updateData();
                 }
             });
+    }
+
+    private void updateData(){
+        mUserReference.child("bookmarks").setValue(mBookmarks);
     }
 
     @Override

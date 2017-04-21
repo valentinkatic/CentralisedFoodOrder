@@ -37,9 +37,8 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
     private FirebaseStorage storageRef = FirebaseStorage.getInstance();
     private StorageReference pathReference;
 
-    public HorizontalAdapter(List<FilterData> filterData, boolean bookmarks, Context context) {
+    public HorizontalAdapter(Context context, List<FilterData> filterData) {
         this.filterData = filterData;
-        this.bookmarks = bookmarks;
         this.context = context;
     }
 
@@ -97,12 +96,12 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
                     items = editFilter(items, position);
                     if (items.size()!=0) filtered=true;
                     else filtered = false;
-                    ((ChooseActivity)context).refresh(items, false, filtered);
+//                    ((ChooseActivity)context).refresh(items, false, filtered);
                 } else if (bookmarks) {
                     bookmarkedItems = editFilter(bookmarkedItems, position);
                     if (bookmarkedItems.size()!=0) bookmarksFiltered=true;
                     else bookmarksFiltered = false;
-                    ((ChooseActivity)context).refresh(bookmarkedItems, true, bookmarksFiltered);
+//                    ((ChooseActivity)context).refresh(bookmarkedItems, true, bookmarksFiltered);
                 }
             }
         });
