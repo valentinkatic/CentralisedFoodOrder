@@ -10,6 +10,7 @@ public class OrderData{
     private boolean isDelivery;
     private String lastNamePickup;
     private String comment;
+    private String orderTime;
 
     public OrderData(String phoneToken, List<ChildItem> orderItems, DeliveryAddress deliveryAddress, boolean isDelivery, String comment) {
         this.phoneToken = phoneToken;
@@ -76,5 +77,13 @@ public class OrderData{
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getOrderTime() {
+        return orderTime;
+    }
+
+    public void setOrderTime(String orderTime) {
+        this.orderTime = orderTime;
     }
 }

@@ -38,6 +38,7 @@ import com.katic.centralisedfoodorder.classes.OrderData;
 import com.katic.centralisedfoodorder.classes.Restaurant;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -289,6 +290,8 @@ public class ConfirmActivity extends BaseActivity {
         String phoneToken = FirebaseInstanceId.getInstance().getToken();
         mUserReference.child("phoneToken").setValue(phoneToken);
         OrderData orderData;
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd\\'T\\'HH:mm:ssZ", Locale.getDefault());
         if(isDelivery){
             String lastName = mLastName.getText().toString();
             String street = mStreet.getText().toString();
@@ -310,6 +313,7 @@ public class ConfirmActivity extends BaseActivity {
             );
         }
 
+        orderData.setOrderTime(sdf.format(c.getTime()));
         mRestaurantDataReference.child(cart.get(0).getTitle()).push().setValue(orderData);
     }
 
