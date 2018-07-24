@@ -291,7 +291,7 @@ public class ConfirmActivity extends BaseActivity {
         mUserReference.child("phoneToken").setValue(phoneToken);
         OrderData orderData;
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd\\'T\\'HH:mm:ssZ", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd\'T\'HH:mm:ssZ", Locale.getDefault());
         if(isDelivery){
             String lastName = mLastName.getText().toString();
             String street = mStreet.getText().toString();
