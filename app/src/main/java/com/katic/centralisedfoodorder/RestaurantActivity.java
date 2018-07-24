@@ -21,10 +21,7 @@ import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -81,10 +78,10 @@ public class RestaurantActivity extends BaseActivity {
 
         resID = getIntent().getLongExtra(RVAdapter.ID, 0);
 
-        imgView = (ImageView) findViewById(R.id.restaurantImageView);
-        titleView = (TextView) findViewById(R.id.restaurantName);
-        addressView = (TextView) findViewById(R.id.restaurantAddress);
-        listView = (AnimatedExpandableListView) findViewById(R.id.animatedList);
+        imgView = findViewById(R.id.restaurantImageView);
+        titleView = findViewById(R.id.restaurantName);
+        addressView = findViewById(R.id.restaurantAddress);
+        listView = findViewById(R.id.animatedList);
 
         addressView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,8 +122,7 @@ public class RestaurantActivity extends BaseActivity {
                     storageRef = FirebaseStorage.getInstance();
                     pathReference = storageRef.
                             getReference("restaurants/"+current.getRestaurantID()+"/"+current.getName()+"_large.png");
-                    Glide.with(getApplicationContext())
-                            .using(new FirebaseImageLoader())
+                    GlideApp.with(getApplicationContext())
                             .load(pathReference)
                             .into(imgView);
 
@@ -282,9 +278,6 @@ public class RestaurantActivity extends BaseActivity {
 
     @Override
     protected void onResume() {
-       /*for(int i=0; i<items.size(); i++)
-            if(items.get(i).clickedGroup)
-                listView.expandGroup(i);*/
         super.onResume();
     }
 

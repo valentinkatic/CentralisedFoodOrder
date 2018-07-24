@@ -10,11 +10,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.katic.centralisedfoodorder.ChooseActivity;
+import com.katic.centralisedfoodorder.GlideApp;
 import com.katic.centralisedfoodorder.R;
 import com.katic.centralisedfoodorder.classes.FilterData;
 
@@ -50,9 +48,9 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
         LinearLayout itemLayout;
         public MyViewHolder(View view) {
             super(view);
-            imageView=(ImageView) view.findViewById(R.id.image);
-            title=(TextView) view.findViewById(R.id.title);
-            itemLayout=(LinearLayout) view.findViewById(R.id.itemLayout);
+            imageView= view.findViewById(R.id.image);
+            title= view.findViewById(R.id.title);
+            itemLayout= view.findViewById(R.id.itemLayout);
         }
 
     }
@@ -71,8 +69,7 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
 
         //Učitavanje slika iz baze u horizontalnu listu
         pathReference = storageRef.getReference("filterPhotos/"+ filterData.get(position).getId() +".png");
-        Glide.with(context)
-                .using(new FirebaseImageLoader())
+        GlideApp.with(context)
                 .load(pathReference)
                 .into(holder.imageView);
 

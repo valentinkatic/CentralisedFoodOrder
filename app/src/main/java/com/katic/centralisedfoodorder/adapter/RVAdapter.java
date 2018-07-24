@@ -14,8 +14,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,7 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.katic.centralisedfoodorder.BaseActivity;
-import com.katic.centralisedfoodorder.ChooseActivity;
+import com.katic.centralisedfoodorder.GlideApp;
 import com.katic.centralisedfoodorder.R;
 import com.katic.centralisedfoodorder.classes.Restaurant;
 import com.katic.centralisedfoodorder.RestaurantActivity;
@@ -52,11 +50,11 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
         RestaurantViewHolder(View itemView) {
             super(itemView);
             itemView.setOnTouchListener(this);
-            cv = (CardView) itemView.findViewById(R.id.cv);
-            restaurantName = (TextView) itemView.findViewById(R.id.restaurantName);
-            restaurantAddress = (TextView) itemView.findViewById(R.id.restaurantAddress);
-            restaurantPhoto = (ImageView) itemView.findViewById(R.id.restaurantPhoto);
-            bookmark = (ImageView) itemView.findViewById(R.id.bookmark);
+            cv = itemView.findViewById(R.id.cv);
+            restaurantName = itemView.findViewById(R.id.restaurantName);
+            restaurantAddress = itemView.findViewById(R.id.restaurantAddress);
+            restaurantPhoto = itemView.findViewById(R.id.restaurantPhoto);
+            bookmark = itemView.findViewById(R.id.bookmark);
         }
 
         @Override
@@ -176,8 +174,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RestaurantViewHold
             restaurantViewHolder.restaurantName.setText(current.getName());
             restaurantViewHolder.restaurantAddress.setText(current.getAddress());
             pathReference = storageRef.getReference("restaurants/"+current.getRestaurantID()+"/"+current.getName()+".png");
-            Glide.with(context)
-                .using(new FirebaseImageLoader())
+            GlideApp.with(context)
                 .load(pathReference)
                 .into(restaurantViewHolder.restaurantPhoto);
             if (!current.isBookmarked()) {

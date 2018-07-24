@@ -23,3 +23,8 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    androidSupport = "27.1.1"
+    glideVersion = '4.7.1'
+}
