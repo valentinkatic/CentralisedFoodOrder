@@ -70,6 +70,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.home.HomeActivity" />
+        <activity android:name=".ui.restaurantdetails.RestaurantDetailsActivity" />
 
         <service
             android:name=".services.FirebaseMessagingService">

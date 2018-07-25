@@ -1,8 +1,9 @@
 package com.katic.centralisedfoodorder.ui;
 
-
 import com.katic.centralisedfoodorder.ui.home.HomeContract;
 import com.katic.centralisedfoodorder.ui.home.HomePresenter;
+import com.katic.centralisedfoodorder.ui.restaurantdetails.RestaurantDetailsContract;
+import com.katic.centralisedfoodorder.ui.restaurantdetails.RestaurantDetailsPresenter;
 import com.katic.centralisedfoodorder.ui.signin.SignInContract;
 import com.katic.centralisedfoodorder.ui.signin.SignInPresenter;
 
@@ -31,9 +32,9 @@ public class PresenterInjector {
 //        new NotificationPresenter(notificationView);
 //    }
 
-//    public static void injectQuizDetailsPresenter(QuizDetailsContract.View quizDetailsView) {
-//        new QuizDetailsPresenter(quizDetailsView);
-//    }
+    public static void injectRestaurantDetailsPresenter(RestaurantDetailsContract.View restaurantDetailsView) {
+        new RestaurantDetailsPresenter(restaurantDetailsView);
+    }
 
 //    public static void injectQuizAttemptPresenter(AttemptQuizContract.View view) {
 //        new AttemptQuizPresenter(view);

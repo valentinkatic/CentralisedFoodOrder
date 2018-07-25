@@ -29,7 +29,7 @@ public class HomePresenter implements HomeContract.Presenter {
 
     @Override
     public void onRestaurantClicked(Restaurant restaurant) {
-
+        mView.navigateToRestaurantDetails(restaurant);
     }
 
     @Override

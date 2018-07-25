@@ -1,5 +1,6 @@
 package com.katic.centralisedfoodorder.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -20,6 +21,8 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.katic.centralisedfoodorder.R;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.ui.PresenterInjector;
+import com.katic.centralisedfoodorder.ui.restaurantdetails.RestaurantDetailsActivity;
+import com.katic.centralisedfoodorder.ui.restaurantdetails.RestaurantDetailsContract;
 import com.katic.centralisedfoodorder.utils.Connectivity;
 
 import java.util.List;
@@ -40,7 +43,7 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
     @BindView(R.id.refresh_homescreen) SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.rv_restaurants) RecyclerView mRestaurantsRecyclerView;
     @BindView(R.id.empty_view) TextView mTVNoData;
-    @BindView(R.id.home_screen_pb) LottieAnimationView progressBar;
+    @BindView(R.id.home_screen_pb) LottieAnimationView mProgressBar;
 
     boolean mTwiceClicked = false;
     private Snackbar mSnackbar;
@@ -78,13 +81,11 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
 
     @Override
     public void onRestaurantClicked(Restaurant restaurant) {
-        Log.d(TAG, "clicked restaurant: " + restaurant.getName());
         mPresenter.onRestaurantClicked(restaurant);
     }
 
     @Override
     public void onBookmarkStatusChanged(Restaurant restaurant) {
-        Log.d(TAG, "bookmark status changed for restaurant: " + restaurant.getName());
         mPresenter.onBookmarkStatusChange(restaurant);
     }
 
@@ -103,6 +104,14 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
     }
 
     @Override
+    public void navigateToRestaurantDetails(Restaurant restaurant) {
+        Intent quizDetailsIntent = new Intent(this, RestaurantDetailsActivity.class);
+        quizDetailsIntent.putExtra(RestaurantDetailsContract.KEY_RESTAURANT_ID, restaurant.getKey());
+        startActivity(quizDetailsIntent);
+        overridePendingTransition(R.anim.slide_in_left, R.anim.anim_nothing);
+    }
+
+    @Override
     public void handleEmptyView() {
         mTVNoData.setVisibility(View.VISIBLE);
     }
@@ -114,18 +123,18 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
 
     @Override
     public void showLoading() {
-        progressBar.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoading() {
-        progressBar.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
     }
 
     private void noInternetMessage() {
         mRestaurantsRecyclerView.setVisibility(View.GONE);
         mTVNoData.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
     }
 
     private void setUpSwipeRefresh() {

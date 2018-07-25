@@ -8,15 +8,20 @@ import java.util.List;
 
 public interface HomeContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
+
         void loadRestaurants(List<Restaurant> restaurants);
 
         void onRestaurantLoadError();
 
+        void navigateToRestaurantDetails(Restaurant restaurant);
+
         void handleEmptyView();
+
     }
 
     interface Presenter extends BasePresenter {
+
         void onRestaurantClicked(Restaurant restaurant);
 
         void onBookmarkStatusChange(Restaurant restaurant);

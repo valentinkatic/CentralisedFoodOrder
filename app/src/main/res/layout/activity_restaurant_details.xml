@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/background">
+
+    <RelativeLayout
+        android:id="@+id/details_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/iv_restaurant_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/restaurant" />
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/tv_restaurant_name"
+            android:layout_alignBottom="@+id/iv_restaurant_image"
+            android:background="#55444444"
+            />
+
+        <TextView
+            android:id="@+id/tv_restaurant_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tv_restaurant_address"
+            android:layout_marginBottom="10dp"
+            android:gravity="center_horizontal"
+            android:text="Naziv"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/tv_restaurant_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/iv_restaurant_image"
+            android:layout_marginBottom="10dp"
+            android:gravity="center_horizontal"
+            android:text="Adresa"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white" />
+
+        <com.katic.centralisedfoodorder.adapter.AnimatedExpandableListView
+            android:id="@+id/lv_food_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/restaurantAddress"
+            android:groupIndicator="@android:color/transparent" />
+
+    </RelativeLayout>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/home_screen_pb"
+        android:layout_height="@dimen/loading_dots_height"
+        android:layout_width="@dimen/loading_dots_width"
+        android:layout_gravity="center"
+        android:foregroundGravity="center"
+        android:visibility="gone"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="loading_animation.json"
+        app:lottie_loop="true"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>
