@@ -1,9 +1,12 @@
 package com.katic.centralisedfoodorder.data.remote;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -12,6 +15,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.data.models.User;
 
@@ -26,9 +30,10 @@ import java.util.Map;
  * <p>
  * TODO change description after implementation
  */
-public class FirebaseHandlerImpl implements FirebaseHandler{
+public class FirebaseHandlerImpl implements FirebaseHandler {
 
     private static final String KEY_USER_EMAIL = "email";
+    private static final String KEY_USER_NAME = "name";
     private static final String KEY_PHONE_TOKEN = "phoneToken";
     private static final String KEY_USER_BOOKMARKS = "bookmarks";
 
@@ -54,19 +59,17 @@ public class FirebaseHandlerImpl implements FirebaseHandler{
     public void fetchRestaurants(final Callback<List<Restaurant>> callback) {
         ValueEventListener listener = new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (snapshot != null) {
-                    List<Restaurant> restaurantList = new ArrayList<>();
-                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
-                        try {
-                            Restaurant singleRestaurant = childSnapshot.getValue(Restaurant.class);
-                            if (singleRestaurant != null) {
-                                singleRestaurant.setName(childSnapshot.getKey());
-                                restaurantList.add(singleRestaurant);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Restaurant> restaurantList = new ArrayList<>();
+                for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                    try {
+                        Restaurant singleRestaurant = childSnapshot.getValue(Restaurant.class);
+                        if (singleRestaurant != null && singleRestaurant.getName() != null) {
+                            singleRestaurant.setKey(childSnapshot.getKey());
+                            restaurantList.add(singleRestaurant);
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                     callback.onResponse(restaurantList);
                 }
@@ -75,6 +78,7 @@ public class FirebaseHandlerImpl implements FirebaseHandler{
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 callback.onError();
+                databaseError.toException().printStackTrace();
             }
         };
 
@@ -93,15 +97,11 @@ public class FirebaseHandlerImpl implements FirebaseHandler{
     public void fetchRestaurantById(String restaurantId, final Callback<Restaurant> callback) {
         ValueEventListener listener = new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (snapshot != null) {
-                    Restaurant singleRestaurant = snapshot.getValue(Restaurant.class);
-                    if (singleRestaurant != null) {
-                        singleRestaurant.setName(snapshot.getKey());
-                        callback.onResponse(singleRestaurant);
-                    } else {
-                        callback.onError();
-                    }
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Restaurant singleRestaurant = snapshot.getValue(Restaurant.class);
+                if (singleRestaurant != null) {
+                    singleRestaurant.setKey(snapshot.getKey());
+                    callback.onResponse(singleRestaurant);
                 } else {
                     callback.onError();
                 }
@@ -115,6 +115,11 @@ public class FirebaseHandlerImpl implements FirebaseHandler{
 
         mRestaurantsRef.child(restaurantId).addValueEventListener(listener);
         mValueListeners.add(listener);
+    }
+
+    @Override
+    public void updateUserName(String userName, final Callback<Void> callback) {
+        updateUserProperty(KEY_USER_NAME, userName, callback);
     }
 
     @Override
@@ -149,10 +154,27 @@ public class FirebaseHandlerImpl implements FirebaseHandler{
         // Here we are not using setValue directly as that will overwrite the entire object and
         // we want to save bookmarks and attempted quizzes. Hence calling updateChildren
 
-        Map<String, Object> userData = new HashMap<>();
+        final Map<String, Object> userData = new HashMap<>();
         userData.put(KEY_USER_EMAIL, currentUser.getEmail());
-        userData.put(KEY_PHONE_TOKEN, FirebaseInstanceId.getInstance().getToken());
+        userData.put(KEY_USER_NAME, currentUser.getName());
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
+                    @Override
+                    public void onSuccess(InstanceIdResult instanceIdResult) {
+                        userData.put(KEY_PHONE_TOKEN, instanceIdResult.getToken());
 
+                        setUserInfo(userData, callback);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        setUserInfo(userData, callback);
+                    }
+                });
+    }
+
+    private void setUserInfo(Map<String, Object> userData, final Callback<Void> callback){
         if (mCurrentUser == null) {
             mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
         }
@@ -162,6 +184,28 @@ public class FirebaseHandlerImpl implements FirebaseHandler{
                     @Override
                     public void onSuccess(Void aVoid) {
                         callback.onResponse(null);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        callback.onError();
+                    }
+                });
+    }
+
+    @Override
+    public void updateRestaurantBookmarkStatus(String restaurantIdentifier, boolean isBookmarked, final Callback<Void> callback) {
+        if (mCurrentUser == null) {
+            mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+        }
+
+        mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_BOOKMARKS).child(restaurantIdentifier)
+                .setValue(isBookmarked)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                      callback.onResponse(null);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -213,6 +257,33 @@ public class FirebaseHandlerImpl implements FirebaseHandler{
         for (ValueEventListener listener : mValueListeners) {
             mRestaurantsRef.removeEventListener(listener);
             mUsersRef.removeEventListener(listener);
+        }
+    }
+
+    private void updateUserProperty(String property, String value, final Callback<Void> callback) {
+
+        try {
+            if (mCurrentUser == null) {
+                mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+            }
+
+            mUsersRef.child(mCurrentUser.getUid()).child(property).setValue(value)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            callback.onResponse(null);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            callback.onError();
+                        }
+                    });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            callback.onError();
         }
     }
 }

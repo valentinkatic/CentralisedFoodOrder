@@ -17,6 +17,10 @@ public class User {
     private String mEmail;
 
     @Expose
+    @SerializedName("name")
+    private String mName;
+
+    @Expose
     @SerializedName("phoneToken")
     private String mPhoneToken;
 
@@ -39,6 +43,16 @@ public class User {
     @PropertyName("email")
     public void setEmail(String email) {
         this.mEmail = email;
+    }
+
+    @PropertyName("name")
+    public String getName() {
+        return mName;
+    }
+
+    @PropertyName("name")
+    public void setName(String name) {
+        this.mName = name;
     }
 
     @PropertyName("phoneToken")

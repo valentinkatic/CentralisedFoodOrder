@@ -6,4 +6,9 @@
     <color name="background">#EEEEEE</color>
     <color name="first_level">#828282</color>
     <color name="second_level">#5d4037</color>
+
+    <color name="bnv_color">#151e3f</color>
+    <color name="blue_jeans">#63adf2</color>
+    <color name="ufo_green">#32e875</color>
+    <color name="vivid_tangelo">#ea7317</color>
 </resources>

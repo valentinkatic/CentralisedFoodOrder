@@ -16,13 +16,13 @@ public class AppDataHandler implements DataHandler {
 
     private static AppDataHandler INSTANCE = null;
 
-//    private PrefsHelper mPreferences;
+    private PrefsHelper mPreferences;
 //    private DBHandler mDBHandler;
     private FirebaseHandler mFirebaseHandler;
 
     private AppDataHandler() {
         Context context = AppClass.getAppContext();
-//        mPreferences = PrefsHelper.getInstance(context);
+        mPreferences = PrefsHelper.getInstance(context);
 //        mDBHandler = DBHandler.getInstance(context);
         mFirebaseHandler = FirebaseProvider.provide();
     }
@@ -51,15 +51,14 @@ public class AppDataHandler implements DataHandler {
                     public void onResponse(User result) {
                         // Mark attempted quizzes
                         for (Restaurant restaurant : restaurants) {
-                            if (result.getBookmarks() != null && result.getBookmarks().containsKey(restaurant.getName())) {
-                                restaurant.setBookmarked(result.getBookmarks().get(restaurant.getName()));
+                            if (result.getBookmarks() != null && result.getBookmarks().containsKey(restaurant.getKey())) {
+                                restaurant.setBookmarked(result.getBookmarks().get(restaurant.getKey()));
                             }
                         }
 
                         callback.onResponse(restaurants);
                         mFirebaseHandler.destroy();
                     }
-
 
                     @Override
                     public void onError() {
@@ -88,16 +87,22 @@ public class AppDataHandler implements DataHandler {
     }
 
     @Override
+    public void updateUserName(String userName, Callback<Void> callback) {
+        mFirebaseHandler.updateUserName(userName, new FirebaseCallback<>(callback));
+    }
+
+    @Override
     public void setUserInfo(Callback<Void> callback) {
-//        User currentUser = new User();
-//        currentUser.setImage(mPreferences.getUserPic());
-//        currentUser.setName(mPreferences.getUserName());
-//        currentUser.setEmail(mPreferences.getUserEmail());
-//        currentUser.setSlackHandle(mPreferences.getSlackHandle());
-//        currentUser.setStatus(mPreferences.getUserStatus());
-//        currentUser.setTrack(mPreferences.getUserTrack());
-//
-//        mFirebaseHandler.setUserInfo(currentUser, new FirebaseCallback<>(callback));
+        User currentUser = new User();
+        currentUser.setName(mPreferences.getUserName());
+        currentUser.setEmail(mPreferences.getUserEmail());
+
+        mFirebaseHandler.setUserInfo(currentUser, new FirebaseCallback<>(callback));
+    }
+
+    @Override
+    public void updateRestaurantBookmarkStatus(String restaurantIdentifier, boolean isBookmarked, Callback<Void> callback) {
+        mFirebaseHandler.updateRestaurantBookmarkStatus(restaurantIdentifier, isBookmarked, new FirebaseCallback<>(callback));
     }
 
     @Override
@@ -106,8 +111,23 @@ public class AppDataHandler implements DataHandler {
     }
 
     @Override
-    public boolean isLoggedIn() {
-        return false;
+    public void saveUserName(String userName) {
+        mPreferences.setUserName(userName);
+    }
+
+    @Override
+    public String getUserName() {
+        return mPreferences.getUserName();
+    }
+
+    @Override
+    public void saveUserEmail(String userEmail) {
+        mPreferences.setUserEmail(userEmail);
+    }
+
+    @Override
+    public String getUserEmail() {
+        return mPreferences.getUserEmail();
     }
 
     @Override

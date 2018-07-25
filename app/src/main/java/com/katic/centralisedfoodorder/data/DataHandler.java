@@ -18,9 +18,19 @@ public interface DataHandler {
 
     void setUserInfo(Callback<Void> callback);
 
-    void getMyBookmarks(Callback<List<String>> callback);
+    void updateUserName(String userName, Callback<Void> callback);
 
-    boolean isLoggedIn();
+    void saveUserName(String userName);
+
+    String getUserName();
+
+    void saveUserEmail(String userEmail);
+
+    String getUserEmail();
+
+    void updateRestaurantBookmarkStatus(String restaurantIdentifier, boolean isBookmarked, Callback<Void> callback);
+
+    void getMyBookmarks(Callback<List<String>> callback);
 
     void destroy();
     /**

@@ -15,16 +15,20 @@ public interface FirebaseHandler {
 
     String REF_FILTER_DATA_NODE = "filterData";
     String REF_RESTAURANT_DATA_NODE = "restaurantData";
-    String REF_RESTAURANTS_NODE = "restaurants";
-    String REF_USERS_NODE = "users";
+    String REF_RESTAURANTS_NODE = "restaurantsTest";
+    String REF_USERS_NODE = "usersTest";
 
     void fetchRestaurants(Callback<List<Restaurant>> callback);
 
     void fetchRestaurantById(String restaurantId, Callback<Restaurant> callback);
 
+    void updateUserName(String userName, final Callback<Void> callback);
+
     void fetchUserInfo(String userIdentifier, Callback<User> callback);
 
     void setUserInfo(User currentUser, Callback<Void> callback);
+
+    void updateRestaurantBookmarkStatus(String quizIdentifier, boolean isBookmarked, Callback<Void> callback);
 
     void getMyBookmarks(Callback<List<String>> callback);
 

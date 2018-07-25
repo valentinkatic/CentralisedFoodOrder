@@ -12,10 +12,7 @@ import java.util.Map;
 public class Restaurant {
 
     @Expose
-    @SerializedName("restaurantID")
-    private long mRestaurantID;
-
-    @Exclude
+    @SerializedName("name")
     private String mName;
 
     @Expose
@@ -45,26 +42,19 @@ public class Restaurant {
     @SerializedName("food_list")
     private Map<String, Map<String, Food>> mFoodList;
 
+    @Exclude
+    private String mKey;
+
     public Restaurant(){
 
     }
 
-    @PropertyName("restaurantID")
-    public long getRestaurantID() {
-        return mRestaurantID;
-    }
-
-    @PropertyName("restaurantID")
-    public void setRestaurantID(long restaurantID) {
-        this.mRestaurantID = restaurantID;
-    }
-
-    @Exclude
+    @PropertyName("name")
     public String getName() {
         return mName;
     }
 
-    @Exclude
+    @PropertyName("name")
     public void setName(String name) {
         this.mName = name;
     }
@@ -129,14 +119,25 @@ public class Restaurant {
         this.mFoodTypes = foodTypes;
     }
 
+    @PropertyName("food_list")
     public Map<String, Map<String, Food>> getFoodList() {
         return mFoodList;
     }
 
+    @PropertyName("food_list")
     public void setFoodList(Map<String, Map<String, Food>> foodList) {
         this.mFoodList = foodList;
     }
 
+    @Exclude
+    public String getKey() {
+        return mKey;
+    }
+
+    @Exclude
+    public void setKey(String key) {
+        this.mKey = key;
+    }
 }
 
 

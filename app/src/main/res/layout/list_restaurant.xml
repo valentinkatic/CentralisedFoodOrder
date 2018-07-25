@@ -21,9 +21,8 @@
             android:layout_height="60dp"
             android:id="@+id/restaurantPhoto"
             android:src="@drawable/restaurant"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             android:scaleType="centerCrop"
             />
 
@@ -32,7 +31,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/restaurantName"
             android:text="Naziv Restorana"
-            android:layout_toRightOf="@+id/restaurantPhoto"
+            android:layout_toEndOf="@+id/restaurantPhoto"
             android:layout_alignParentTop="true"
             android:textSize="30sp"
             />
@@ -41,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/restaurantAddress"
-            android:layout_toRightOf="@+id/restaurantPhoto"
+            android:layout_toEndOf="@+id/restaurantPhoto"
             android:layout_below="@+id/restaurantName"
             android:text="Adresa"
             />
@@ -50,7 +49,6 @@
             android:layout_width="44dp"
             android:layout_height="44dp"
             android:src="@drawable/btn_pressed_off"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="8dp"
             android:id="@+id/bookmark"
