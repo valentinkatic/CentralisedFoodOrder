@@ -7,6 +7,7 @@ import android.net.Uri;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 
 public class Utils {
 
@@ -25,6 +26,15 @@ public class Utils {
         Intent i = new Intent(Intent.ACTION_DIAL);
         i.setData(Uri.parse("tel:" + phone));
         ctx.startActivity(i);
+    }
+
+    public static Object getKeyFromValue(Map hm, Object value) {
+        for (Object o : hm.keySet()) {
+            if (hm.get(o).equals(value)) {
+                return o;
+            }
+        }
+        return null;
     }
 
 }

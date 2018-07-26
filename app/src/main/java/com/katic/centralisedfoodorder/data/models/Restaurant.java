@@ -43,6 +43,9 @@ public class Restaurant {
     private Map<String, Map<String, Food>> mFoodList;
 
     @Exclude
+    private List<String> mFoodTypeList;
+
+    @Exclude
     private String mKey;
 
     public Restaurant(){
@@ -127,6 +130,16 @@ public class Restaurant {
     @PropertyName("food_list")
     public void setFoodList(Map<String, Map<String, Food>> foodList) {
         this.mFoodList = foodList;
+    }
+
+    @Exclude
+    public List<String> getFoodTypeList() {
+        return mFoodTypeList;
+    }
+
+    @Exclude
+    public void setFoodTypeList(List<String> foodTypeList) {
+        this.mFoodTypeList = foodTypeList;
     }
 
     @Exclude

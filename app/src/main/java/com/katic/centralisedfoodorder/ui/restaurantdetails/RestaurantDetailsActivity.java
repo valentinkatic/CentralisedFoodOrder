@@ -2,6 +2,9 @@ package com.katic.centralisedfoodorder.ui.restaurantdetails;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -17,7 +20,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.katic.centralisedfoodorder.GlideApp;
 import com.katic.centralisedfoodorder.R;
-import com.katic.centralisedfoodorder.adapter.AnimatedExpandableListView;
+import com.katic.centralisedfoodorder.data.models.Food;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.data.remote.FirebaseHandler;
 import com.katic.centralisedfoodorder.ui.PresenterInjector;
@@ -26,18 +29,21 @@ import com.katic.centralisedfoodorder.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RestaurantDetailsActivity extends AppCompatActivity implements RestaurantDetailsContract.View {
+public class RestaurantDetailsActivity extends AppCompatActivity implements RestaurantDetailsContract.View, FoodAdapter.FoodListener {
 
     private RestaurantDetailsContract.Presenter mPresenter;
 
     private Restaurant mRestaurant;
+    private RestaurantOfferAdapter mRestaurantOfferAdapter;
 
     @BindView(R.id.details_view) RelativeLayout mDetailsView;
     @BindView(R.id.iv_restaurant_image) ImageView mIvRestaurantImage;
     @BindView(R.id.tv_restaurant_name) TextView mTvRestaurantName;
     @BindView(R.id.tv_restaurant_address) TextView mTvRestaurantAddress;
-    @BindView(R.id.lv_food_list) AnimatedExpandableListView mTvListView;
     @BindView(R.id.home_screen_pb) LottieAnimationView mProgressBar;
+    @BindView(R.id.nsv) NestedScrollView mNestedScrollView;
+    @BindView(R.id.tl_food_type) TabLayout mTlFoodType;
+    @BindView(R.id.vp_food) ViewPager mVpFood;
 
     private ActionBar mActionBar;
 
@@ -52,17 +58,42 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
         initializeUI();
     }
 
+    private int mLastPagerPosition = 0;
+
     private void initializeUI(){
         mActionBar = getSupportActionBar();
         if (mActionBar != null) {
             mActionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        mRestaurantOfferAdapter = new RestaurantOfferAdapter(this);
+        mVpFood.setAdapter(mRestaurantOfferAdapter);
+        mVpFood.setCurrentItem(mLastPagerPosition);
+        mTlFoodType.setupWithViewPager(mVpFood);
+
+        mVpFood.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mLastPagerPosition = position;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
     }
 
     @Override
     public void showRestaurantDetails(Restaurant restaurant) {
         if (restaurant != null){
             mDetailsView.setVisibility(View.VISIBLE);
+        } else {
+            onError();
+            return;
         }
 
         this.mRestaurant = restaurant;
@@ -83,6 +114,12 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
                 .load(storageRef)
                 .into(mIvRestaurantImage);
 
+        mRestaurantOfferAdapter.loadRestaurantOffer(restaurant.getFoodTypeList(), restaurant.getFoodList());
+    }
+
+    @Override
+    public void onFoodClick(Food food) {
+        Toast.makeText(this, "Odabrali ste jelo: " + food.getTitle(), Toast.LENGTH_SHORT).show();
     }
 
     @Override

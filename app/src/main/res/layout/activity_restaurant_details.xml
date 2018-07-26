@@ -49,12 +49,40 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@android:color/white" />
 
-        <com.katic.centralisedfoodorder.adapter.AnimatedExpandableListView
-            android:id="@+id/lv_food_list"
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nsv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/restaurantAddress"
-            android:groupIndicator="@android:color/transparent" />
+            android:layout_height="match_parent"
+            android:background="#F6F8FA"
+            android:fillViewport="true"
+            android:clipToPadding="false"
+            android:scrollbars="none"
+            android:scrollingCache="true"
+            android:layout_below="@id/iv_restaurant_image">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tl_food_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:tabMode="scrollable"
+                    app:tabSelectedTextColor="@android:color/holo_red_dark"
+                    app:tabTextColor="@android:color/black" />
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/vp_food"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginTop="1dp" />
+
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
 
     </RelativeLayout>
 

@@ -15,6 +15,9 @@ public class Food {
     @Exclude
     private String mTitle;
 
+    @Exclude
+    private String mFoodType;
+
     @Expose
     @SerializedName("ingredients")
     private String mIngredients;
@@ -47,6 +50,16 @@ public class Food {
     @Exclude
     public void setTitle(String title) {
         this.mTitle = title;
+    }
+
+    @Exclude
+    public String getFoodType() {
+        return mFoodType;
+    }
+
+    @Exclude
+    public void setFoodType(String foodType) {
+        this.mFoodType = foodType;
     }
 
     @PropertyName("ingredients")
