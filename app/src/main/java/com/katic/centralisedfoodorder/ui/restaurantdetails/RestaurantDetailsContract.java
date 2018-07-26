@@ -11,6 +11,7 @@ public interface RestaurantDetailsContract {
 
     int KEY_ERROR_UNKNOWN = 300;
     int KEY_ERROR_CART_RESTAURANT = 301;
+    int KEY_ERROR_SIZE_NOT_CHECKED = 302;
 
     interface View extends BaseView<Presenter> {
 
@@ -19,6 +20,8 @@ public interface RestaurantDetailsContract {
         void showInvalidInput();
 
         void dialPhone(String phoneNumber);
+
+        void updateCartIcon(int size);
 
         void onError(int errorCode);
 
@@ -30,7 +33,7 @@ public interface RestaurantDetailsContract {
 
         void onCartItemAmountChanged(Food food);
 
-        void onPhoneClicked(String phoneNumber);
+        void onPhoneClicked();
 
     }
 }

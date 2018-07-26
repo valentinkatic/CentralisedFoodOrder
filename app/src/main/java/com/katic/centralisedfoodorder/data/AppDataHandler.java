@@ -5,6 +5,7 @@ import android.content.Context;
 import com.katic.centralisedfoodorder.application.AppClass;
 import com.katic.centralisedfoodorder.data.models.Cart;
 import com.katic.centralisedfoodorder.data.models.CartItem;
+import com.katic.centralisedfoodorder.data.models.Pizza;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.data.models.User;
 import com.katic.centralisedfoodorder.data.remote.FirebaseHandler;
@@ -56,12 +57,6 @@ public class AppDataHandler implements DataHandler {
                             if (result.getBookmarks() != null && result.getBookmarks().containsKey(restaurant.getKey())) {
                                 restaurant.setBookmarked(result.getBookmarks().get(restaurant.getKey()));
                             }
-                            if (result.getCart() != null && result.getCart().getRestaurantName().equals(restaurant.getName()) && result.getCart().getCartItems() != null){
-                                for (CartItem cartItem: result.getCart().getCartItems()){
-                                    restaurant.getFoodList().get(cartItem.getType()).get(cartItem.getTitle()).setAddedToCart(true);
-                                    restaurant.getFoodList().get(cartItem.getType()).get(cartItem.getTitle()).setAmount(cartItem.getAmount());
-                                }
-                            }
                         }
 
                         callback.onResponse(restaurants);
@@ -82,9 +77,40 @@ public class AppDataHandler implements DataHandler {
         mFirebaseHandler.fetchRestaurantById(restaurantId, new FirebaseCallback<Restaurant>(callback) {
 
             @Override
-            public void onResponse(Restaurant fetchedRestaurant) {
-                callback.onResponse(fetchedRestaurant);
-                mFirebaseHandler.destroy();
+            public void onResponse(final Restaurant restaurant) {
+
+                mFirebaseHandler.fetchUserInfo(null, new FirebaseHandler.Callback<User>() {
+                    @Override
+                    public void onResponse(User result) {
+                        if (result.getBookmarks() != null && result.getBookmarks().containsKey(restaurant.getKey())) {
+                            restaurant.setBookmarked(result.getBookmarks().get(restaurant.getKey()));
+                        }
+                        if (result.getCart() != null && result.getCart().getRestaurantKey().equals(restaurant.getKey()) && result.getCart().getCartItems() != null){
+                            for (CartItem cartItem: result.getCart().getCartItems()){
+                                if (cartItem.getSize() != null && cartItem.getSize().trim().length() > 0){
+                                    for (Pizza pizza: restaurant.getFoodList().get(cartItem.getType()).get(cartItem.getTitle()).getPizza()){
+                                        if (cartItem.getSize().equals(pizza.getSize())){
+                                            pizza.setAddedToCart(true);
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    restaurant.getFoodList().get(cartItem.getType()).get(cartItem.getTitle()).setAddedToCart(true);
+                                }
+                                restaurant.getFoodList().get(cartItem.getType()).get(cartItem.getTitle()).setAmount(cartItem.getAmount());
+                            }
+                        }
+
+                        callback.onResponse(restaurant);
+                        mFirebaseHandler.destroy();
+                    }
+
+                    @Override
+                    public void onError() {
+                        callback.onResponse(restaurant);
+                        mFirebaseHandler.destroy();
+                    }
+                });
             }
 
             @Override

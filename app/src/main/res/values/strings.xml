@@ -54,7 +54,7 @@
     <string name="choose_restaurant">Izbor restorana</string>
     <string name="orderConfirm">Potvrditi narudžbu?</string>
     <string name="pickMethod">Izaberite način narudžbe</string>
-    <string name="name">Naziv</string>
+    <string name="food_name">Naziv</string>
     <string name="price">Cijena</string>
     <string name="ingredients">Sastojci</string>
     <string name="loading">Učitavanje...</string>
@@ -72,5 +72,6 @@
     <string name="no_internet_connection">Nema internetske veze.</string>
     <string name="refreshed">Osvježeno</string>
     <string name="home_back_btn_msg">Pritisni nazad ponovno za izlaz.</string>
-    <string name="invalid_input_provided">Nepravilan paramtear obezbjeđen prilikom otvaranja restorana.</string>
+    <string name="invalid_input_provided">Nepravilan parametar obezbjeđen prilikom otvaranja restorana.</string>
+    <string name="size_not_checked">Niste odabrali veličinu</string>
 </resources>

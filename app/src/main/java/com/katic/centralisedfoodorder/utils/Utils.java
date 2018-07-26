@@ -2,7 +2,15 @@ package com.katic.centralisedfoodorder.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
+
+import com.katic.centralisedfoodorder.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,6 +43,33 @@ public class Utils {
             }
         }
         return null;
+    }
+
+    public static Drawable buildCounterDrawable(Context context, int count) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.counter_menuitem_layout, null);
+
+        if (count == 0) {
+            View counterTextPanel = view.findViewById(R.id.counterValuePanel);
+            counterTextPanel.setVisibility(View.GONE);
+            view.setBackgroundResource(R.drawable.empty_cart);
+        } else {
+            TextView textView = view.findViewById(R.id.count);
+            textView.setText("" + count);
+            view.setBackgroundResource(R.drawable.ic_full_cart);
+        }
+
+        view.measure(
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+
+        view.setDrawingCacheEnabled(true);
+        view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
+        view.setDrawingCacheEnabled(false);
+
+        return new BitmapDrawable(context.getResources(), bitmap);
     }
 
 }

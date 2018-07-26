@@ -9,6 +9,7 @@ import com.katic.centralisedfoodorder.data.DataHandlerProvider;
 import com.katic.centralisedfoodorder.data.models.Cart;
 import com.katic.centralisedfoodorder.data.models.CartItem;
 import com.katic.centralisedfoodorder.data.models.Food;
+import com.katic.centralisedfoodorder.data.models.Pizza;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class RestaurantDetailsPresenter implements RestaurantDetailsContract.Pre
     private RestaurantDetailsContract.View mView;
     private DataHandler mDataHandler;
 
-    private String mCurrentRestaurantId;
+    private String mCurrentRestaurantKey;
     private Restaurant mRestaurant;
     private Cart mCart;
 
@@ -35,16 +36,33 @@ public class RestaurantDetailsPresenter implements RestaurantDetailsContract.Pre
     public void onCartItemAmountChanged(Food food) {
         if (mCart == null){
             mCart = new Cart();
-            mCart.setRestaurantName(mRestaurant.getName());
+            mCart.setRestaurantKey(mCurrentRestaurantKey);
             mCart.setCartItems(new ArrayList<CartItem>());
         }
-        if (!mCart.getRestaurantName().equals(mRestaurant.getName())){
+        if (!mCart.getRestaurantKey().equals(mCurrentRestaurantKey)){
             mView.onError(RestaurantDetailsContract.KEY_ERROR_CART_RESTAURANT);
             return;
         }
         boolean isInCart = false;
+        boolean hasCheckedSize = false;
+        String size = null;
+
+        if (food.getPizza() != null && food.getPizza().size() > 0){
+            for (Pizza pizza: food.getPizza()){
+                if (pizza.isChecked()){
+                    size = pizza.getSize();
+                    hasCheckedSize = true;
+                    break;
+                }
+            }
+            if (!hasCheckedSize){
+                mView.onError(RestaurantDetailsContract.KEY_ERROR_SIZE_NOT_CHECKED);
+                return;
+            }
+        }
+
         for (CartItem cartItem: mCart.getCartItems()){
-            if (cartItem.getTitle().equals(food.getTitle()) && cartItem.getType().equals(food.getFoodType())){
+            if (cartItem.getTitle().equals(food.getTitle()) && cartItem.getType().equals(food.getFoodType()) && cartItem.getSize().equals(size)){
                 isInCart = true;
                 if (food.getAmount() == 0){
                     mCart.getCartItems().remove(cartItem);
@@ -63,6 +81,7 @@ public class RestaurantDetailsPresenter implements RestaurantDetailsContract.Pre
             cartItem.setPrice(food.getPrice());
             cartItem.setTitle(food.getTitle());
             cartItem.setType(food.getFoodType());
+            cartItem.setSize(size);
             mCart.getCartItems().add(cartItem);
         }
         mDataHandler.updateUserCart(mCart, new DataHandler.Callback<Void>() {
@@ -77,12 +96,13 @@ public class RestaurantDetailsPresenter implements RestaurantDetailsContract.Pre
 
             }
         });
+        mView.updateCartIcon(mCart == null ? 0 : mCart.getCartItems().size());
     }
 
     @Override
-    public void onPhoneClicked(String phoneNumber) {
-        if (phoneNumber != null && phoneNumber.trim().length() > 0){
-            mView.dialPhone(phoneNumber);
+    public void onPhoneClicked() {
+        if (mRestaurant.getPhone() != null && mRestaurant.getPhone().trim().length() > 0){
+            mView.dialPhone(mRestaurant.getPhone());
         } else {
             mView.onError(RestaurantDetailsContract.KEY_ERROR_UNKNOWN);
         }
@@ -95,23 +115,24 @@ public class RestaurantDetailsPresenter implements RestaurantDetailsContract.Pre
             return;
         }
 
-        this.mCurrentRestaurantId = extras.getString(RestaurantDetailsContract.KEY_RESTAURANT_ID);
+        this.mCurrentRestaurantKey = extras.getString(RestaurantDetailsContract.KEY_RESTAURANT_ID);
 
         mView.showLoading();
-        mDataHandler.fetchRestaurantById(mCurrentRestaurantId, new DataHandler.Callback<Restaurant>() {
+        mDataHandler.fetchRestaurantById(mCurrentRestaurantKey, new DataHandler.Callback<Restaurant>() {
             @Override
-            public void onResponse(Restaurant result) {
-                mRestaurant = result;
+            public void onResponse(Restaurant restaurant) {
+                mRestaurant = restaurant;
 
                 mDataHandler.getMyCart(new DataHandler.Callback<Cart>() {
                     @Override
-                    public void onResponse(Cart result) {
-                        mCart = result;
-                        if (mCart == null || mCart.getRestaurantName().equals(mRestaurant.getName())){
+                    public void onResponse(Cart cart) {
+                        mCart = cart;
+                        if (mCart == null || mCart.getRestaurantKey().equals(mCurrentRestaurantKey)){
                             mView.showRestaurantDetails(mRestaurant, true);
                         } else {
                             mView.showRestaurantDetails(mRestaurant, false);
                         }
+                        mView.updateCartIcon(mCart == null ? 0 : mCart.getCartItems().size());
                         mView.hideLoading();
                     }
 
@@ -121,7 +142,6 @@ public class RestaurantDetailsPresenter implements RestaurantDetailsContract.Pre
                         mView.hideLoading();
                     }
                 });
-
             }
 
             @Override
@@ -130,7 +150,6 @@ public class RestaurantDetailsPresenter implements RestaurantDetailsContract.Pre
                 mView.hideLoading();
             }
         });
-
 
     }
 

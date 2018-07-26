@@ -22,6 +22,10 @@ public class CartItem {
     @SerializedName("price")
     private float mPrice;
 
+    @Expose
+    @SerializedName("size")
+    private String mSize;
+
     public CartItem() {
     }
 
@@ -63,5 +67,26 @@ public class CartItem {
     @PropertyName("price")
     public void setPrice(float price) {
         this.mPrice = price;
+    }
+
+    @PropertyName("size")
+    public String getSize() {
+        return mSize;
+    }
+
+    @PropertyName("size")
+    public void setSize(String size) {
+        this.mSize = size;
+    }
+
+    @Override
+    public String toString() {
+        return "CartItem{" +
+                "title='" + mTitle + '\'' +
+                ", type='" + mType + '\'' +
+                ", amount=" + mAmount +
+                ", price=" + mPrice +
+                ", size='" + mSize + '\'' +
+                '}';
     }
 }

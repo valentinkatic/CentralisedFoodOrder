@@ -33,7 +33,6 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
 
     private RestaurantDetailsContract.Presenter mPresenter;
 
-    private Restaurant mRestaurant;
     private RestaurantOfferAdapter mRestaurantOfferAdapter;
 
     @BindView(R.id.details_view) RelativeLayout mDetailsView;
@@ -46,6 +45,7 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
     @BindView(R.id.vp_food) ViewPager mVpFood;
 
     private ActionBar mActionBar;
+    private MenuItem mMenuCart;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -96,7 +96,6 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
             return;
         }
 
-        this.mRestaurant = restaurant;
         if (mActionBar != null){
             mActionBar.setTitle(restaurant.getName());
         }
@@ -118,13 +117,8 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
     }
 
     @Override
-    public void onFoodClick(Food food) {
-//        Toast.makeText(this, "Odabrali ste jelo: " + food.getmTitle(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void onAmountChanged(Food food, boolean increased) {
-        Toast.makeText(this, "Količina promjenjena za " + food.getTitle() + " na: " + food.getAmount(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Količina promjenjena za " + food.getTitle() + " na: " + food.getAmount(), Toast.LENGTH_SHORT).show();
         mPresenter.onCartItemAmountChanged(food);
     }
 
@@ -146,10 +140,18 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
     }
 
     @Override
+    public void updateCartIcon(int size) {
+        mMenuCart.setIcon(Utils.buildCounterDrawable(this, size));
+    }
+
+    @Override
     public void onError(int errorCode) {
         switch (errorCode) {
             case RestaurantDetailsContract.KEY_ERROR_CART_RESTAURANT:
                 Toast.makeText(this, R.string.no_more_than_one, Toast.LENGTH_SHORT).show();
+                break;
+            case RestaurantDetailsContract.KEY_ERROR_SIZE_NOT_CHECKED:
+                Toast.makeText(this, R.string.size_not_checked, Toast.LENGTH_SHORT).show();
                 break;
             default:
                 Toast.makeText(this, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
@@ -177,8 +179,8 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_restaurant_details, menu);
-        MenuItem cartMenu = menu.findItem(R.id.menu_cart);
-        cartMenu.setVisible(false);
+        mMenuCart = menu.findItem(R.id.menu_cart);
+        mMenuCart.setIcon(Utils.buildCounterDrawable(this, 0));
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -188,7 +190,7 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
             case R.id.menu_cart:
                 break;
             case R.id.menu_phone:
-                mPresenter.onPhoneClicked(mRestaurant.getPhone());
+                mPresenter.onPhoneClicked();
                 break;
             case R.id.menu_order_history:
                 break;

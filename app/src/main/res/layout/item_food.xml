@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_parent_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -41,7 +42,7 @@
                 android:paddingRight="8dp"
                 android:paddingStart="8dp"
                 android:paddingTop="4dp"
-                android:text="@string/name"
+                android:text="@string/food_name"
                 android:textColor="@android:color/black"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -125,6 +126,13 @@
                 android:src="@drawable/plus" />
 
         </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_pizza_size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/item_pizza_size"
+            android:visibility="gone"/>
 
         <View
             android:layout_width="match_parent"

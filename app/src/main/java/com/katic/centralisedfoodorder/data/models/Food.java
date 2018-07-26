@@ -4,7 +4,6 @@ import com.google.firebase.database.Exclude;
 import com.google.firebase.database.PropertyName;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.katic.centralisedfoodorder.classes.Pizza;
 
 import java.util.ArrayList;
 import java.util.List;

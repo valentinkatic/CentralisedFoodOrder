@@ -9,8 +9,8 @@ import java.util.List;
 public class Cart {
 
     @Expose
-    @SerializedName("restaurant_name")
-    private String mRestaurantName;
+    @SerializedName("restaurant_key")
+    private String mRestaurantKey;
 
     @Expose
     @SerializedName("cart_items")
@@ -35,14 +35,14 @@ public class Cart {
     public Cart() {
     }
 
-    @PropertyName("restaurant_name")
-    public String getRestaurantName() {
-        return mRestaurantName;
+    @PropertyName("restaurant_key")
+    public String getRestaurantKey() {
+        return mRestaurantKey;
     }
 
-    @PropertyName("restaurant_name")
-    public void setRestaurantName(String restaurantName) {
-        this.mRestaurantName = restaurantName;
+    @PropertyName("restaurant_key")
+    public void setRestaurantKey(String restaurantKey) {
+        this.mRestaurantKey = restaurantKey;
     }
 
     @PropertyName("cart_items")
@@ -98,7 +98,7 @@ public class Cart {
     @Override
     public String toString() {
         return "Cart{" +
-                "restaurantName='" + mRestaurantName + '\'' +
+                "restaurantKey='" + mRestaurantKey + '\'' +
                 ", cartItems=" + mCartItems +
                 ", deliveryAddress=" + mDeliveryAddress +
                 ", delivery=" + mDelivery +
