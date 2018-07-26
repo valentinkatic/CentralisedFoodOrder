@@ -4,7 +4,6 @@ import com.google.firebase.database.Exclude;
 import com.google.firebase.database.PropertyName;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.katic.centralisedfoodorder.classes.CartItem;
 import com.katic.centralisedfoodorder.classes.Pizza;
 
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ public class Food {
     private boolean mAddedToCart = false;
 
     @Exclude
-    private int mQuantity = 0;
+    private int mAmount = 0;
 
     public Food() {
     }
@@ -113,12 +112,12 @@ public class Food {
     }
 
     @Exclude
-    public int getQuantity() {
-        return mQuantity;
+    public int getAmount() {
+        return mAmount;
     }
 
     @Exclude
-    public void setQuantity(int quantity) {
-        this.mQuantity = quantity;
+    public void setAmount(int amount) {
+        this.mAmount = amount;
     }
 }

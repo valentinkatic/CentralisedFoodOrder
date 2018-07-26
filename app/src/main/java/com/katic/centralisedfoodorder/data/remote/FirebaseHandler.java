@@ -1,5 +1,7 @@
 package com.katic.centralisedfoodorder.data.remote;
 
+import com.katic.centralisedfoodorder.data.models.Cart;
+import com.katic.centralisedfoodorder.data.models.Food;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.data.models.User;
 
@@ -30,7 +32,11 @@ public interface FirebaseHandler {
 
     void updateRestaurantBookmarkStatus(String quizIdentifier, boolean isBookmarked, Callback<Void> callback);
 
+    void updateUserCart(Cart cart, Callback<Void> callback);
+
     void getMyBookmarks(Callback<List<String>> callback);
+
+    void getMyCart(Callback<Cart> callback);
 
     void destroy();
 

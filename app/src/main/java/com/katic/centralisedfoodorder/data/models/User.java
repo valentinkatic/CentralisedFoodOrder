@@ -3,12 +3,10 @@ package com.katic.centralisedfoodorder.data.models;
 import com.google.firebase.database.PropertyName;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.katic.centralisedfoodorder.classes.DeliveryAddress;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class User {
 
@@ -21,16 +19,20 @@ public class User {
     private String mName;
 
     @Expose
-    @SerializedName("phoneToken")
+    @SerializedName("phone_token")
     private String mPhoneToken;
 
     @Expose
-    @SerializedName("deliveryAddresses")
+    @SerializedName("delivery_addresses")
     private List<DeliveryAddress> mDeliveryAddresses = new ArrayList<>();
 
     @Expose
     @SerializedName("bookmarks")
     private Map<String, Boolean> mBookmarks;
+
+    @Expose
+    @SerializedName("cart")
+    private Cart mCart;
 
     public User() {
     }
@@ -55,22 +57,22 @@ public class User {
         this.mName = name;
     }
 
-    @PropertyName("phoneToken")
+    @PropertyName("phone_token")
     public String getPhoneToken() {
         return mPhoneToken;
     }
 
-    @PropertyName("phoneToken")
+    @PropertyName("phone_token")
     public void setPhoneToken(String phoneToken) {
         this.mPhoneToken = phoneToken;
     }
 
-    @PropertyName("deliveryAddresses")
+    @PropertyName("delivery_addresses")
     public List<DeliveryAddress> getDeliveryAddresses() {
         return mDeliveryAddresses;
     }
 
-    @PropertyName("deliveryAddresses")
+    @PropertyName("delivery_addresses")
     public void setDeliveryAddresses(List<DeliveryAddress> deliveryAddresses) {
         this.mDeliveryAddresses = deliveryAddresses;
     }
@@ -85,8 +87,25 @@ public class User {
         this.mBookmarks = mBookmarks;
     }
 
+    @PropertyName("cart")
+    public Cart getCart() {
+        return mCart;
+    }
+
+    @PropertyName("cart")
+    public void setCart(Cart cart) {
+        this.mCart = cart;
+    }
+
     @Override
-    public int hashCode() {
-        return Objects.hash(mEmail, mPhoneToken);
+    public String toString() {
+        return "User{" +
+                "email='" + mEmail + '\'' +
+                ", name='" + mName + '\'' +
+                ", phoneToken='" + mPhoneToken + '\'' +
+                ", deliveryAddresses=" + mDeliveryAddresses +
+                ", bookmarks=" + mBookmarks +
+                ", cart=" + mCart +
+                '}';
     }
 }

@@ -1,6 +1,5 @@
 package com.katic.centralisedfoodorder.ui.restaurantdetails;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.GridLayoutManager;
@@ -31,6 +30,7 @@ public class RestaurantOfferAdapter extends PagerAdapter{
     private List<String> mFoodTypeList;
     private Map<String, Map<String, Food>> mFoodList;
     private FoodAdapter.FoodListener mFoodListener;
+    private boolean mAllowedCart;
 
     @BindView(R.id.rv_food_list) RecyclerView mRvFoodList;
 
@@ -53,7 +53,7 @@ public class RestaurantOfferAdapter extends PagerAdapter{
 
         mRvFoodList.setLayoutManager(new GridLayoutManager(container.getContext(), 1, LinearLayoutManager.VERTICAL, false));
 
-        FoodAdapter foodAdapter = new FoodAdapter(foodList, mFoodListener);
+        FoodAdapter foodAdapter = new FoodAdapter(foodList, mFoodListener, mAllowedCart);
         mRvFoodList.setAdapter(foodAdapter);
 
         container.addView(view);
@@ -80,9 +80,10 @@ public class RestaurantOfferAdapter extends PagerAdapter{
         return mFoodTypeList.get(position);
     }
 
-    public void loadRestaurantOffer(List<String> foodTypeList, Map<String, Map<String, Food>> foodList){
+    public void loadRestaurantOffer(List<String> foodTypeList, Map<String, Map<String, Food>> foodList, boolean allowedCart){
         this.mFoodTypeList = foodTypeList;
         this.mFoodList = foodList;
+        this.mAllowedCart = allowedCart;
         notifyDataSetChanged();
     }
 

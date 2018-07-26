@@ -9,15 +9,18 @@ public interface RestaurantDetailsContract {
 
     String KEY_RESTAURANT_ID = "restaurant_id";
 
+    int KEY_ERROR_UNKNOWN = 300;
+    int KEY_ERROR_CART_RESTAURANT = 301;
+
     interface View extends BaseView<Presenter> {
 
-        void showRestaurantDetails(Restaurant restaurant);
+        void showRestaurantDetails(Restaurant restaurant, boolean allowedCart);
 
         void showInvalidInput();
 
         void dialPhone(String phoneNumber);
 
-        void onError();
+        void onError(int errorCode);
 
         void dismissView();
 
@@ -25,7 +28,7 @@ public interface RestaurantDetailsContract {
 
     interface Presenter extends BasePresenter {
 
-        void onFoodClicked(Food food);
+        void onCartItemAmountChanged(Food food);
 
         void onPhoneClicked(String phoneNumber);
 

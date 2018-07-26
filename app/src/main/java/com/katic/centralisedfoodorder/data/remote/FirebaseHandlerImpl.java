@@ -15,6 +15,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.katic.centralisedfoodorder.data.models.Cart;
+import com.katic.centralisedfoodorder.data.models.Food;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.data.models.User;
 
@@ -33,6 +35,7 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
     private static final String KEY_USER_NAME = "name";
     private static final String KEY_PHONE_TOKEN = "phoneToken";
     private static final String KEY_USER_BOOKMARKS = "bookmarks";
+    private static final String KEY_USER_CART = "cart";
 
     private DatabaseReference mUsersRef;
     private DatabaseReference mRestaurantsRef;
@@ -219,6 +222,32 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
     }
 
     @Override
+    public void updateUserCart(Cart cart, final Callback<Void> callback) {
+        if (mCurrentUser == null) {
+            mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+        }
+        if (mCurrentUser == null) {
+            callback.onError();
+            return;
+        }
+
+        mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_CART)
+                .setValue(cart)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        callback.onResponse(null);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        callback.onError();
+                    }
+                });
+    }
+
+    @Override
     public void getMyBookmarks(final Callback<List<String>> callback) {
         if (mCurrentUser == null) {
             mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -248,6 +277,29 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
         };
 
         mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_BOOKMARKS)
+                .addValueEventListener(listener);
+    }
+
+    @Override
+    public void getMyCart(final Callback<Cart> callback) {
+        if (mCurrentUser == null) {
+            mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+        }
+
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Cart cart = snapshot.getValue(Cart.class);
+                callback.onResponse(cart);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                callback.onError();
+            }
+        };
+
+        mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_CART)
                 .addValueEventListener(listener);
     }
 

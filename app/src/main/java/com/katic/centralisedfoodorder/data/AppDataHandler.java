@@ -3,6 +3,8 @@ package com.katic.centralisedfoodorder.data;
 import android.content.Context;
 
 import com.katic.centralisedfoodorder.application.AppClass;
+import com.katic.centralisedfoodorder.data.models.Cart;
+import com.katic.centralisedfoodorder.data.models.CartItem;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.data.models.User;
 import com.katic.centralisedfoodorder.data.remote.FirebaseHandler;
@@ -53,6 +55,12 @@ public class AppDataHandler implements DataHandler {
                         for (Restaurant restaurant : restaurants) {
                             if (result.getBookmarks() != null && result.getBookmarks().containsKey(restaurant.getKey())) {
                                 restaurant.setBookmarked(result.getBookmarks().get(restaurant.getKey()));
+                            }
+                            if (result.getCart() != null && result.getCart().getRestaurantName().equals(restaurant.getName()) && result.getCart().getCartItems() != null){
+                                for (CartItem cartItem: result.getCart().getCartItems()){
+                                    restaurant.getFoodList().get(cartItem.getType()).get(cartItem.getTitle()).setAddedToCart(true);
+                                    restaurant.getFoodList().get(cartItem.getType()).get(cartItem.getTitle()).setAmount(cartItem.getAmount());
+                                }
                             }
                         }
 
@@ -106,8 +114,18 @@ public class AppDataHandler implements DataHandler {
     }
 
     @Override
+    public void updateUserCart(Cart cart, Callback<Void> callback) {
+        mFirebaseHandler.updateUserCart(cart, new FirebaseCallback<>(callback));
+    }
+
+    @Override
     public void getMyBookmarks(Callback<List<String>> callback) {
         mFirebaseHandler.getMyBookmarks(new FirebaseCallback<>(callback));
+    }
+
+    @Override
+    public void getMyCart(Callback<Cart> callback) {
+        mFirebaseHandler.getMyCart(new FirebaseCallback<>(callback));
     }
 
     @Override

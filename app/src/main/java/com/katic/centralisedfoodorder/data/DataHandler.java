@@ -1,5 +1,6 @@
 package com.katic.centralisedfoodorder.data;
 
+import com.katic.centralisedfoodorder.data.models.Cart;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 
 import java.util.List;
@@ -30,7 +31,11 @@ public interface DataHandler {
 
     void updateRestaurantBookmarkStatus(String restaurantIdentifier, boolean isBookmarked, Callback<Void> callback);
 
+    void updateUserCart(Cart cart, Callback<Void> callback);
+
     void getMyBookmarks(Callback<List<String>> callback);
+
+    void getMyCart(Callback<Cart> callback);
 
     void destroy();
     /**

@@ -88,11 +88,11 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
     }
 
     @Override
-    public void showRestaurantDetails(Restaurant restaurant) {
+    public void showRestaurantDetails(Restaurant restaurant, boolean allowedCart) {
         if (restaurant != null){
             mDetailsView.setVisibility(View.VISIBLE);
         } else {
-            onError();
+            onError(RestaurantDetailsContract.KEY_ERROR_UNKNOWN);
             return;
         }
 
@@ -114,12 +114,23 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
                 .load(storageRef)
                 .into(mIvRestaurantImage);
 
-        mRestaurantOfferAdapter.loadRestaurantOffer(restaurant.getFoodTypeList(), restaurant.getFoodList());
+        mRestaurantOfferAdapter.loadRestaurantOffer(restaurant.getFoodTypeList(), restaurant.getFoodList(), allowedCart);
     }
 
     @Override
     public void onFoodClick(Food food) {
-        Toast.makeText(this, "Odabrali ste jelo: " + food.getTitle(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Odabrali ste jelo: " + food.getmTitle(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onAmountChanged(Food food, boolean increased) {
+        Toast.makeText(this, "Količina promjenjena za " + food.getTitle() + " na: " + food.getAmount(), Toast.LENGTH_SHORT).show();
+        mPresenter.onCartItemAmountChanged(food);
+    }
+
+    @Override
+    public void cartNotAllowedError() {
+        onError(RestaurantDetailsContract.KEY_ERROR_CART_RESTAURANT);
     }
 
     @Override
@@ -135,8 +146,15 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
     }
 
     @Override
-    public void onError() {
-        Toast.makeText(this, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
+    public void onError(int errorCode) {
+        switch (errorCode) {
+            case RestaurantDetailsContract.KEY_ERROR_CART_RESTAURANT:
+                Toast.makeText(this, R.string.no_more_than_one, Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                Toast.makeText(this, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 
     @Override
