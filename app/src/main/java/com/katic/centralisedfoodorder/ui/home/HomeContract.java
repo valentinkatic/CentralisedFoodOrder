@@ -16,6 +16,8 @@ public interface HomeContract {
 
         void navigateToRestaurantDetails(Restaurant restaurant);
 
+        void updateCartIcon(int size);
+
         void handleEmptyView();
 
     }

@@ -12,6 +12,8 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
@@ -24,6 +26,7 @@ import com.katic.centralisedfoodorder.ui.PresenterInjector;
 import com.katic.centralisedfoodorder.ui.restaurantdetails.RestaurantDetailsActivity;
 import com.katic.centralisedfoodorder.ui.restaurantdetails.RestaurantDetailsContract;
 import com.katic.centralisedfoodorder.utils.Connectivity;
+import com.katic.centralisedfoodorder.utils.Utils;
 
 import java.util.List;
 
@@ -47,6 +50,7 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
 
     boolean mTwiceClicked = false;
     private Snackbar mSnackbar;
+    private MenuItem mMenuCart;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,6 +116,13 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
     }
 
     @Override
+    public void updateCartIcon(int size) {
+        if (mMenuCart != null) {
+            mMenuCart.setIcon(Utils.buildCounterDrawable(this, size));
+        }
+    }
+
+    @Override
     public void handleEmptyView() {
         mTVNoData.setVisibility(View.VISIBLE);
     }
@@ -162,6 +173,12 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mPresenter.start(getIntent().getExtras());
+    }
+
     private void showSnackBar(int string) {
         String msg = getResources().getString(string);
         mSnackbar = Snackbar.make(findViewById(R.id.parent_view), msg, Snackbar.LENGTH_LONG);
@@ -178,6 +195,29 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
                 return true;
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_home, menu);
+        mMenuCart = menu.findItem(R.id.menu_cart);
+        mMenuCart.setIcon(Utils.buildCounterDrawable(this, 0));
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_cart:
+                break;
+            case R.id.menu_order_history:
+                break;
+            case R.id.menu_logout:
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

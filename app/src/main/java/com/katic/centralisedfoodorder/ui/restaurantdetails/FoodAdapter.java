@@ -74,6 +74,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
         @Override
         public void onClick(View v) {
             rlQuantity.setVisibility(rlQuantity.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+            tvFoodIngredients.setMaxLines(rlQuantity.getVisibility() == View.VISIBLE ? Integer.MAX_VALUE : 1);
             if (food.getPizza() != null) {
                 rvPizzaSize.setVisibility(rlQuantity.getVisibility());
             }

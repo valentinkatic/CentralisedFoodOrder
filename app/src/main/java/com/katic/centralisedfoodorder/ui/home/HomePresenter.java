@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.katic.centralisedfoodorder.data.DataHandler;
 import com.katic.centralisedfoodorder.data.DataHandlerProvider;
+import com.katic.centralisedfoodorder.data.models.Cart;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 
 import java.util.ArrayList;
@@ -62,6 +63,18 @@ public class HomePresenter implements HomeContract.Presenter {
                 mRestaurants.addAll(result);
                 mView.loadRestaurants(result);
                 mView.hideLoading();
+
+                mDataHandler.getMyCart(new DataHandler.Callback<Cart>() {
+                    @Override
+                    public void onResponse(Cart cart) {
+                        mView.updateCartIcon(cart == null ? 0 : cart.getCartItems().size());
+                    }
+
+                    @Override
+                    public void onError() {
+                        mView.updateCartIcon(0);
+                    }
+                });
             }
 
             @Override
