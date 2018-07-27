@@ -11,6 +11,7 @@ import com.katic.centralisedfoodorder.data.models.CartItem;
 import com.katic.centralisedfoodorder.data.models.Food;
 import com.katic.centralisedfoodorder.data.models.Pizza;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
+import com.katic.centralisedfoodorder.ui.cart.CartActivity;
 
 import java.util.ArrayList;
 
@@ -37,6 +38,7 @@ public class RestaurantDetailsPresenter implements RestaurantDetailsContract.Pre
         if (mCart == null){
             mCart = new Cart();
             mCart.setRestaurantKey(mCurrentRestaurantKey);
+            mCart.setRestaurantName(mRestaurant.getName());
             mCart.setCartItems(new ArrayList<CartItem>());
         }
         if (!mCart.getRestaurantKey().equals(mCurrentRestaurantKey)){
@@ -141,6 +143,11 @@ public class RestaurantDetailsPresenter implements RestaurantDetailsContract.Pre
             public void onResponse(Restaurant restaurant) {
                 mRestaurant = restaurant;
 
+                if (restaurant == null){
+                    mView.onError(RestaurantDetailsContract.KEY_ERROR_UNKNOWN);
+                    return;
+                }
+
                 mDataHandler.getMyCart(new DataHandler.Callback<Cart>() {
                     @Override
                     public void onResponse(Cart cart) {
@@ -168,6 +175,21 @@ public class RestaurantDetailsPresenter implements RestaurantDetailsContract.Pre
                 mView.hideLoading();
             }
         });
+
+    }
+
+    @Override
+    public void onCartClicked() {
+        mView.navigateToActivity(CartActivity.class);
+    }
+
+    @Override
+    public void onOrderHistoryClicked() {
+
+    }
+
+    @Override
+    public void onLogout() {
 
     }
 

@@ -151,6 +151,22 @@ public class Restaurant {
     public void setKey(String key) {
         this.mKey = key;
     }
+
+    @Override
+    public String toString() {
+        return "Restaurant{" +
+                "name='" + mName + '\'' +
+                ", address='" + mAddress + '\'' +
+                ", photoID=" + mPhotoID +
+                ", bookmarked=" + mBookmarked +
+                ", phone='" + mPhone + '\'' +
+                ", city='" + mCity + '\'' +
+                ", foodTypes=" + mFoodTypes +
+                ", foodList=" + mFoodList +
+                ", foodTypeList=" + mFoodTypeList +
+                ", key='" + mKey + '\'' +
+                '}';
+    }
 }
 
 

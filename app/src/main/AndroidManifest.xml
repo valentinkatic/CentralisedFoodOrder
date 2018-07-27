@@ -71,6 +71,7 @@
         </activity>
         <activity android:name=".ui.home.HomeActivity" />
         <activity android:name=".ui.restaurantdetails.RestaurantDetailsActivity" />
+        <activity android:name=".ui.cart.CartActivity" />
 
         <service
             android:name=".services.FirebaseMessagingService">

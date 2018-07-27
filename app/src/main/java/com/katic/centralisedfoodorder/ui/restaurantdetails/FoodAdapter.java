@@ -26,8 +26,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
     private FoodListener mFoodListener;
     private boolean mCartAllowed;
 
-    public FoodAdapter(List<Food> foodList, FoodListener foodListener, boolean cartAllowed) {
-        this.mFoodList = foodList;
+    public FoodAdapter(FoodListener foodListener, boolean cartAllowed) {
         this.mFoodListener = foodListener;
         this.mCartAllowed = cartAllowed;
     }
@@ -173,6 +172,11 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return mFoodList == null ? 0 : mFoodList.size();
+    }
+
+    public void swapEntries(List<Food> foodList){
+        mFoodList = foodList;
+        notifyDataSetChanged();
     }
 
     public interface FoodListener {

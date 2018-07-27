@@ -76,4 +76,15 @@ public class Pizza {
     public void setAmount(int amount) {
         this.mAmount = amount;
     }
+
+    @Override
+    public String toString() {
+        return "Pizza{" +
+                "size='" + mSize + '\'' +
+                ", price=" + mPrice +
+                ", addedToCart=" + mAddedToCart +
+                ", checked=" + mChecked +
+                ", amount=" + mAmount +
+                '}';
+    }
 }

@@ -4,6 +4,8 @@ import com.google.firebase.database.PropertyName;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Objects;
+
 public class CartItem {
 
     @Expose
@@ -77,6 +79,22 @@ public class CartItem {
     @PropertyName("size")
     public void setSize(String size) {
         this.mSize = size;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CartItem cartItem = (CartItem) o;
+        return Float.compare(cartItem.mPrice, mPrice) == 0 &&
+                Objects.equals(mTitle, cartItem.mTitle) &&
+                Objects.equals(mType, cartItem.mType) &&
+                Objects.equals(mSize, cartItem.mSize);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mTitle, mType, mPrice, mSize);
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.katic.centralisedfoodorder.R;
 import com.katic.centralisedfoodorder.data.models.Food;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +40,8 @@ public class RestaurantOfferAdapter extends PagerAdapter{
         this.mFoodTypeList = new ArrayList<>();
     }
 
+    private HashMap<Integer, FoodAdapter> mAdapterMap = new HashMap<>();
+
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
@@ -53,16 +56,20 @@ public class RestaurantOfferAdapter extends PagerAdapter{
 
         mRvFoodList.setLayoutManager(new GridLayoutManager(container.getContext(), 1, LinearLayoutManager.VERTICAL, false));
 
-        FoodAdapter foodAdapter = new FoodAdapter(foodList, mFoodListener, mAllowedCart);
+        FoodAdapter foodAdapter = new FoodAdapter(mFoodListener, mAllowedCart);
+        foodAdapter.swapEntries(foodList);
         mRvFoodList.setAdapter(foodAdapter);
 
         container.addView(view);
+        mAdapterMap.put(position, foodAdapter);
+
         return view;
     }
 
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((View) object);
+        mAdapterMap.remove(position);
     }
 
     @Override
@@ -85,6 +92,13 @@ public class RestaurantOfferAdapter extends PagerAdapter{
         this.mFoodList = foodList;
         this.mAllowedCart = allowedCart;
         notifyDataSetChanged();
+        for (Map.Entry<Integer, FoodAdapter> entry: mAdapterMap.entrySet()){
+            int position = entry.getKey();
+            if (mFoodTypeList != null && mFoodList!=null && mFoodList.get(mFoodTypeList.get(position)).keySet().size() > 0) {
+                List<Food> list = new ArrayList<>(mFoodList.get(mFoodTypeList.get(position)).values());
+                entry.getValue().swapEntries(list);
+            }
+        }
     }
 
 }

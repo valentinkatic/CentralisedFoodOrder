@@ -16,6 +16,8 @@ public interface HomeContract {
 
         void navigateToRestaurantDetails(Restaurant restaurant);
 
+        void navigateToActivity(Class activity);
+
         void updateCartIcon(int size);
 
         void handleEmptyView();
@@ -28,7 +30,12 @@ public interface HomeContract {
 
         void onBookmarkStatusChange(Restaurant restaurant);
 
-        void onLogoutClicked();
+        void onCartClicked();
+
+        void onOrderHistoryClicked();
+
+        void onLogout();
+
     }
 
 }

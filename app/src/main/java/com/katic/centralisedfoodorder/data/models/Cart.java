@@ -1,5 +1,6 @@
 package com.katic.centralisedfoodorder.data.models;
 
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.PropertyName;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -31,6 +32,10 @@ public class Cart {
     @Expose
     @SerializedName("phone_token")
     private String mPhoneToken;
+
+    @Expose
+    @SerializedName("restaurant_name")
+    private String mRestaurantName;
 
     public Cart() {
     }
@@ -95,6 +100,16 @@ public class Cart {
         this.mPhoneToken = phoneToken;
     }
 
+    @PropertyName("restaurant_name")
+    public String getRestaurantName() {
+        return mRestaurantName;
+    }
+
+    @PropertyName("restaurant_name")
+    public void setRestaurantName(String restaurantName) {
+        this.mRestaurantName = restaurantName;
+    }
+
     @Override
     public String toString() {
         return "Cart{" +
@@ -104,6 +119,7 @@ public class Cart {
                 ", delivery=" + mDelivery +
                 ", lastNamePickup='" + mLastNamePickup + '\'' +
                 ", phoneToken='" + mPhoneToken + '\'' +
+                ", restaurantName='" + mRestaurantName + '\'' +
                 '}';
     }
 }

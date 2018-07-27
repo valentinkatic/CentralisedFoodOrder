@@ -119,4 +119,18 @@ public class Food {
     public void setAmount(int amount) {
         this.mAmount = amount;
     }
+
+    @Override
+    public String toString() {
+        return "Food{" +
+                "title='" + mTitle + '\'' +
+                ", foodType='" + mFoodType + '\'' +
+                ", ingredients='" + mIngredients + '\'' +
+                ", price=" + mPrice +
+                ", pizza=" + mPizza +
+                ", clicked=" + mClicked +
+                ", addedToCart=" + mAddedToCart +
+                ", amount=" + mAmount +
+                '}';
+    }
 }

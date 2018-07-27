@@ -1,5 +1,7 @@
 package com.katic.centralisedfoodorder.ui;
 
+import com.katic.centralisedfoodorder.ui.cart.CartContract;
+import com.katic.centralisedfoodorder.ui.cart.CartPresenter;
 import com.katic.centralisedfoodorder.ui.home.HomeContract;
 import com.katic.centralisedfoodorder.ui.home.HomePresenter;
 import com.katic.centralisedfoodorder.ui.restaurantdetails.RestaurantDetailsContract;
@@ -16,27 +18,16 @@ public class PresenterInjector {
         new SignInPresenter(signInView);
     }
 
-//    public static void injectProfilePresenter(ProfileContract.View profileView) {
-//        new ProfilePresenter(profileView);
-//    }
-
     public static void injectHomePresenter(HomeContract.View homeView) {
         new HomePresenter(homeView);
     }
-
-//    public static void injectQuizDiscussionPresenter(QuizDiscussionContract.View quizDiscussionView) {
-//        new QuizDiscussionPresenter(quizDiscussionView);
-//    }
-
-//    public static void injectNotificationPresenter(NotificationContract.View notificationView) {
-//        new NotificationPresenter(notificationView);
-//    }
 
     public static void injectRestaurantDetailsPresenter(RestaurantDetailsContract.View restaurantDetailsView) {
         new RestaurantDetailsPresenter(restaurantDetailsView);
     }
 
-//    public static void injectQuizAttemptPresenter(AttemptQuizContract.View view) {
-//        new AttemptQuizPresenter(view);
-//    }
+    public static void injectCartPresenter(CartContract.View cartView) {
+        new CartPresenter(cartView);
+    }
+
 }

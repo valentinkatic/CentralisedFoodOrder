@@ -128,6 +128,12 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
     }
 
     @Override
+    public void navigateToActivity(Class activity) {
+        Intent intent = new Intent(this, activity);
+        startActivity(intent);
+    }
+
+    @Override
     public void setPresenter(HomeContract.Presenter presenter) {
         this.mPresenter = presenter;
     }
@@ -209,10 +215,13 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_cart:
+                mPresenter.onCartClicked();
                 break;
             case R.id.menu_order_history:
+                mPresenter.onOrderHistoryClicked();
                 break;
             case R.id.menu_logout:
+                mPresenter.onLogout();
                 break;
             default:
                 break;

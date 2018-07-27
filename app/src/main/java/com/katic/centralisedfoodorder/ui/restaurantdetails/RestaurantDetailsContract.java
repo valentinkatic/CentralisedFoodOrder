@@ -23,6 +23,8 @@ public interface RestaurantDetailsContract {
 
         void updateCartIcon(int size);
 
+        void navigateToActivity(Class activity);
+
         void onError(int errorCode);
 
         void dismissView();
@@ -34,6 +36,12 @@ public interface RestaurantDetailsContract {
         void onCartItemAmountChanged(Food food);
 
         void onPhoneClicked();
+
+        void onCartClicked();
+
+        void onOrderHistoryClicked();
+
+        void onLogout();
 
     }
 }

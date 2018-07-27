@@ -1,5 +1,6 @@
 package com.katic.centralisedfoodorder.ui.restaurantdetails;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -89,12 +90,7 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
 
     @Override
     public void showRestaurantDetails(Restaurant restaurant, boolean allowedCart) {
-        if (restaurant != null){
-            mDetailsView.setVisibility(View.VISIBLE);
-        } else {
-            onError(RestaurantDetailsContract.KEY_ERROR_UNKNOWN);
-            return;
-        }
+        mDetailsView.setVisibility(View.VISIBLE);
 
         if (mActionBar != null){
             mActionBar.setTitle(restaurant.getName());
@@ -171,6 +167,12 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
     }
 
     @Override
+    public void navigateToActivity(Class activity) {
+        Intent intent = new Intent(this, activity);
+        startActivity(intent);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         mPresenter.start(getIntent().getExtras());
@@ -188,13 +190,16 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_cart:
+                mPresenter.onCartClicked();
                 break;
             case R.id.menu_phone:
                 mPresenter.onPhoneClicked();
                 break;
             case R.id.menu_order_history:
+                mPresenter.onOrderHistoryClicked();
                 break;
             case R.id.menu_logout:
+                mPresenter.onLogout();
                 break;
             case android.R.id.home:
                 this.dismissView();

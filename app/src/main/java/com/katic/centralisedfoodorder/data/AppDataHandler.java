@@ -1,6 +1,7 @@
 package com.katic.centralisedfoodorder.data;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.katic.centralisedfoodorder.application.AppClass;
 import com.katic.centralisedfoodorder.data.models.Cart;
@@ -17,6 +18,7 @@ import java.util.List;
 
 public class AppDataHandler implements DataHandler {
 
+    public static final String TAG = AppDataHandler.class.getSimpleName();
     private static AppDataHandler INSTANCE = null;
 
     private PrefsHelper mPreferences;
