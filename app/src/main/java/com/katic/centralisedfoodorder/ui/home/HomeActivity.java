@@ -104,7 +104,7 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
 
     @Override
     public void onRestaurantLoadError() {
-        Toast.makeText(this, "Restaurant load error", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Restaurant load error", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -221,8 +221,8 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
                 mPresenter.onOrderHistoryClicked();
                 break;
             case R.id.menu_logout:
-                mPresenter.onLogout();
-                break;
+                mPresenter.signOut(this);
+                return true;
             default:
                 break;
         }

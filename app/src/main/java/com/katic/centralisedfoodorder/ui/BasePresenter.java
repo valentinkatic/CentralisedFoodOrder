@@ -1,5 +1,6 @@
 package com.katic.centralisedfoodorder.ui;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -11,5 +12,7 @@ public interface BasePresenter {
     void start(@Nullable Bundle extras);
 
     void destroy();
+
+    void signOut(Activity context);
 
 }

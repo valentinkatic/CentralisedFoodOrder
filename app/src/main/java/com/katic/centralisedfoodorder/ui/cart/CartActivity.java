@@ -18,10 +18,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.katic.centralisedfoodorder.R;
 import com.katic.centralisedfoodorder.data.models.Cart;
 import com.katic.centralisedfoodorder.data.models.CartItem;
 import com.katic.centralisedfoodorder.ui.PresenterInjector;
+import com.katic.centralisedfoodorder.ui.signin.SignInActivity;
+import com.katic.centralisedfoodorder.utils.Utils;
 
 import java.util.Locale;
 
@@ -158,7 +161,7 @@ public class CartActivity extends AppCompatActivity implements CartContract.View
                 mPresenter.onOrderHistoryPressed();
                 break;
             case R.id.menu_logout:
-                mPresenter.onLogout();
+                mPresenter.signOut(this);
                 break;
             case android.R.id.home:
                 onBackPressed();

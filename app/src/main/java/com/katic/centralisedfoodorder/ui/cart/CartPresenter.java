@@ -1,5 +1,6 @@
 package com.katic.centralisedfoodorder.ui.cart;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -8,6 +9,7 @@ import com.katic.centralisedfoodorder.data.DataHandler;
 import com.katic.centralisedfoodorder.data.DataHandlerProvider;
 import com.katic.centralisedfoodorder.data.models.Cart;
 import com.katic.centralisedfoodorder.data.models.CartItem;
+import com.katic.centralisedfoodorder.utils.Utils;
 
 import java.util.Locale;
 
@@ -116,8 +118,9 @@ public class CartPresenter implements CartContract.Presenter {
     }
 
     @Override
-    public void onLogout() {
-
+    public void signOut(Activity context) {
+        mDataHandler.destroy();
+        Utils.signOut(context);
     }
 
     @Override

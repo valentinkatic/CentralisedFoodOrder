@@ -180,6 +180,7 @@ public class AppDataHandler implements DataHandler {
     @Override
     public void destroy() {
         mFirebaseHandler.destroy();
+        mPreferences.destroy();
     }
 
     /**

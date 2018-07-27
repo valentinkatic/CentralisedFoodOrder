@@ -33,8 +33,6 @@ public interface CartContract {
 
         void removeCartItem(CartItem cartItem);
 
-        void onLogout();
-
     }
 
 }

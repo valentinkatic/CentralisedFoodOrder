@@ -41,7 +41,5 @@ public interface RestaurantDetailsContract {
 
         void onOrderHistoryClicked();
 
-        void onLogout();
-
     }
 }

@@ -1,5 +1,6 @@
 package com.katic.centralisedfoodorder.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.katic.centralisedfoodorder.R;
+import com.katic.centralisedfoodorder.ui.signin.SignInActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -70,6 +73,13 @@ public class Utils {
         view.setDrawingCacheEnabled(false);
 
         return new BitmapDrawable(context.getResources(), bitmap);
+    }
+
+    public static void signOut(Activity context){
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(context, SignInActivity.class);
+        context.startActivity(intent);
+        context.finishAffinity();
     }
 
 }

@@ -199,7 +199,7 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
                 mPresenter.onOrderHistoryClicked();
                 break;
             case R.id.menu_logout:
-                mPresenter.onLogout();
+                mPresenter.signOut(this);
                 break;
             case android.R.id.home:
                 this.dismissView();

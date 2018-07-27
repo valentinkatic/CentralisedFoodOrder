@@ -1,5 +1,6 @@
 package com.katic.centralisedfoodorder.ui.restaurantdetails;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -12,6 +13,7 @@ import com.katic.centralisedfoodorder.data.models.Food;
 import com.katic.centralisedfoodorder.data.models.Pizza;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.ui.cart.CartActivity;
+import com.katic.centralisedfoodorder.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -106,15 +108,10 @@ public class RestaurantDetailsPresenter implements RestaurantDetailsContract.Pre
         }
         mDataHandler.updateUserCart(mCart, new DataHandler.Callback<Void>() {
             @Override
-            public void onResponse(Void result) {
-                Log.d(TAG, "successfully added to cart");
-            }
+            public void onResponse(Void result) { }
 
             @Override
-            public void onError() {
-                Log.d(TAG, "failed adding to cart");
-
-            }
+            public void onError() { }
         });
         mView.updateCartIcon(mCart == null ? 0 : mCart.getCartItems().size());
     }
@@ -189,8 +186,9 @@ public class RestaurantDetailsPresenter implements RestaurantDetailsContract.Pre
     }
 
     @Override
-    public void onLogout() {
-
+    public void signOut(Activity context) {
+        mDataHandler.destroy();
+        Utils.signOut(context);
     }
 
     @Override

@@ -34,8 +34,6 @@ public interface HomeContract {
 
         void onOrderHistoryClicked();
 
-        void onLogout();
-
     }
 
 }

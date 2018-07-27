@@ -1,5 +1,6 @@
 package com.katic.centralisedfoodorder.ui.signin;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -50,6 +51,11 @@ public class SignInPresenter implements SignInContract.Presenter {
     @Override
     public void start(@Nullable Bundle extras) {
         // Do nothing on start
+    }
+
+    @Override
+    public void signOut(Activity context) {
+
     }
 
     @Override
