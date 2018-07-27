@@ -44,44 +44,62 @@ public class RestaurantDetailsPresenter implements RestaurantDetailsContract.Pre
             return;
         }
         boolean isInCart = false;
-        boolean hasCheckedSize = false;
-        String size = null;
+        Pizza checkedPizza = null;
 
         if (food.getPizza() != null && food.getPizza().size() > 0){
             for (Pizza pizza: food.getPizza()){
                 if (pizza.isChecked()){
-                    size = pizza.getSize();
-                    hasCheckedSize = true;
+                    checkedPizza = pizza;
                     break;
                 }
             }
-            if (!hasCheckedSize){
+            if (checkedPizza == null){
                 mView.onError(RestaurantDetailsContract.KEY_ERROR_SIZE_NOT_CHECKED);
                 return;
             }
         }
 
         for (CartItem cartItem: mCart.getCartItems()){
-            if (cartItem.getTitle().equals(food.getTitle()) && cartItem.getType().equals(food.getFoodType()) && cartItem.getSize().equals(size)){
-                isInCart = true;
-                if (food.getAmount() == 0){
-                    mCart.getCartItems().remove(cartItem);
-                    if (mCart.getCartItems() == null || mCart.getCartItems().size() == 0){
-                        mCart = null;
+            if (cartItem.getTitle().equals(food.getTitle()) && cartItem.getType().equals(food.getFoodType())){
+                if (checkedPizza == null) {
+                    isInCart = true;
+                    if (food.getAmount() == 0) {
+                        mCart.getCartItems().remove(cartItem);
+                        if (mCart.getCartItems() == null || mCart.getCartItems().size() == 0) {
+                            mCart = null;
+                        }
+                    } else {
+                        cartItem.setAmount(food.getAmount());
                     }
+                    break;
                 } else {
-                    cartItem.setAmount(food.getAmount());
+                    if (cartItem.getSize().equals(checkedPizza.getSize())){
+                        isInCart = true;
+                        if (checkedPizza.getAmount() == 0) {
+                            mCart.getCartItems().remove(cartItem);
+                            if (mCart.getCartItems() == null || mCart.getCartItems().size() == 0) {
+                                mCart = null;
+                            }
+                        } else {
+                            cartItem.setAmount(checkedPizza.getAmount());
+                        }
+                        break;
+                    }
                 }
-                break;
             }
         }
         if (!isInCart){
             CartItem cartItem = new CartItem();
-            cartItem.setAmount(food.getAmount());
-            cartItem.setPrice(food.getPrice());
+            if (checkedPizza != null) {
+                cartItem.setPrice(checkedPizza.getPrice());
+                cartItem.setSize(checkedPizza.getSize());
+                cartItem.setAmount(checkedPizza.getAmount());
+            } else {
+                cartItem.setPrice(food.getPrice());
+                cartItem.setAmount(food.getAmount());
+            }
             cartItem.setTitle(food.getTitle());
             cartItem.setType(food.getFoodType());
-            cartItem.setSize(size);
             mCart.getCartItems().add(cartItem);
         }
         mDataHandler.updateUserCart(mCart, new DataHandler.Callback<Void>() {

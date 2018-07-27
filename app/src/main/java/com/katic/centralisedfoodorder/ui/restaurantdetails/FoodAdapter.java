@@ -26,7 +26,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
     private FoodListener mFoodListener;
     private boolean mCartAllowed;
 
-    protected FoodAdapter(List<Food> foodList, FoodListener foodListener, boolean cartAllowed) {
+    public FoodAdapter(List<Food> foodList, FoodListener foodListener, boolean cartAllowed) {
         this.mFoodList = foodList;
         this.mFoodListener = foodListener;
         this.mCartAllowed = cartAllowed;
@@ -81,11 +81,25 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
 
         @OnClick(R.id.iv_minus) void reduceAmount() {
             if (mCartAllowed) {
-                if (food.getAmount() > 0) {
-                    food.setAmount(food.getAmount() - 1);
-                    tvAmount.setText(String.format(Locale.getDefault(), "%d", food.getAmount()));
-                    if (food.getAmount() == 0) {
-                        food.setAddedToCart(false);
+                if (food.getPizza() == null || food.getPizza().size() == 0) {
+                    if (food.getAmount() > 0) {
+                        food.setAmount(food.getAmount() - 1);
+                        tvAmount.setText(String.format(Locale.getDefault(), "%d", food.getAmount()));
+                        if (food.getAmount() == 0) {
+                            food.setAddedToCart(false);
+                        }
+                        mFoodListener.onAmountChanged(food, false);
+                    }
+                } else {
+                    for (Pizza pizza: food.getPizza()) {
+                        if (pizza.isChecked() && pizza.getAmount() > 0){
+                            pizza.setAmount(pizza.getAmount() - 1);
+                            tvAmount.setText(String.format(Locale.getDefault(), "%d", pizza.getAmount()));
+                            if (pizza.getAmount() == 0) {
+                                pizza.setAddedToCart(false);
+                            }
+                            break;
+                        }
                     }
                     mFoodListener.onAmountChanged(food, false);
                 }
@@ -96,10 +110,22 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
 
         @OnClick(R.id.iv_plus) void increaseAmount() {
             if (mCartAllowed) {
-                if (food.getAmount() != 10) {
-                    food.setAmount(food.getAmount() + 1);
-                    tvAmount.setText(String.format(Locale.getDefault(), "%d", food.getAmount()));
-                    food.setAddedToCart(true);
+                if (food.getPizza() == null || food.getPizza().size() == 0) {
+                    if (food.getAmount() != 10) {
+                        food.setAmount(food.getAmount() + 1);
+                        tvAmount.setText(String.format(Locale.getDefault(), "%d", food.getAmount()));
+                        food.setAddedToCart(true);
+                        mFoodListener.onAmountChanged(food, true);
+                    }
+                } else {
+                    for (Pizza pizza: food.getPizza()) {
+                        if (pizza.isChecked() && pizza.getAmount() != 10){
+                            pizza.setAmount(pizza.getAmount() + 1);
+                            tvAmount.setText(String.format(Locale.getDefault(), "%d", pizza.getAmount()));
+                            pizza.setAddedToCart(true);
+                            break;
+                        }
+                    }
                     mFoodListener.onAmountChanged(food, true);
                 }
             } else {
@@ -109,7 +135,25 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
 
         @Override
         public void onSizeClicked(Pizza pizza) {
-            tvAmount.setText(String.format(Locale.getDefault(), "%d", food.getAmount()));
+            int pizzaIndex = getPizzaIndex(pizza);
+            if (pizzaIndex == -1){
+                tvAmount.setText(String.format(Locale.getDefault(), "%d", 0));
+            } else {
+                tvAmount.setText(String.format(Locale.getDefault(), "%d", food.getPizza().get(getPizzaIndex(pizza)).getAmount()));
+            }
+
+        }
+
+        private int getPizzaIndex(Pizza pizza){
+            if (food.getPizza() == null || food.getPizza().size() == 0){
+                return -1;
+            }
+            for (int i = 0; i < food.getPizza().size(); i++){
+                if (food.getPizza().get(i).getSize().equals(pizza.getSize())){
+                    return pizza.isChecked() ? i : -1;
+                }
+            }
+            return -1;
         }
     }
 

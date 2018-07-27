@@ -62,8 +62,8 @@ public class PizzaSizeAdapter extends RecyclerView.Adapter<PizzaSizeAdapter.View
                     mPizzaList.get(i).setChecked(false);
                 }
                 pizza.setChecked(true);
-                mPizzaSizeListener.onSizeClicked(pizza);
             }
+            mPizzaSizeListener.onSizeClicked(pizza);
             notifyDataSetChanged();
         }
     }

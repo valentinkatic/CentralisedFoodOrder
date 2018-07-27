@@ -132,6 +132,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:listitem="@layout/item_pizza_size"
+            android:nestedScrollingEnabled="false"
             android:visibility="gone"/>
 
         <View

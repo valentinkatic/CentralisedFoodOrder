@@ -91,13 +91,14 @@ public class AppDataHandler implements DataHandler {
                                     for (Pizza pizza: restaurant.getFoodList().get(cartItem.getType()).get(cartItem.getTitle()).getPizza()){
                                         if (cartItem.getSize().equals(pizza.getSize())){
                                             pizza.setAddedToCart(true);
+                                            pizza.setAmount(cartItem.getAmount());
                                             break;
                                         }
                                     }
                                 } else {
                                     restaurant.getFoodList().get(cartItem.getType()).get(cartItem.getTitle()).setAddedToCart(true);
+                                    restaurant.getFoodList().get(cartItem.getType()).get(cartItem.getTitle()).setAmount(cartItem.getAmount());
                                 }
-                                restaurant.getFoodList().get(cartItem.getType()).get(cartItem.getTitle()).setAmount(cartItem.getAmount());
                             }
                         }
 
