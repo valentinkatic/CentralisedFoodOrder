@@ -60,14 +60,21 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
                 PizzaSizeAdapter pizzaSizeAdapter = new PizzaSizeAdapter(food.getPizza(), this);
                 rvPizzaSize.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false));
                 rvPizzaSize.setAdapter(pizzaSizeAdapter);
+
+                for (Pizza pizza: food.getPizza()){
+                    if (pizza.isChecked()){
+                        tvAmount.setText(String.format(Locale.getDefault(), "%d", pizza.getAmount()));
+                        break;
+                    }
+                }
             } else {
                 tvFoodPrice.setVisibility(View.VISIBLE);
+                tvAmount.setText(String.format(Locale.getDefault(), "%d", food.getAmount()));
             }
             if (food.getPrice() != 0) {
                 tvFoodPrice.setVisibility(View.VISIBLE);
                 tvFoodPrice.setText(String.format(Locale.getDefault(), "%.2f kn", food.getPrice()));
             }
-            tvAmount.setText(String.format(Locale.getDefault(), "%d", food.getAmount()));
         }
 
         @Override

@@ -1,6 +1,7 @@
 package com.katic.centralisedfoodorder.ui.home;
 
 import android.content.Intent;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -33,6 +34,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.katic.centralisedfoodorder.utils.Utils.setBadgeCount;
+
 public class HomeActivity extends AppCompatActivity implements HomeContract.View, RestaurantAdapter.RestaurantItemListener {
 
     public static final String TAG = HomeActivity.class.getSimpleName();
@@ -50,7 +53,7 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
 
     boolean mTwiceClicked = false;
     private Snackbar mSnackbar;
-    private MenuItem mMenuCart;
+    private LayerDrawable mMenuIcon;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,8 +120,8 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
 
     @Override
     public void updateCartIcon(int size) {
-        if (mMenuCart != null) {
-            mMenuCart.setIcon(Utils.buildCounterDrawable(this, size));
+        if (mMenuIcon != null) {
+            setBadgeCount(this, mMenuIcon, size);
         }
     }
 
@@ -206,8 +209,9 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_home, menu);
-        mMenuCart = menu.findItem(R.id.menu_cart);
-        mMenuCart.setIcon(Utils.buildCounterDrawable(this, 0));
+        MenuItem menuCart = menu.findItem(R.id.menu_cart);
+        mMenuIcon = (LayerDrawable) menuCart.getIcon();
+        setBadgeCount(this, mMenuIcon, 0);
         return super.onCreateOptionsMenu(menu);
     }
 

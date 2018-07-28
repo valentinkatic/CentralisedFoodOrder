@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,13 +40,21 @@ public class Utils {
         ctx.startActivity(i);
     }
 
-    public static Object getKeyFromValue(Map hm, Object value) {
-        for (Object o : hm.keySet()) {
-            if (hm.get(o).equals(value)) {
-                return o;
-            }
+    public static void setBadgeCount(Context context, LayerDrawable icon, int count) {
+
+        BadgeDrawable badge;
+
+        // Reuse drawable if possible
+        Drawable reuse = icon.findDrawableByLayerId(R.id.ic_badge);
+        if (reuse != null && reuse instanceof BadgeDrawable) {
+            badge = (BadgeDrawable) reuse;
+        } else {
+            badge = new BadgeDrawable(context);
         }
-        return null;
+
+        badge.setCount(String.format(Locale.getDefault(), "%d", count));
+        icon.mutate();
+        icon.setDrawableByLayerId(R.id.ic_badge, badge);
     }
 
     public static Drawable buildCounterDrawable(Context context, int count) {
@@ -58,7 +67,7 @@ public class Utils {
             view.setBackgroundResource(R.drawable.empty_cart);
         } else {
             TextView textView = view.findViewById(R.id.count);
-            textView.setText("" + count);
+            textView.setText(String.format(Locale.getDefault(), "%d", count));
             view.setBackgroundResource(R.drawable.ic_full_cart);
         }
 

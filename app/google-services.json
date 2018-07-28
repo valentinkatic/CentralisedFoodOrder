@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "886715338644-u8tsaakklnutmm4kr49rt4k1mv1ituhj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.katic.centralisedfoodorder",
+            "certificate_hash": "ba90d44b0fa0abe01b863e44dc41a636cc96eb8b"
+          }
+        },
+        {
+          "client_id": "886715338644-uhm1b6bttti3vbil19ugt5b4p5vrsj0f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.katic.centralisedfoodorder",
+            "certificate_hash": "571b2fba7576b968fdb8ee125d9f0f730bf56b88"
+          }
+        },
+        {
           "client_id": "886715338644-ssdkgaerehe6m1a33vna3gvghpeu14mr.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +45,101 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "886715338644-ssdkgaerehe6m1a33vna3gvghpeu14mr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:886715338644:android:e8c55329b8a75f5e",
+        "android_client_info": {
+          "package_name": "com.katic.testingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "886715338644-anni1g5jqfi7upargd5c7gr6jhsrdkkj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.katic.testingapp",
+            "certificate_hash": "a3169ab115f61de4d3c1f3c045c8661573c665c9"
+          }
+        },
+        {
+          "client_id": "886715338644-ssdkgaerehe6m1a33vna3gvghpeu14mr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpqkowSquc5XeIzyKUkB50asrRYKpMLzQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "886715338644-ssdkgaerehe6m1a33vna3gvghpeu14mr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:886715338644:android:c616d07338029079",
+        "android_client_info": {
+          "package_name": "com.katic.zaprimateljnarudzbi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "886715338644-9jtnklf47tcug0fmlerit0eqv071viq5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.katic.zaprimateljnarudzbi",
+            "certificate_hash": "a3169ab115f61de4d3c1f3c045c8661573c665c9"
+          }
+        },
+        {
+          "client_id": "886715338644-ssdkgaerehe6m1a33vna3gvghpeu14mr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpqkowSquc5XeIzyKUkB50asrRYKpMLzQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "886715338644-ssdkgaerehe6m1a33vna3gvghpeu14mr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

@@ -1,6 +1,7 @@
 package com.katic.centralisedfoodorder.ui.restaurantdetails;
 
 import android.content.Intent;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -30,6 +31,8 @@ import com.katic.centralisedfoodorder.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.katic.centralisedfoodorder.utils.Utils.setBadgeCount;
+
 public class RestaurantDetailsActivity extends AppCompatActivity implements RestaurantDetailsContract.View, FoodAdapter.FoodListener {
 
     private RestaurantDetailsContract.Presenter mPresenter;
@@ -46,7 +49,7 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
     @BindView(R.id.vp_food) ViewPager mVpFood;
 
     private ActionBar mActionBar;
-    private MenuItem mMenuCart;
+    private LayerDrawable mMenuIcon;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -137,7 +140,9 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
 
     @Override
     public void updateCartIcon(int size) {
-        mMenuCart.setIcon(Utils.buildCounterDrawable(this, size));
+        if (mMenuIcon != null) {
+            setBadgeCount(this, mMenuIcon, size);
+        }
     }
 
     @Override
@@ -180,9 +185,9 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_restaurant_details, menu);
-        mMenuCart = menu.findItem(R.id.menu_cart);
-        mMenuCart.setIcon(Utils.buildCounterDrawable(this, 0));
+        getMenuInflater().inflate(R.menu.menu_restaurant_details, menu);MenuItem menuCart = menu.findItem(R.id.menu_cart);
+        mMenuIcon = (LayerDrawable) menuCart.getIcon();
+        setBadgeCount(this, mMenuIcon, 0);
         return super.onCreateOptionsMenu(menu);
     }
 
