@@ -41,6 +41,7 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
     private DatabaseReference mRestaurantsRef;
 
     private List<ValueEventListener> mValueListeners;
+    private HashMap<DatabaseReference, ValueEventListener> mFirebaseListeners = new HashMap<>();
 
     // Private variables
     private FirebaseUser mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -84,8 +85,9 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
 //            quizzesRefQuery.limitToFirst(limitToFirst);
 //        }
 //        quizzesRefQuery.addValueEventListener(listener);
-        mRestaurantsRef.addValueEventListener(listener);
+        mRestaurantsRef.addListenerForSingleValueEvent(listener);
         mValueListeners.add(listener);
+        mFirebaseListeners.put(mRestaurantsRef, listener);
     }
 
     @Override
@@ -107,8 +109,9 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
             }
         };
 
-        mRestaurantsRef.child(restaurantId).addValueEventListener(listener);
+        mRestaurantsRef.child(restaurantId).addListenerForSingleValueEvent(listener);
         mValueListeners.add(listener);
+        mFirebaseListeners.put(mRestaurantsRef.child(restaurantId), listener);
     }
 
     @Override
@@ -142,8 +145,9 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
             }
         };
 
-        mUsersRef.child(userIdentifier).addValueEventListener(listener);
+        mUsersRef.child(userIdentifier).addListenerForSingleValueEvent(listener);
         mValueListeners.add(listener);
+        mFirebaseListeners.put(mUsersRef.child(userIdentifier), listener);
     }
 
     @Override
@@ -277,7 +281,8 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
         };
 
         mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_BOOKMARKS)
-                .addValueEventListener(listener);
+                .addListenerForSingleValueEvent(listener);
+        mFirebaseListeners.put(mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_BOOKMARKS), listener);
     }
 
     @Override
@@ -301,15 +306,19 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
 
         mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_CART)
                 .addValueEventListener(listener);
+        mFirebaseListeners.put(mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_CART), listener);
     }
 
     @Override
     public void destroy() {
         // Remove all listeners
-        for (ValueEventListener listener : mValueListeners) {
-            mRestaurantsRef.removeEventListener(listener);
-            mUsersRef.removeEventListener(listener);
-        }
+//        for (ValueEventListener listener : mValueListeners) {
+//            mRestaurantsRef.removeEventListener(listener);
+//            mUsersRef.removeEventListener(listener);
+//        }
+//        for (Map.Entry<DatabaseReference, ValueEventListener> entry: mFirebaseListeners.entrySet()){
+//            entry.getKey().removeEventListener(entry.getValue());
+//        }
     }
 
     private Restaurant getRestaurantFromSnapshot(DataSnapshot snapshot) {

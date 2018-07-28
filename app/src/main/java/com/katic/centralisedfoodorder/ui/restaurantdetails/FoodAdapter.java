@@ -55,7 +55,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
                 tvFoodIngredients.setVisibility(View.VISIBLE);
                 tvFoodIngredients.setText(food.getIngredients());
             }
-            if (food.getPizza() != null) {
+            if (food.getPizza() != null && food.getPizza().size() > 0) {
                 tvFoodPrice.setVisibility(View.GONE);
                 PizzaSizeAdapter pizzaSizeAdapter = new PizzaSizeAdapter(food.getPizza(), this);
                 rvPizzaSize.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false));
