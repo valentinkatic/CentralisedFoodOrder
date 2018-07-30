@@ -55,9 +55,9 @@ public class OrderHistoryExpandableListAdapter extends BaseExpandableListAdapter
         if (convertView == null) {
             holder = new ChildHolder();
             convertView = inflater.inflate(R.layout.order_history_list, parent, false);
-            holder.title = (TextView) convertView.findViewById(R.id.cartTitle);
-            holder.type = (TextView) convertView.findViewById(R.id.cartType);
-            holder.price = (TextView) convertView.findViewById(R.id.cartPrice);
+            holder.title = (TextView) convertView.findViewById(R.id.tv_food_title);
+            holder.type = (TextView) convertView.findViewById(R.id.tv_food_type);
+            holder.price = (TextView) convertView.findViewById(R.id.tv_food_price);
             holder.ingredients = (TextView) convertView.findViewById(R.id.cartIngredients);
             holder.ingredients.setVisibility(View.GONE);
             convertView.setTag(holder);
@@ -116,11 +116,11 @@ public class OrderHistoryExpandableListAdapter extends BaseExpandableListAdapter
         if (convertView == null) {
             holder = new GroupHolder();
             convertView = inflater.inflate(R.layout.order_history_group, parent, false);
-            holder.title = (TextView) convertView.findViewById(R.id.order_history_group);
-            holder.groupImageView = (ImageView) convertView.findViewById(R.id.order_history_remove);
-            holder.groupImageAdditionalView = (ImageView) convertView.findViewById(R.id.order_history_addToCart);
-            holder.navigationView = (ImageView) convertView.findViewById(R.id.order_history_navigation);
-            holder.date = (TextView) convertView.findViewById(R.id.order_history_date);
+            holder.title = (TextView) convertView.findViewById(R.id.tv_restaurant_name);
+            holder.groupImageView = (ImageView) convertView.findViewById(R.id.iv_order_remove);
+            holder.groupImageAdditionalView = (ImageView) convertView.findViewById(R.id.iv_add_to_cart);
+            holder.navigationView = (ImageView) convertView.findViewById(R.id.iv_navigation);
+            holder.date = (TextView) convertView.findViewById(R.id.tv_order_date);
             convertView.setTag(holder);
         } else {
             holder = (GroupHolder) convertView.getTag();

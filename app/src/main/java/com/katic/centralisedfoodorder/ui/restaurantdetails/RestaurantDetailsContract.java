@@ -1,5 +1,7 @@
 package com.katic.centralisedfoodorder.ui.restaurantdetails;
 
+import android.content.Context;
+
 import com.katic.centralisedfoodorder.data.models.Food;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.ui.BasePresenter;
@@ -29,6 +31,8 @@ public interface RestaurantDetailsContract {
 
         void dismissView();
 
+        void startMapsApp(String address);
+
     }
 
     interface Presenter extends BasePresenter {
@@ -38,6 +42,8 @@ public interface RestaurantDetailsContract {
         void onPhoneClicked();
 
         void onCartClicked();
+
+        void onAddressClicked();
 
     }
 }

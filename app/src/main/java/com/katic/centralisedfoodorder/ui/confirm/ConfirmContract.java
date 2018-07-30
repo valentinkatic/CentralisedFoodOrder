@@ -21,6 +21,8 @@ public interface ConfirmContract {
 
         void loadDefaultAddress(DeliveryAddress address);
 
+        void loadLastNamePickup(String lastName);
+
         void onDeliveryChecked();
 
         void onPickupChecked();

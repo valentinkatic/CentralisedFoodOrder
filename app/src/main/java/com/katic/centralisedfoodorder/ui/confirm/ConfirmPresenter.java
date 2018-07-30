@@ -8,6 +8,7 @@ import com.katic.centralisedfoodorder.data.DataHandler;
 import com.katic.centralisedfoodorder.data.DataHandlerProvider;
 import com.katic.centralisedfoodorder.data.models.Cart;
 import com.katic.centralisedfoodorder.data.models.DeliveryAddress;
+import com.katic.centralisedfoodorder.ui.orderhistory.OrderHistoryActivity;
 import com.katic.centralisedfoodorder.utils.Utils;
 
 import java.util.Calendar;
@@ -97,13 +98,13 @@ public class ConfirmPresenter implements ConfirmContract.Presenter {
     public void confirmDelivery(DeliveryAddress address) {
         mCart.setDeliveryAddress(address);
         mCart.setPhoneToken(mDataHandler.getUserPhoneToken());
-        mCart.setOrderDate(Utils.getDisplayDate(Calendar.getInstance().getTimeInMillis()));
+        mCart.setOrderDate(Utils.getISO8601Date(Calendar.getInstance().getTimeInMillis()));
         mCart.setDelivery(true);
         mDataHandler.sendOrder(mCart, new DataHandler.Callback<Void>() {
             @Override
             public void onResponse(Void result) {
                 mView.showToastMessage(ConfirmContract.KEY_MESSAGE_ORDER_SENT);
-//                mView.navigateToActivity(OrderHistoryActivity.class, true);
+                mView.navigateToActivity(OrderHistoryActivity.class, true);
             }
 
             @Override
@@ -117,13 +118,13 @@ public class ConfirmPresenter implements ConfirmContract.Presenter {
     public void confirmPickup(String lastName) {
         mCart.setLastNamePickup(lastName);
         mCart.setPhoneToken(mDataHandler.getUserPhoneToken());
-        mCart.setOrderDate(Utils.getDisplayDate(Calendar.getInstance().getTimeInMillis()));
+        mCart.setOrderDate(Utils.getISO8601Date(Calendar.getInstance().getTimeInMillis()));
         mCart.setDelivery(false);
         mDataHandler.sendOrder(mCart, new DataHandler.Callback<Void>() {
             @Override
             public void onResponse(Void result) {
                 mView.showToastMessage(ConfirmContract.KEY_MESSAGE_ORDER_SENT);
-//                mView.navigateToActivity(OrderHistoryActivity.class, true);
+                mView.navigateToActivity(OrderHistoryActivity.class, true);
             }
 
             @Override
@@ -131,6 +132,7 @@ public class ConfirmPresenter implements ConfirmContract.Presenter {
 
             }
         });
+        mDataHandler.saveUserLastNamePickup(lastName);
     }
 
     @Override
@@ -157,6 +159,8 @@ public class ConfirmPresenter implements ConfirmContract.Presenter {
                 break;
             }
         }
+
+        mView.loadLastNamePickup(mDataHandler.getUserLastNamePickup());
     }
 
     @Override
@@ -167,7 +171,7 @@ public class ConfirmPresenter implements ConfirmContract.Presenter {
 
     @Override
     public void onOrderHistoryClicked() {
-
+        mView.navigateToActivity(OrderHistoryActivity.class, false);
     }
 
     @Override

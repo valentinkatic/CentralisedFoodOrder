@@ -48,8 +48,8 @@ public class OrderHistoryActivity extends BaseActivity {
         setContentView(R.layout.activity_order_history);
         orderCompleted = getIntent().getBooleanExtra("ConfirmActivity", false);
 
-        orderHistoryView = (ExpandableListView) findViewById(R.id.orderHistoryView);
-        orderHistoryEmpty = (TextView) findViewById(R.id.empty_order_history);
+        orderHistoryView = (ExpandableListView) findViewById(R.id.elv_order_history);
+        orderHistoryEmpty = (TextView) findViewById(R.id.tv_empty_order_history);
 
         mAuth = FirebaseAuth.getInstance();
 

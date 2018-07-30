@@ -92,6 +92,21 @@ public class CartItem {
                 Objects.equals(mSize, cartItem.mSize);
     }
 
+    public static CartItem copy(CartItem cartItem){
+        if (cartItem == null){
+            return null;
+        }
+        CartItem copy = new CartItem();
+
+        copy.mTitle = cartItem.mTitle;
+        copy.mType = cartItem.mType;
+        copy.mAmount = cartItem.mAmount;
+        copy.mPrice = cartItem.mPrice;
+        copy.mSize = cartItem.mSize;
+
+        return copy;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(mTitle, mType, mPrice, mSize);

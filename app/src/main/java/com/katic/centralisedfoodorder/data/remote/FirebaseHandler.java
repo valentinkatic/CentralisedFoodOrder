@@ -7,6 +7,7 @@ import com.katic.centralisedfoodorder.data.models.Food;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.data.models.User;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -30,6 +31,8 @@ public interface FirebaseHandler {
 
     void fetchUserInfo(String userIdentifier, Callback<User> callback);
 
+    void fetchUserAddresses(String userIdentifier, Callback<List<DeliveryAddress>> callback);
+
     void setUserInfo(User currentUser, Callback<Void> callback);
 
     void fetchUserPhoneToken(String userIdentifier, Callback<String> callback);
@@ -43,6 +46,10 @@ public interface FirebaseHandler {
     void getMyBookmarks(Callback<List<String>> callback);
 
     void getMyCart(Callback<Cart> callback);
+
+    void getMyOrderHistory(Callback<List<Cart>> callback);
+
+    void removeOrder(String orderKey, Callback<Void> callback);
 
     void sendOrder(Cart cart, Callback<Void> callback);
 

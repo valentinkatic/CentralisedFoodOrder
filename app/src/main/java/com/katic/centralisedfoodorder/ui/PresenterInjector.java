@@ -6,6 +6,8 @@ import com.katic.centralisedfoodorder.ui.confirm.ConfirmContract;
 import com.katic.centralisedfoodorder.ui.confirm.ConfirmPresenter;
 import com.katic.centralisedfoodorder.ui.home.HomeContract;
 import com.katic.centralisedfoodorder.ui.home.HomePresenter;
+import com.katic.centralisedfoodorder.ui.orderhistory.OrderHistoryContract;
+import com.katic.centralisedfoodorder.ui.orderhistory.OrderHistoryPresenter;
 import com.katic.centralisedfoodorder.ui.restaurantdetails.RestaurantDetailsContract;
 import com.katic.centralisedfoodorder.ui.restaurantdetails.RestaurantDetailsPresenter;
 import com.katic.centralisedfoodorder.ui.signin.SignInContract;
@@ -34,6 +36,10 @@ public class PresenterInjector {
 
     public static void injectConfirmPresenter(ConfirmContract.View confirmView) {
         new ConfirmPresenter(confirmView);
+    }
+
+    public static void injectOrderHistoryPresenter(OrderHistoryContract.View orderHistoryView) {
+        new OrderHistoryPresenter(orderHistoryView);
     }
 
 }

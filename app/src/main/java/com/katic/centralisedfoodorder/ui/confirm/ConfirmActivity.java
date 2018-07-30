@@ -98,6 +98,11 @@ public class ConfirmActivity extends AppCompatActivity implements ConfirmContrac
         mEtPhoneNumber.setText(address.getPhoneNumber());
     }
 
+    @Override
+    public void loadLastNamePickup(String lastName) {
+        mEtLastNamePickup.setText(lastName);
+    }
+
     @OnClick(R.id.bt_select_address) void selectAddress(){
         mPresenter.onAddressSelectClicked();
     }

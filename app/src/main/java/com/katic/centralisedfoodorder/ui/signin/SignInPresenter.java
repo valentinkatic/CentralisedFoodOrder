@@ -28,6 +28,7 @@ public class SignInPresenter implements SignInContract.Presenter {
     public void handleLoginSuccess(String email, String displayName) {
         mDataHandler.saveUserEmail(email);
         mDataHandler.saveUserName(displayName);
+        mDataHandler.fetchUserAddresses();
         mDataHandler.setUserInfo(new DataHandler.Callback<Void>() {
             @Override
             public void onResponse(Void result) {

@@ -10,6 +10,7 @@ import com.katic.centralisedfoodorder.data.DataHandlerProvider;
 import com.katic.centralisedfoodorder.data.models.Cart;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.ui.cart.CartActivity;
+import com.katic.centralisedfoodorder.ui.orderhistory.OrderHistoryActivity;
 import com.katic.centralisedfoodorder.utils.Utils;
 
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class HomePresenter implements HomeContract.Presenter {
 
     @Override
     public void onOrderHistoryClicked() {
-
+        mView.navigateToActivity(OrderHistoryActivity.class);
     }
 
     @Override

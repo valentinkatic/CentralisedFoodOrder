@@ -28,8 +28,11 @@ import com.katic.centralisedfoodorder.data.remote.FirebaseHandler;
 import com.katic.centralisedfoodorder.ui.PresenterInjector;
 import com.katic.centralisedfoodorder.utils.Utils;
 
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.katic.centralisedfoodorder.utils.Utils.setBadgeCount;
 
@@ -60,6 +63,10 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
         PresenterInjector.injectRestaurantDetailsPresenter(this);
 
         initializeUI();
+    }
+
+    @OnClick(R.id.tv_restaurant_address) void onAddressPressed(){
+        mPresenter.onAddressClicked();
     }
 
     private int mLastPagerPosition = 0;
@@ -100,7 +107,7 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
         }
 
         mTvRestaurantName.setText(restaurant.getName());
-        mTvRestaurantAddress.setText(restaurant.getAddress());
+        mTvRestaurantAddress.setText(String.format(Locale.getDefault(), "%s, %s", restaurant.getAddress(), restaurant.getCity()));
 
         StorageReference storageRef = FirebaseStorage
                 .getInstance()
@@ -136,6 +143,11 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
     @Override
     public void dialPhone(String phoneNumber) {
         Utils.dialNumber(this, phoneNumber);
+    }
+
+    @Override
+    public void startMapsApp(String address) {
+        Utils.startMaps(this, address);
     }
 
     @Override

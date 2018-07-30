@@ -13,9 +13,9 @@ import com.katic.centralisedfoodorder.data.models.User;
 import com.katic.centralisedfoodorder.data.remote.FirebaseHandler;
 import com.katic.centralisedfoodorder.data.remote.FirebaseProvider;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
+
+import butterknife.OnClick;
 
 public class AppDataHandler implements DataHandler {
 
@@ -125,6 +125,21 @@ public class AppDataHandler implements DataHandler {
     }
 
     @Override
+    public void fetchUserAddresses() {
+        mFirebaseHandler.fetchUserAddresses(null, new FirebaseHandler.Callback<List<DeliveryAddress>>() {
+            @Override
+            public void onResponse(List<DeliveryAddress> result) {
+                mPreferences.setUserAddresses(result);
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+    }
+
+    @Override
     public void updateUserName(String userName, Callback<Void> callback) {
         mFirebaseHandler.updateUserName(userName, new FirebaseCallback<>(callback));
     }
@@ -170,6 +185,16 @@ public class AppDataHandler implements DataHandler {
     }
 
     @Override
+    public void getMyOrderHistory(Callback<List<Cart>> callback) {
+        mFirebaseHandler.getMyOrderHistory(new FirebaseCallback<>(callback));
+    }
+
+    @Override
+    public void removeOrder(String orderKey, Callback<Void> callback) {
+        mFirebaseHandler.removeOrder(orderKey, new FirebaseCallback<>(callback));
+    }
+
+    @Override
     public void sendOrder(Cart cart, Callback<Void> callback) {
         mFirebaseHandler.sendOrder(cart, new FirebaseCallback<>(callback));
     }
@@ -192,6 +217,16 @@ public class AppDataHandler implements DataHandler {
     @Override
     public String getUserEmail() {
         return mPreferences.getUserEmail();
+    }
+
+    @Override
+    public void saveUserLastNamePickup(String lastNamePickup) {
+        mPreferences.setUserLastNamePickup(lastNamePickup);
+    }
+
+    @Override
+    public String getUserLastNamePickup() {
+        return mPreferences.getUserLastNamePickup();
     }
 
     @Override

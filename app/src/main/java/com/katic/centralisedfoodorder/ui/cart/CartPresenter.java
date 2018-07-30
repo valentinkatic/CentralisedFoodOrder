@@ -10,6 +10,7 @@ import com.katic.centralisedfoodorder.data.DataHandlerProvider;
 import com.katic.centralisedfoodorder.data.models.Cart;
 import com.katic.centralisedfoodorder.data.models.CartItem;
 import com.katic.centralisedfoodorder.ui.confirm.ConfirmActivity;
+import com.katic.centralisedfoodorder.ui.orderhistory.OrderHistoryActivity;
 import com.katic.centralisedfoodorder.utils.Utils;
 
 import java.util.Locale;
@@ -115,7 +116,7 @@ public class CartPresenter implements CartContract.Presenter {
 
     @Override
     public void onOrderHistoryClicked() {
-
+        mView.navigateToActivity(OrderHistoryActivity.class);
     }
 
     @Override

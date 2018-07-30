@@ -13,6 +13,7 @@ import com.katic.centralisedfoodorder.data.models.Food;
 import com.katic.centralisedfoodorder.data.models.Pizza;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.ui.cart.CartActivity;
+import com.katic.centralisedfoodorder.ui.orderhistory.OrderHistoryActivity;
 import com.katic.centralisedfoodorder.utils.Utils;
 
 import java.util.ArrayList;
@@ -126,6 +127,15 @@ public class RestaurantDetailsPresenter implements RestaurantDetailsContract.Pre
     }
 
     @Override
+    public void onAddressClicked() {
+        if (mRestaurant.getAddress() != null && mRestaurant.getCity() != null && mRestaurant.getAddress().trim().length() > 0 && mRestaurant.getCity().trim().length() > 0){
+            mView.startMapsApp(mRestaurant.getAddress() + ", " + mRestaurant.getCity());
+        } else {
+            mView.onError(RestaurantDetailsContract.KEY_ERROR_UNKNOWN);
+        }
+    }
+
+    @Override
     public void start(@Nullable Bundle extras) {
         if (extras == null || !extras.containsKey(RestaurantDetailsContract.KEY_RESTAURANT_ID)) {
             mView.showInvalidInput();
@@ -182,7 +192,7 @@ public class RestaurantDetailsPresenter implements RestaurantDetailsContract.Pre
 
     @Override
     public void onOrderHistoryClicked() {
-
+        mView.navigateToActivity(OrderHistoryActivity.class);
     }
 
     @Override

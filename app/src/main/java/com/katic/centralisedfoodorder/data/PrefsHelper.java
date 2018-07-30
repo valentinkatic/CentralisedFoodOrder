@@ -51,6 +51,9 @@ class PrefsHelper {
     private static final String KEY_USER_PHONE_TOKEN = "key_user_phone_token";
     private String mUserPhoneToken;
 
+    private static final String KEY_USER_LAST_NAME_PICKUP = "key_user_last_name_pickup";
+    private String mUserLastNamePickup;
+
     public void setUserName(String userName) {
         this.mUserName = userName;
         mPrefs.edit().putString(KEY_USER_NAME, userName).apply();
@@ -102,6 +105,18 @@ class PrefsHelper {
             mUserPhoneToken = mPrefs.getString(KEY_USER_PHONE_TOKEN, null);
         }
         return mUserPhoneToken;
+    }
+
+    public void setUserLastNamePickup(String lastNamePickup) {
+        this.mUserLastNamePickup = lastNamePickup;
+        mPrefs.edit().putString(KEY_USER_LAST_NAME_PICKUP, lastNamePickup).apply();
+    }
+
+    public String getUserLastNamePickup() {
+        if (mUserLastNamePickup == null) {
+            mUserLastNamePickup = mPrefs.getString(KEY_USER_LAST_NAME_PICKUP, null);
+        }
+        return mUserLastNamePickup;
     }
 
     public void destroy() {

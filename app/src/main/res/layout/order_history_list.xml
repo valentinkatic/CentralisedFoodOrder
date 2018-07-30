@@ -5,7 +5,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
         <TextView
-            android:id="@+id/cartTitle"
+            android:id="@+id/tv_food_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="title"
@@ -14,21 +14,21 @@
             android:layout_alignParentStart="true"/>
 
         <TextView
-            android:id="@+id/cartType"
+            android:id="@+id/tv_food_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="type"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:layout_below="@+id/cartTitle"
+            android:layout_below="@+id/tv_food_title"
             />
 
         <TextView
-            android:id="@+id/cartPrice"
+            android:id="@+id/tv_food_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="price"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:layout_alignBottom="@id/cartType"
+            android:layout_alignBottom="@id/tv_food_type"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="20dp"
             />
@@ -36,8 +36,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/cartType"
+            android:layout_below="@+id/tv_food_type"
             android:layout_alignParentStart="true"
+            android:visibility="gone"
             >
 
             <TextView
@@ -50,52 +51,3 @@
         </LinearLayout>
 
     </RelativeLayout>
-
-<!--
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="5dp"
-        >
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/removeBtn"
-            android:layout_weight="1"
-            android:layout_gravity="start"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:text="@string/remove"
-            android:textAllCaps="false"
-            android:layout_marginEnd="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginStart="15dp"
-            />
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="?android:attr/listDivider"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/quantityBtn"
-            android:layout_weight="1"
-            android:layout_gravity="end"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:text="@string/quantity"
-            android:textAllCaps="false"
-            android:layout_marginEnd="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginStart="15dp"
-            />
-
-    </LinearLayout>
--->

@@ -73,6 +73,7 @@
         <activity android:name=".ui.restaurantdetails.RestaurantDetailsActivity" />
         <activity android:name=".ui.cart.CartActivity" />
         <activity android:name=".ui.confirm.ConfirmActivity" />
+        <activity android:name=".ui.orderhistory.OrderHistoryActivity" />
 
         <service
             android:name=".services.FirebaseMessagingService">

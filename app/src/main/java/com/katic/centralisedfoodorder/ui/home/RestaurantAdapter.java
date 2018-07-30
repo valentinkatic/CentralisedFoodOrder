@@ -18,6 +18,7 @@ import com.katic.centralisedfoodorder.data.remote.FirebaseHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,7 +45,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
             Context context = itemView.getContext();
 
             restaurantName.setText(current.getName());
-            restaurantAddress.setText(current.getAddress());
+            restaurantAddress.setText(String.format(Locale.getDefault(), "%s, %s", current.getAddress(), current.getCity()));
             mPathReference = mStorageRef.getReference(FirebaseHandler.REF_RESTAURANTS_NODE + "/" + current.getKey() + "/" + current.getName() + ".png");
             GlideApp.with(context)
                     .load(mPathReference)

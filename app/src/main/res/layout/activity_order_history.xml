@@ -1,34 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="10dp"
-    android:background="@color/background"
-    tools:context="com.katic.centralisedfoodorder.OrderHistoryActivity">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"
-        android:background="@android:color/white"
-        android:id="@+id/orderHistoryRelativeLayout"
-        android:layout_weight="1"
-        >
-
+    android:background="@android:color/white"
+    android:id="@+id/rl_order_history_view">
 
         <ExpandableListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:groupIndicator="@android:color/transparent"
-            android:id="@+id/orderHistoryView"
+            android:id="@+id/elv_order_history"
             android:visibility="gone"
             />
 
@@ -40,9 +23,7 @@
             android:textAlignment="center"
             android:text="@string/empty_order_history"
             android:textSize="20sp"
-            android:id="@+id/empty_order_history"
+            android:id="@+id/tv_empty_order_history"
             android:visibility="gone"/>
 
     </RelativeLayout>
-
-</LinearLayout>

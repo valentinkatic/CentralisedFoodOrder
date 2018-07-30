@@ -18,6 +18,8 @@ public interface DataHandler {
 
     void fetchRestaurantById(String restaurantId, Callback<Restaurant> callback);
 
+    void fetchUserAddresses();
+
     void setUserInfo(Callback<Void> callback);
 
     void updateUserName(String userName, Callback<Void> callback);
@@ -29,6 +31,10 @@ public interface DataHandler {
     void saveUserEmail(String userEmail);
 
     String getUserEmail();
+
+    void saveUserLastNamePickup(String lastNamePickup);
+
+    String getUserLastNamePickup();
 
     List<DeliveryAddress> getUserAddresses();
 
@@ -45,6 +51,10 @@ public interface DataHandler {
     void getMyBookmarks(Callback<List<String>> callback);
 
     void getMyCart(Callback<Cart> callback);
+
+    void getMyOrderHistory(Callback<List<Cart>> callback);
+
+    void removeOrder(String orderKey, Callback<Void> callback);
 
     void sendOrder(Cart cart, Callback<Void> callback);
 

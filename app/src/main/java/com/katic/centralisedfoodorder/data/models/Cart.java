@@ -5,6 +5,7 @@ import com.google.firebase.database.PropertyName;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Cart {
@@ -40,6 +41,9 @@ public class Cart {
     @Expose
     @SerializedName("order_date")
     private String mOrderDate;
+
+    @Exclude
+    private String mOrderKey;
 
     public Cart() {
     }
@@ -122,6 +126,32 @@ public class Cart {
     @PropertyName("order_date")
     public void setOrderDate(String orderDate) {
         this.mOrderDate = orderDate;
+    }
+
+    @Exclude
+    public String getOrderKey() {
+        return mOrderKey;
+    }
+
+    @Exclude
+    public void setOrderKey(String orderKey) {
+        this.mOrderKey = orderKey;
+    }
+
+    public static Cart copyCart(Cart cart) {
+        if (cart == null) {
+            return null;
+        }
+        Cart copy = new Cart();
+
+        copy.mRestaurantKey = cart.mRestaurantKey;
+        copy.mRestaurantName = cart.mRestaurantName;
+        copy.mCartItems = new ArrayList<>();
+        for (CartItem cartItem : cart.mCartItems){
+            copy.mCartItems.add(CartItem.copy(cartItem));
+        }
+
+        return copy;
     }
 
     @Override

@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.katic.centralisedfoodorder.BaseActivity;
 import com.katic.centralisedfoodorder.CartActivity;
 import com.katic.centralisedfoodorder.R;
-import com.katic.centralisedfoodorder.RestaurantActivity;
 import com.katic.centralisedfoodorder.classes.ChildHolder;
 import com.katic.centralisedfoodorder.classes.ChildItem;
 import com.katic.centralisedfoodorder.classes.GroupHolder;
@@ -58,9 +57,9 @@ public class CartExpandableListAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             holder = new ChildHolder();
             convertView = inflater.inflate(R.layout.cart_list, parent, false);
-            holder.title = (TextView) convertView.findViewById(R.id.cartTitle);
-            holder.type = (TextView) convertView.findViewById(R.id.cartType);
-            holder.price = (TextView) convertView.findViewById(R.id.cartPrice);
+            holder.title = (TextView) convertView.findViewById(R.id.tv_food_title);
+            holder.type = (TextView) convertView.findViewById(R.id.tv_food_type);
+            holder.price = (TextView) convertView.findViewById(R.id.tv_food_price);
             holder.ingredients = (TextView) convertView.findViewById(R.id.cartIngredients);
             holder.remove = (Button) convertView.findViewById(R.id.removeBtn);
             holder.quantity = (Button) convertView.findViewById(R.id.quantityBtn);
@@ -188,7 +187,7 @@ public class CartExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getGroupCount() {
-        return items.size();
+        return items == null ? 0 : items.size();
     }
 
     @Override

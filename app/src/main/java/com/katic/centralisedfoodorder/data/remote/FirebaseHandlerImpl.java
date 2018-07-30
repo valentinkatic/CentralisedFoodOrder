@@ -41,6 +41,7 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
     private static final String KEY_USER_CART = "cart";
     private static final String KEY_USER_DELIVERY_ADDRESSES = "delivery_addresses";
     private static final String KEY_USER_ORDER_HISTORY = "order_history";
+    private static final String KEY_ORDER_DATE = "order_date";
 
     private DatabaseReference mUsersRef;
     private DatabaseReference mRestaurantsRef;
@@ -54,7 +55,7 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
 
     FirebaseHandlerImpl() {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        firebaseDatabase.setPersistenceEnabled(true);
+//        firebaseDatabase.setPersistenceEnabled(true);
         DatabaseReference rootRef = firebaseDatabase.getReference();
 
         mValueListeners = new ArrayList<>();
@@ -185,6 +186,43 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
         };
 
         mUsersRef.child(userIdentifier).addListenerForSingleValueEvent(listener);
+        mValueListeners.add(listener);
+        mFirebaseListeners.put(mUsersRef.child(userIdentifier), listener);
+    }
+
+    @Override
+    public void fetchUserAddresses(String userIdentifier, final Callback<List<DeliveryAddress>> callback) {
+        if (mCurrentUser == null) {
+            mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+        }
+
+        if (userIdentifier == null && mCurrentUser != null) {
+            userIdentifier = mCurrentUser.getUid();
+        } else {
+            callback.onError();
+            return;
+        }
+
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<DeliveryAddress> addresses = new ArrayList<>();
+                for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                    DeliveryAddress address = childSnapshot.getValue(DeliveryAddress.class);
+                    if (address != null) {
+                        addresses.add(address);
+                    }
+                }
+                callback.onResponse(addresses);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                callback.onError();
+            }
+        };
+
+        mUsersRef.child(userIdentifier).child(KEY_USER_DELIVERY_ADDRESSES).addListenerForSingleValueEvent(listener);
         mValueListeners.add(listener);
         mFirebaseListeners.put(mUsersRef.child(userIdentifier), listener);
     }
@@ -377,6 +415,56 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
         mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_CART)
                 .addValueEventListener(listener);
         mFirebaseListeners.put(mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_CART), listener);
+    }
+
+    @Override
+    public void getMyOrderHistory(final Callback<List<Cart>> callback) {
+        if (mCurrentUser == null) {
+            mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+        }
+
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Cart> orderHistory = new ArrayList<>();
+                for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                    Cart order = childSnapshot.getValue(Cart.class);
+                    if (order != null) {
+                        order.setOrderKey(childSnapshot.getKey());
+                        orderHistory.add(order);
+                    }
+                }
+                callback.onResponse(orderHistory);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                callback.onError();
+            }
+        };
+
+        mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_ORDER_HISTORY).orderByChild(KEY_ORDER_DATE)
+                .addValueEventListener(listener);
+        mFirebaseListeners.put(mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_ORDER_HISTORY), listener);
+    }
+
+    @Override
+    public void removeOrder(String orderKey, final Callback<Void> callback) {
+        if (orderKey != null) {
+            mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_ORDER_HISTORY).child(orderKey).removeValue()
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            callback.onResponse(null);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            callback.onError();
+                        }
+                    });
+        }
     }
 
     @Override
