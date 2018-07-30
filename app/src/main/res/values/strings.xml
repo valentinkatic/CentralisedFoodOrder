@@ -33,7 +33,7 @@
     <string name="floor">Kat:</string>
     <string name="apartmentNumber">Broj stana:</string>
     <string name="necessarily">*</string>
-    <string name="choose">Naruči</string>
+    <string name="choose">Pošalji narudžbu</string>
     <string name="required">Obavezno polje!</string>
     <string name="choose_address">Izbor adrese</string>
     <string name="save">Spremi</string>
@@ -62,6 +62,7 @@
     <string name="no_more_than_one">Ne možete imati više od jednog restorana u košarici!</string>
     <string name="all">Svi restorani</string>
     <string name="favorites">Favoriti</string>
+    <string name="order_sent">Narudžba poslana</string>
 
     <string name="sigin_text_almost_there">For Scholars, By Scholars</string>
     <string name="google_web_client_id" translatable="false">886715338644-ssdkgaerehe6m1a33vna3gvghpeu14mr.apps.googleusercontent.com</string>

@@ -15,7 +15,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.google.gson.Gson;
+import com.katic.centralisedfoodorder.data.DataHandler;
 import com.katic.centralisedfoodorder.data.models.Cart;
+import com.katic.centralisedfoodorder.data.models.DeliveryAddress;
 import com.katic.centralisedfoodorder.data.models.Food;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.data.models.User;
@@ -36,9 +39,12 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
     private static final String KEY_PHONE_TOKEN = "phoneToken";
     private static final String KEY_USER_BOOKMARKS = "bookmarks";
     private static final String KEY_USER_CART = "cart";
+    private static final String KEY_USER_DELIVERY_ADDRESSES = "delivery_addresses";
+    private static final String KEY_USER_ORDER_HISTORY = "order_history";
 
     private DatabaseReference mUsersRef;
     private DatabaseReference mRestaurantsRef;
+    private DatabaseReference mRestaurantDataRef;
 
     private List<ValueEventListener> mValueListeners;
     private HashMap<DatabaseReference, ValueEventListener> mFirebaseListeners = new HashMap<>();
@@ -48,12 +54,14 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
 
     FirebaseHandlerImpl() {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseDatabase.setPersistenceEnabled(true);
         DatabaseReference rootRef = firebaseDatabase.getReference();
 
         mValueListeners = new ArrayList<>();
 
         mUsersRef = rootRef.child(REF_USERS_NODE);
         mRestaurantsRef = rootRef.child(REF_RESTAURANTS_NODE);
+        mRestaurantDataRef = rootRef.child(REF_RESTAURANT_DATA_NODE);
     }
 
     @Override
@@ -120,6 +128,37 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
     }
 
     @Override
+    public void updateUserAddresses(List<DeliveryAddress> addresses, final Callback<Void> callback) {
+        try {
+            if (mCurrentUser == null) {
+                mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+            }
+            if (mCurrentUser == null){
+                callback.onError();
+                return;
+            }
+
+            mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_DELIVERY_ADDRESSES).setValue(addresses)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            callback.onResponse(null);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            callback.onError();
+                        }
+                    });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            callback.onError();
+        }
+    }
+
+    @Override
     public void fetchUserInfo(String userIdentifier, final Callback<User> callback) {
         if (mCurrentUser == null) {
             mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -173,6 +212,37 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
                         setUserInfo(userData, callback);
                     }
                 });
+    }
+
+    @Override
+    public void fetchUserPhoneToken(String userIdentifier, final Callback<String> callback) {
+        if (mCurrentUser == null) {
+            mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+        }
+
+        if (userIdentifier == null && mCurrentUser != null) {
+            userIdentifier = mCurrentUser.getUid();
+        } else {
+            callback.onError();
+            return;
+        }
+
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String phoneToken = snapshot.getValue(String.class);
+                callback.onResponse(phoneToken);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                callback.onError();
+            }
+        };
+
+        mUsersRef.child(userIdentifier).child(KEY_PHONE_TOKEN).addListenerForSingleValueEvent(listener);
+        mValueListeners.add(listener);
+        mFirebaseListeners.put(mUsersRef.child(userIdentifier).child(KEY_PHONE_TOKEN), listener);
     }
 
     private void setUserInfo(Map<String, Object> userData, final Callback<Void> callback) {
@@ -307,6 +377,31 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
         mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_CART)
                 .addValueEventListener(listener);
         mFirebaseListeners.put(mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_CART), listener);
+    }
+
+    @Override
+    public void sendOrder(final Cart cart, final Callback<Void> callback) {
+        final String key = mRestaurantDataRef.child(cart.getRestaurantKey()).push().getKey();
+        if (key == null){
+            callback.onError();
+            return;
+        }
+        mRestaurantDataRef.child(cart.getRestaurantKey()).child(key)
+                .setValue(cart)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_ORDER_HISTORY).child(key).setValue(cart);
+                        mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_CART).setValue(null);
+                        callback.onResponse(null);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        callback.onError();
+                    }
+                });
     }
 
     @Override

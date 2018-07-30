@@ -12,7 +12,7 @@
         android:text="@string/payment_method"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/titleText"
+        android:id="@+id/tv_title"
         android:textSize="25sp"
         android:textStyle="bold"
         android:paddingTop="10dp"
@@ -23,17 +23,17 @@
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/radioGroup"
+        android:id="@+id/rg_order_type"
         android:layout_margin="10dp"
         android:background="@android:color/white"
-        android:layout_below="@id/titleText"
+        android:layout_below="@id/tv_title"
         android:layout_centerHorizontal="true">
 
         <RadioButton
             android:text="@string/onRecieve"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/delieveryRadio"
+            android:id="@+id/rb_delivery"
             android:textSize="22sp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
@@ -42,7 +42,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/delieveryLayout"
+            android:id="@+id/rl_delivery"
             android:visibility="gone"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
@@ -55,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/userLastName"
-                android:id="@+id/userLastName"
+                android:id="@+id/tv_last_name"
                 android:layout_marginTop="10dp"
                 android:textSize="20sp"/>
 
@@ -63,8 +63,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/street"
-                android:id="@+id/streetText"
-                android:layout_below="@id/userLastName"
+                android:id="@+id/tv_address"
+                android:layout_below="@id/tv_last_name"
                 android:layout_marginTop="10dp"
                 android:textSize="20sp"/>
 
@@ -72,8 +72,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/streetNumber"
-                android:id="@+id/streetNumberText"
-                android:layout_below="@id/streetText"
+                android:id="@+id/tv_street_number"
+                android:layout_below="@id/tv_address"
                 android:layout_marginTop="10dp"
                 android:textSize="20sp"/>
 
@@ -81,8 +81,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/city"
-                android:id="@+id/cityText"
-                android:layout_below="@id/streetNumberText"
+                android:id="@+id/tv_city"
+                android:layout_below="@id/tv_street_number"
                 android:layout_marginTop="10dp"
                 android:textSize="20sp"/>
 
@@ -90,8 +90,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/floor"
-                android:id="@+id/floorText"
-                android:layout_below="@id/cityText"
+                android:id="@+id/tv_floor"
+                android:layout_below="@id/tv_city"
                 android:layout_marginTop="10dp"
                 android:textSize="20sp"/>
 
@@ -100,15 +100,16 @@
                 android:layout_height="wrap_content"
                 android:text="@string/apartmentNumber"
                 android:id="@+id/apartmentNumberText"
-                android:layout_below="@id/floorText"
+                android:layout_below="@id/tv_floor"
                 android:layout_marginTop="10dp"
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                android:visibility="gone"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/contactNumber"
-                android:id="@+id/phoneNumberText"
+                android:id="@+id/tv_phone_number"
                 android:layout_below="@id/apartmentNumberText"
                 android:layout_marginTop="10dp"
                 android:textSize="20sp"/>
@@ -116,14 +117,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/phoneNumberText"
+                android:layout_below="@id/tv_phone_number"
                 android:orientation="horizontal"
                 android:layout_marginTop="5dp">
 
                 <Button
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:id="@+id/addressChoose"
+                    android:id="@+id/bt_select_address"
                     android:text="@string/choose_address"
                     android:layout_weight="1"
                     style="@style/Widget.AppCompat.Button.Borderless"
@@ -140,7 +141,7 @@
                 <Button
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:id="@+id/addressAdd"
+                    android:id="@+id/bt_add_address"
                     android:text="@string/save"
                     android:layout_weight="1"
                     style="@style/Widget.AppCompat.Button.Borderless"
@@ -157,7 +158,7 @@
                 <Button
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:id="@+id/reset"
+                    android:id="@+id/bt_reset"
                     android:text="@string/reset"
                     android:layout_weight="1"
                     style="@style/Widget.AppCompat.Button.Borderless"
@@ -171,12 +172,10 @@
                 android:ems="7"
                 android:textSize="20sp"
                 android:inputType="text"
-                android:id="@+id/lastNameEdit"
-                android:layout_toRightOf="@+id/userLastName"
-                android:layout_toEndOf="@+id/userLastName"
-                android:layout_alignBaseline="@id/userLastName"
+                android:id="@+id/et_last_name"
+                android:layout_toEndOf="@+id/tv_last_name"
+                android:layout_alignBaseline="@id/tv_last_name"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
                 android:background="@drawable/edittext_bg"/>
 
             <EditText
@@ -185,12 +184,10 @@
                 android:ems="7"
                 android:textSize="20sp"
                 android:inputType="text"
-                android:id="@+id/streetEdit"
-                android:layout_toRightOf="@+id/streetText"
-                android:layout_toEndOf="@+id/streetText"
-                android:layout_alignBaseline="@id/streetText"
+                android:id="@+id/et_street"
+                android:layout_toEndOf="@+id/tv_address"
+                android:layout_alignBaseline="@id/tv_address"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
                 android:background="@drawable/edittext_bg"/>
 
             <EditText
@@ -199,12 +196,10 @@
                 android:ems="2"
                 android:textSize="20sp"
                 android:inputType="text"
-                android:layout_toRightOf="@+id/streetNumberText"
-                android:layout_toEndOf="@+id/streetNumberText"
-                android:layout_alignBaseline="@id/streetNumberText"
+                android:layout_toEndOf="@+id/tv_street_number"
+                android:layout_alignBaseline="@id/tv_street_number"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:id="@+id/streetNumberEdit"
+                android:id="@+id/et_street_number"
                 android:background="@drawable/edittext_bg"/>
 
             <EditText
@@ -213,12 +208,10 @@
                 android:ems="7"
                 android:textSize="20sp"
                 android:inputType="text"
-                android:layout_toRightOf="@+id/cityText"
-                android:layout_toEndOf="@+id/cityText"
-                android:layout_alignBaseline="@id/cityText"
+                android:layout_toEndOf="@+id/tv_city"
+                android:layout_alignBaseline="@id/tv_city"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:id="@+id/cityEdit"
+                android:id="@+id/et_city"
                 android:background="@drawable/edittext_bg"/>
 
             <EditText
@@ -227,12 +220,10 @@
                 android:ems="2"
                 android:textSize="20sp"
                 android:inputType="numberSigned"
-                android:layout_toRightOf="@+id/floorText"
-                android:layout_toEndOf="@+id/floorText"
-                android:layout_alignBaseline="@id/floorText"
+                android:layout_toEndOf="@+id/tv_floor"
+                android:layout_alignBaseline="@id/tv_floor"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:id="@+id/floorEdit"
+                android:id="@+id/et_floor"
                 android:background="@drawable/edittext_bg"/>
 
             <EditText
@@ -241,26 +232,23 @@
                 android:ems="2"
                 android:textSize="20sp"
                 android:inputType="numberSigned"
-                android:layout_toRightOf="@+id/apartmentNumberText"
                 android:layout_toEndOf="@+id/apartmentNumberText"
                 android:layout_alignBaseline="@id/apartmentNumberText"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
                 android:id="@+id/apartmentNumberEdit"
-                android:background="@drawable/edittext_bg"/>
+                android:background="@drawable/edittext_bg"
+                android:visibility="gone"/>
 
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="6"
                 android:textSize="20sp"
-                android:inputType="numberSigned"
-                android:layout_toRightOf="@+id/phoneNumberText"
-                android:layout_toEndOf="@+id/phoneNumberText"
-                android:layout_alignBaseline="@id/phoneNumberText"
+                android:inputType="phone"
+                android:layout_toEndOf="@+id/tv_phone_number"
+                android:layout_alignBaseline="@id/tv_phone_number"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:id="@+id/phoneNumberEdit"
+                android:id="@+id/et_phone_number"
                 android:background="@drawable/edittext_bg"/>
 
         </RelativeLayout>
@@ -269,7 +257,7 @@
             android:text="@string/pickup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/pickupRadio"
+            android:id="@+id/rb_pickup"
             android:layout_weight="1"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
@@ -278,7 +266,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/pickupLayout"
+            android:id="@+id/rl_pickup"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
@@ -291,7 +279,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/userLastName"
-                android:id="@+id/userLastNamePickup"
+                android:id="@+id/tv_last_name_pickup"
                 android:layout_marginTop="10dp"
                 android:textSize="20sp"/>
 
@@ -301,12 +289,10 @@
                 android:ems="7"
                 android:textSize="20sp"
                 android:inputType="text"
-                android:id="@+id/lastNamePickupEdit"
-                android:layout_toRightOf="@+id/userLastNamePickup"
-                android:layout_toEndOf="@+id/userLastNamePickup"
-                android:layout_alignBaseline="@id/userLastNamePickup"
+                android:id="@+id/et_last_name_pickup"
+                android:layout_toEndOf="@+id/tv_last_name_pickup"
+                android:layout_alignBaseline="@id/tv_last_name_pickup"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
                 android:background="@drawable/edittext_bg"/>
 
         </RelativeLayout>
@@ -317,8 +303,8 @@
         android:layout_height="wrap_content"
         android:text="@string/choose"
         android:textSize="20sp"
-        android:id="@+id/confirmBtn"
-        android:layout_below="@+id/radioGroup"
+        android:id="@+id/bt_confirm"
+        android:layout_below="@+id/rg_order_type"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"/>
 

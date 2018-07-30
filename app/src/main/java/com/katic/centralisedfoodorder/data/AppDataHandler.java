@@ -6,6 +6,7 @@ import android.util.Log;
 import com.katic.centralisedfoodorder.application.AppClass;
 import com.katic.centralisedfoodorder.data.models.Cart;
 import com.katic.centralisedfoodorder.data.models.CartItem;
+import com.katic.centralisedfoodorder.data.models.DeliveryAddress;
 import com.katic.centralisedfoodorder.data.models.Pizza;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.data.models.User;
@@ -129,12 +130,23 @@ public class AppDataHandler implements DataHandler {
     }
 
     @Override
-    public void setUserInfo(Callback<Void> callback) {
+    public void setUserInfo(final Callback<Void> callback) {
         User currentUser = new User();
         currentUser.setName(mPreferences.getUserName());
         currentUser.setEmail(mPreferences.getUserEmail());
 
-        mFirebaseHandler.setUserInfo(currentUser, new FirebaseCallback<>(callback));
+        mFirebaseHandler.setUserInfo(currentUser, new FirebaseHandler.Callback<Void>() {
+            @Override
+            public void onResponse(Void result) {
+                saveUserPhoneTokenLocally();
+                callback.onResponse(result);
+            }
+
+            @Override
+            public void onError() {
+                callback.onError();
+            }
+        });
     }
 
     @Override
@@ -158,6 +170,11 @@ public class AppDataHandler implements DataHandler {
     }
 
     @Override
+    public void sendOrder(Cart cart, Callback<Void> callback) {
+        mFirebaseHandler.sendOrder(cart, new FirebaseCallback<>(callback));
+    }
+
+    @Override
     public void saveUserName(String userName) {
         mPreferences.setUserName(userName);
     }
@@ -175,6 +192,37 @@ public class AppDataHandler implements DataHandler {
     @Override
     public String getUserEmail() {
         return mPreferences.getUserEmail();
+    }
+
+    @Override
+    public List<DeliveryAddress> getUserAddresses() {
+        return mPreferences.getUserAddresses();
+    }
+
+    @Override
+    public void saveUserPhoneTokenLocally() {
+        mFirebaseHandler.fetchUserPhoneToken(null, new FirebaseHandler.Callback<String>() {
+            @Override
+            public void onResponse(String result) {
+                mPreferences.setUserPhoneToken(result);
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+    }
+
+    @Override
+    public String getUserPhoneToken() {
+        return mPreferences.getUserPhoneToken();
+    }
+
+    @Override
+    public void saveUserAddresses(List<DeliveryAddress> addresses, Callback<Void> callback) {
+        mPreferences.setUserAddresses(addresses);
+        mFirebaseHandler.updateUserAddresses(addresses, new FirebaseCallback<>(callback));
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.katic.centralisedfoodorder.data.remote;
 
+import com.katic.centralisedfoodorder.data.DataHandler;
 import com.katic.centralisedfoodorder.data.models.Cart;
+import com.katic.centralisedfoodorder.data.models.DeliveryAddress;
 import com.katic.centralisedfoodorder.data.models.Food;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.data.models.User;
@@ -16,7 +18,7 @@ import java.util.List;
 public interface FirebaseHandler {
 
     String REF_FILTER_DATA_NODE = "filterData";
-    String REF_RESTAURANT_DATA_NODE = "restaurantData";
+    String REF_RESTAURANT_DATA_NODE = "restaurantDataTest";
     String REF_RESTAURANTS_NODE = "restaurantsTest";
     String REF_USERS_NODE = "usersTest";
 
@@ -30,13 +32,19 @@ public interface FirebaseHandler {
 
     void setUserInfo(User currentUser, Callback<Void> callback);
 
+    void fetchUserPhoneToken(String userIdentifier, Callback<String> callback);
+
     void updateRestaurantBookmarkStatus(String quizIdentifier, boolean isBookmarked, Callback<Void> callback);
 
     void updateUserCart(Cart cart, Callback<Void> callback);
 
+    void updateUserAddresses(List<DeliveryAddress> addresses, Callback<Void> callback);
+
     void getMyBookmarks(Callback<List<String>> callback);
 
     void getMyCart(Callback<Cart> callback);
+
+    void sendOrder(Cart cart, Callback<Void> callback);
 
     void destroy();
 

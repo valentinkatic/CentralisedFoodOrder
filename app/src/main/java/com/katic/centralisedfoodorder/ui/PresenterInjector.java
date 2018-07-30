@@ -2,6 +2,8 @@ package com.katic.centralisedfoodorder.ui;
 
 import com.katic.centralisedfoodorder.ui.cart.CartContract;
 import com.katic.centralisedfoodorder.ui.cart.CartPresenter;
+import com.katic.centralisedfoodorder.ui.confirm.ConfirmContract;
+import com.katic.centralisedfoodorder.ui.confirm.ConfirmPresenter;
 import com.katic.centralisedfoodorder.ui.home.HomeContract;
 import com.katic.centralisedfoodorder.ui.home.HomePresenter;
 import com.katic.centralisedfoodorder.ui.restaurantdetails.RestaurantDetailsContract;
@@ -28,6 +30,10 @@ public class PresenterInjector {
 
     public static void injectCartPresenter(CartContract.View cartView) {
         new CartPresenter(cartView);
+    }
+
+    public static void injectConfirmPresenter(ConfirmContract.View confirmView) {
+        new ConfirmPresenter(confirmView);
     }
 
 }

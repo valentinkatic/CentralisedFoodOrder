@@ -1,6 +1,7 @@
 package com.katic.centralisedfoodorder.data;
 
 import com.katic.centralisedfoodorder.data.models.Cart;
+import com.katic.centralisedfoodorder.data.models.DeliveryAddress;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 
 import java.util.List;
@@ -29,6 +30,14 @@ public interface DataHandler {
 
     String getUserEmail();
 
+    List<DeliveryAddress> getUserAddresses();
+
+    void saveUserPhoneTokenLocally();
+
+    String getUserPhoneToken();
+
+    void saveUserAddresses(List<DeliveryAddress> addresses, Callback<Void> callback);
+
     void updateRestaurantBookmarkStatus(String restaurantIdentifier, boolean isBookmarked, Callback<Void> callback);
 
     void updateUserCart(Cart cart, Callback<Void> callback);
@@ -36,6 +45,8 @@ public interface DataHandler {
     void getMyBookmarks(Callback<List<String>> callback);
 
     void getMyCart(Callback<Cart> callback);
+
+    void sendOrder(Cart cart, Callback<Void> callback);
 
     void destroy();
     /**

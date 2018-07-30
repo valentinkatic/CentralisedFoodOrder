@@ -59,6 +59,11 @@ public class SignInPresenter implements SignInContract.Presenter {
     }
 
     @Override
+    public void onOrderHistoryClicked() {
+
+    }
+
+    @Override
     public void destroy() {
         this.mView = null;
     }

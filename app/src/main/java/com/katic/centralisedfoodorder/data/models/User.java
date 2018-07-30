@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,10 @@ public class User {
     @Expose
     @SerializedName("cart")
     private Cart mCart;
+
+    @Expose
+    @SerializedName("order_history")
+    private HashMap<String, Cart> mOrderHistory;
 
     public User() {
     }
@@ -97,6 +102,16 @@ public class User {
         this.mCart = cart;
     }
 
+    @PropertyName("order_history")
+    public HashMap<String, Cart> getOrderHistory() {
+        return mOrderHistory;
+    }
+
+    @PropertyName("order_history")
+    public void setOrderHistory(HashMap<String, Cart> orderHistory) {
+        this.mOrderHistory = orderHistory;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -106,6 +121,7 @@ public class User {
                 ", deliveryAddresses=" + mDeliveryAddresses +
                 ", bookmarks=" + mBookmarks +
                 ", cart=" + mCart +
+                ", orderHistory=" + mOrderHistory +
                 '}';
     }
 }

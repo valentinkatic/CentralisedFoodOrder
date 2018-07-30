@@ -9,6 +9,7 @@ import com.katic.centralisedfoodorder.data.DataHandler;
 import com.katic.centralisedfoodorder.data.DataHandlerProvider;
 import com.katic.centralisedfoodorder.data.models.Cart;
 import com.katic.centralisedfoodorder.data.models.CartItem;
+import com.katic.centralisedfoodorder.ui.confirm.ConfirmActivity;
 import com.katic.centralisedfoodorder.utils.Utils;
 
 import java.util.Locale;
@@ -109,11 +110,11 @@ public class CartPresenter implements CartContract.Presenter {
 
     @Override
     public void onCheckoutPressed() {
-
+        mView.navigateToActivity(ConfirmActivity.class);
     }
 
     @Override
-    public void onOrderHistoryPressed() {
+    public void onOrderHistoryClicked() {
 
     }
 

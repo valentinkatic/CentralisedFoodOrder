@@ -37,6 +37,10 @@ public class Cart {
     @SerializedName("restaurant_name")
     private String mRestaurantName;
 
+    @Expose
+    @SerializedName("order_date")
+    private String mOrderDate;
+
     public Cart() {
     }
 
@@ -110,6 +114,16 @@ public class Cart {
         this.mRestaurantName = restaurantName;
     }
 
+    @PropertyName("order_date")
+    public String getOrderDate() {
+        return mOrderDate;
+    }
+
+    @PropertyName("order_date")
+    public void setOrderDate(String orderDate) {
+        this.mOrderDate = orderDate;
+    }
+
     @Override
     public String toString() {
         return "Cart{" +
@@ -120,6 +134,7 @@ public class Cart {
                 ", lastNamePickup='" + mLastNamePickup + '\'' +
                 ", phoneToken='" + mPhoneToken + '\'' +
                 ", restaurantName='" + mRestaurantName + '\'' +
+                ", orderDate='" + mOrderDate + '\'' +
                 '}';
     }
 }

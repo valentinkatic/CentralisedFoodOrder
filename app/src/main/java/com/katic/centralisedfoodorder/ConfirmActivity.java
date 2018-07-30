@@ -30,8 +30,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.katic.centralisedfoodorder.adapter.ChooseDelieveryAddressAdapter;
-import com.katic.centralisedfoodorder.classes.CartItem;
-import com.katic.centralisedfoodorder.classes.ChildItem;
 import com.katic.centralisedfoodorder.classes.DeliveryAddress;
 import com.katic.centralisedfoodorder.classes.GroupItem;
 import com.katic.centralisedfoodorder.classes.OrderData;
@@ -83,19 +81,19 @@ public class ConfirmActivity extends BaseActivity {
         comment = getIntent().getStringExtra("comment");
 
         //Povezivanje s objektima na maketi
-        radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-        delieveryRadio = (RadioButton) findViewById(R.id.delieveryRadio);
-        pickupRadio = (RadioButton) findViewById(R.id.pickupRadio);
-        final RelativeLayout delieveryLayout = (RelativeLayout) findViewById(R.id.delieveryLayout);
-        final RelativeLayout pickupLayout = (RelativeLayout) findViewById(R.id.pickupLayout);
+        radioGroup = (RadioGroup) findViewById(R.id.rg_order_type);
+        delieveryRadio = (RadioButton) findViewById(R.id.rb_delivery);
+        pickupRadio = (RadioButton) findViewById(R.id.rb_pickup);
+        final RelativeLayout delieveryLayout = (RelativeLayout) findViewById(R.id.rl_delivery);
+        final RelativeLayout pickupLayout = (RelativeLayout) findViewById(R.id.rl_pickup);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                if (i == R.id.delieveryRadio){
+                if (i == R.id.rb_delivery){
                     delieveryLayout.setVisibility(View.VISIBLE);
                     pickupLayout.setVisibility(View.GONE);
                     mLastNamePickup.setError(null);
-                } else if (i == R.id.pickupRadio) {
+                } else if (i == R.id.rb_pickup) {
                     delieveryLayout.setVisibility(View.GONE);
                     pickupLayout.setVisibility(View.VISIBLE);
                     mLastName.setError(null);
@@ -107,19 +105,19 @@ public class ConfirmActivity extends BaseActivity {
             }
         });
 
-        mLastName = (EditText) findViewById(R.id.lastNameEdit);
-        mStreet = (EditText) findViewById(R.id.streetEdit);
-        mStreetNum  = (EditText) findViewById(R.id.streetNumberEdit);
-        mCity = (EditText) findViewById(R.id.cityEdit) ;
-        mPhoneNum = (EditText) findViewById(R.id.phoneNumberEdit);
-        mFloor = (EditText) findViewById(R.id.floorEdit);
+        mLastName = (EditText) findViewById(R.id.et_last_name);
+        mStreet = (EditText) findViewById(R.id.et_street);
+        mStreetNum  = (EditText) findViewById(R.id.et_street_number);
+        mCity = (EditText) findViewById(R.id.et_city) ;
+        mPhoneNum = (EditText) findViewById(R.id.et_phone_number);
+        mFloor = (EditText) findViewById(R.id.et_floor);
         mApartmentNum = (EditText) findViewById(R.id.apartmentNumberEdit);
-        mLastNamePickup = (EditText) findViewById(R.id.lastNamePickupEdit);
+        mLastNamePickup = (EditText) findViewById(R.id.et_last_name_pickup);
 
-        Button confirmBtn = (Button) findViewById(R.id.confirmBtn);
-        Button addressChoose = (Button) findViewById(R.id.addressChoose);
-        Button addressAdd = (Button) findViewById(R.id.addressAdd);
-        Button reset = (Button) findViewById(R.id.reset);
+        Button confirmBtn = (Button) findViewById(R.id.bt_confirm);
+        Button addressChoose = (Button) findViewById(R.id.bt_select_address);
+        Button addressAdd = (Button) findViewById(R.id.bt_add_address);
+        Button reset = (Button) findViewById(R.id.bt_reset);
 
         //Metode koje se izvršavaju prilikom klika na gumb
         confirmBtn.setOnClickListener(new View.OnClickListener() {

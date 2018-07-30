@@ -39,7 +39,5 @@ public interface RestaurantDetailsContract {
 
         void onCartClicked();
 
-        void onOrderHistoryClicked();
-
     }
 }

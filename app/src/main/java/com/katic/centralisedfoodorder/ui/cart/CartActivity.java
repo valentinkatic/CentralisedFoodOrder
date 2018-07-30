@@ -158,7 +158,7 @@ public class CartActivity extends AppCompatActivity implements CartContract.View
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_order_history:
-                mPresenter.onOrderHistoryPressed();
+                mPresenter.onOrderHistoryClicked();
                 break;
             case R.id.menu_logout:
                 mPresenter.signOut(this);

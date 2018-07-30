@@ -47,15 +47,15 @@ public class ChooseDelieveryAddressAdapter extends BaseAdapter {
         final ViewHolder holder;
         final DeliveryAddress item = listData.get(position);
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.dialog_addresses, null);
+            convertView = layoutInflater.inflate(R.layout.item_address, null);
             holder = new ViewHolder();
-            holder.addressDialogView = (RelativeLayout) convertView.findViewById(R.id.addressDialog);
-            holder.lastNameView = (TextView) convertView.findViewById(R.id.lastNameDialog);
-            holder.streetView = (TextView) convertView.findViewById(R.id.streetDialog);
-            holder.streetNumView = (TextView) convertView.findViewById(R.id.streetNumberDialog);
-            holder.cityView = (TextView) convertView.findViewById(R.id.cityDialog);
-            holder.phoneNumView = (TextView) convertView.findViewById(R.id.phoneNumberDialog);
-            holder.removeView = (ImageView) convertView.findViewById(R.id.removeDialog);
+            holder.addressDialogView = (RelativeLayout) convertView.findViewById(R.id.parent_view);
+            holder.lastNameView = (TextView) convertView.findViewById(R.id.tv_last_name);
+            holder.streetView = (TextView) convertView.findViewById(R.id.tv_address);
+            holder.streetNumView = (TextView) convertView.findViewById(R.id.tv_street_number);
+            holder.cityView = (TextView) convertView.findViewById(R.id.tv_city);
+            holder.phoneNumView = (TextView) convertView.findViewById(R.id.tv_phone_number);
+            holder.removeView = (ImageView) convertView.findViewById(R.id.iv_remove);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();

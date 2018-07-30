@@ -27,8 +27,6 @@ public interface CartContract {
 
         void onCheckoutPressed();
 
-        void onOrderHistoryPressed();
-
         void updateCartItemAmount(CartItem cartItem);
 
         void removeCartItem(CartItem cartItem);

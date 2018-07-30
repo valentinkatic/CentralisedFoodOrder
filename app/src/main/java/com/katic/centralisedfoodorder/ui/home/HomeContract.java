@@ -32,8 +32,6 @@ public interface HomeContract {
 
         void onCartClicked();
 
-        void onOrderHistoryClicked();
-
     }
 
 }

@@ -13,6 +13,8 @@ public interface BasePresenter {
 
     void destroy();
 
+    void onOrderHistoryClicked();
+
     void signOut(Activity context);
 
 }
