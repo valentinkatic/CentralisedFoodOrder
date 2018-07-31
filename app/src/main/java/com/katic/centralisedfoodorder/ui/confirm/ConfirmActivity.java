@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -15,12 +18,12 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.katic.centralisedfoodorder.R;
 import com.katic.centralisedfoodorder.data.models.DeliveryAddress;
@@ -39,8 +42,8 @@ public class ConfirmActivity extends AppCompatActivity implements ConfirmContrac
     @BindView(R.id.rg_order_type) RadioGroup mOrderTypeRadioGroup;
     @BindView(R.id.rb_delivery) RadioButton mDeliveryRadioButton;
     @BindView(R.id.rb_pickup) RadioButton mPickupRadioButton;
-    @BindView(R.id.rl_delivery) RelativeLayout mDeliveryLayout;
-    @BindView(R.id.rl_pickup) RelativeLayout mPickupLayout;
+    @BindView(R.id.cv_delivery) CardView mDeliveryLayout;
+    @BindView(R.id.cv_pickup) CardView mPickupLayout;
     @BindView(R.id.et_last_name) EditText mEtLastName;
     @BindView(R.id.et_street) EditText mEtStreet;
     @BindView(R.id.et_street_number) EditText mEtStreetNumber;
@@ -50,6 +53,7 @@ public class ConfirmActivity extends AppCompatActivity implements ConfirmContrac
     @BindView(R.id.et_last_name_pickup) EditText mEtLastNamePickup;
 
     private AlertDialog mDialogChooseAddress = null;
+    private Snackbar mSnackbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -132,7 +136,7 @@ public class ConfirmActivity extends AppCompatActivity implements ConfirmContrac
 
     @OnClick(R.id.bt_confirm) void confirm(){
         if (mOrderTypeRadioGroup.getCheckedRadioButtonId() == -1){
-            showToastMessage(ConfirmContract.KEY_MESSAGE_CHOOSE_ORDER_TYPE);
+            showMessage(ConfirmContract.KEY_MESSAGE_CHOOSE_ORDER_TYPE);
         } else {
             if (!validateInputForm()){
                 return;
@@ -295,30 +299,44 @@ public class ConfirmActivity extends AppCompatActivity implements ConfirmContrac
     }
 
     @Override
-    public void showToastMessage(int messageID) {
-        String message = null;
+    public void showMessage(int messageID) {
         switch (messageID){
             case ConfirmContract.KEY_MESSAGE_ADDRESS_SAVED:
-                message = getString(R.string.address_save);
+                showSnackBar(R.string.address_save);
                 break;
             case ConfirmContract.KEY_MESSAGE_ADDRESS_REMOVED:
-                message = getString(R.string.address_delete);
+                showSnackBar(R.string.address_delete);
                 break;
             case ConfirmContract.KEY_MESSAGE_ADDRESS_SET:
-                message = getString(R.string.address_set);
+                showSnackBar(R.string.address_set);
                 break;
             case ConfirmContract.KEY_MESSAGE_CHOOSE_ORDER_TYPE:
-                message = getString(R.string.pickMethod);
+                showSnackBar(R.string.pickMethod);
                 break;
-                case ConfirmContract.KEY_MESSAGE_ORDER_SENT:
-                message = getString(R.string.order_sent);
+            case ConfirmContract.KEY_MESSAGE_ORDER_SENT:
+                    showSnackBar(R.string.order_sent);
                 break;
             default:
                 break;
         }
-        if (message != null){
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        }
+    }
+
+    private void showSnackBar(int string) {
+        String msg = getResources().getString(string);
+        mSnackbar = Snackbar.make(findViewById(R.id.parent_view), msg, Snackbar.LENGTH_LONG);
+        final View snackbarView = mSnackbar.getView();
+        TextView tvSnackbar = snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        tvSnackbar.setTextColor(getResources().getColor(R.color.colorAccent));
+        snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
+        mSnackbar.show();
+
+        snackbarView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                snackbarView.getViewTreeObserver().removeOnPreDrawListener(this);
+                return true;
+            }
+        });
     }
 
     @Override

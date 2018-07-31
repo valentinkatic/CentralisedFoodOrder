@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorPrimary"
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,7 +18,8 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:text="title"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/white"/>
 
         <TextView
             android:id="@+id/tv_food_type"
@@ -24,7 +27,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_food_title"
             android:text="type"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/tv_food_price"
@@ -34,7 +38,8 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="20dp"
             android:text="price"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/white"/>
 
     </RelativeLayout>
 
@@ -54,7 +59,8 @@
             android:layout_marginStart="15dp"
             android:layout_weight="1"
             android:text="@string/remove"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:textColor="@color/white"/>
 
         <View
             android:layout_width="1dp"
@@ -73,7 +79,8 @@
             android:layout_marginStart="15dp"
             android:layout_weight="1"
             android:text="@string/quantity"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:textColor="@color/white"/>
 
     </LinearLayout>
 

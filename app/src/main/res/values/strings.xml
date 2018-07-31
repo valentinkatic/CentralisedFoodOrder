@@ -75,4 +75,8 @@
     <string name="home_back_btn_msg">Pritisni nazad ponovno za izlaz.</string>
     <string name="invalid_input_provided">Nepravilan parametar obezbjeđen prilikom otvaranja restorana.</string>
     <string name="size_not_checked">Niste odabrali veličinu</string>
+    <string name="filters">Prikaži filtere</string>
+    <string name="bookmarks">Prikaži favorite</string>
+    <string name="showing_bookmarks">Prikaz favorita</string>
+    <string name="showing_all_restaurants">Prikaz svih restorana</string>
 </resources>

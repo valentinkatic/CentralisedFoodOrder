@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -84,8 +85,8 @@ public class ConfirmActivity extends BaseActivity {
         radioGroup = (RadioGroup) findViewById(R.id.rg_order_type);
         delieveryRadio = (RadioButton) findViewById(R.id.rb_delivery);
         pickupRadio = (RadioButton) findViewById(R.id.rb_pickup);
-        final RelativeLayout delieveryLayout = (RelativeLayout) findViewById(R.id.rl_delivery);
-        final RelativeLayout pickupLayout = (RelativeLayout) findViewById(R.id.rl_pickup);
+        final CardView delieveryLayout = findViewById(R.id.cv_delivery);
+        final CardView pickupLayout = findViewById(R.id.cv_pickup);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {

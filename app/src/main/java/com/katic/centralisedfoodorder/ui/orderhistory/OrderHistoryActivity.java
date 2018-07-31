@@ -114,7 +114,7 @@ public class OrderHistoryActivity extends AppCompatActivity implements OrderHist
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_home, menu);
+        getMenuInflater().inflate(R.menu.menu_order_history, menu);
         MenuItem menuCart = menu.findItem(R.id.menu_cart);
         mMenuIcon = (LayerDrawable) menuCart.getIcon();
         setBadgeCount(this, mMenuIcon, 0);

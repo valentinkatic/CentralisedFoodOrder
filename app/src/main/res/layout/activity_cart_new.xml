@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/background"
+    android:background="@color/colorPrimaryLight"
     android:orientation="vertical">
 
     <LinearLayout
@@ -24,7 +24,8 @@
             android:layout_marginEnd="16dp"
             android:text="@string/food_name"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="@color/white"/>
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
@@ -33,7 +34,6 @@
             android:layout_weight="1"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
-            android:background="@android:color/white"
             tools:listitem="@layout/item_cart" />
 
         <TextView
@@ -44,7 +44,8 @@
             android:layout_marginEnd="16dp"
             android:text="@string/subtotal"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="@color/white"/>
 
         <Button
             android:id="@+id/btn_checkout"
@@ -71,7 +72,8 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="@string/noItems"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textColor="@color/white"/>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -86,7 +88,8 @@
             android:layout_below="@id/tv_no_items"
             android:layout_centerHorizontal="true"
             android:text="@string/fillIt"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textColor="@color/white"/>
 
     </RelativeLayout>
 

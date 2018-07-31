@@ -2,13 +2,17 @@
 <RelativeLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingStart="?android:attr/expandableListPreferredChildPaddingLeft"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:paddingTop="@dimen/margin_small"
+    android:paddingBottom="@dimen/margin_small"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/colorPrimary">
 
         <TextView
             android:id="@+id/tv_food_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="title"
+            android:textColor="@color/white"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"/>
@@ -18,6 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="type"
+            android:textColor="@color/white"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_below="@+id/tv_food_title"
             />
@@ -27,6 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="price"
+            android:textColor="@color/white"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_alignBottom="@id/tv_food_type"
             android:layout_alignParentEnd="true"
@@ -46,6 +52,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/cartIngredients"
                 android:text="Ingredients"
+                android:textColor="@color/white"
                 />
 
         </LinearLayout>

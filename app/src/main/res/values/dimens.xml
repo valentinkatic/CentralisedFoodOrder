@@ -27,7 +27,9 @@
     <dimen name="difficulty_view_height">16dp</dimen>
     <dimen name="difficulty_view_margin">4dp</dimen>
     <dimen name="card_view_elevation">2dp</dimen>
+    <dimen name="card_view_confirm_elevation">4dp</dimen>
     <dimen name="card_view_corner_radius">2dp</dimen>
+    <dimen name="card_view_confirm_corner_radius">4dp</dimen>
 
     <dimen name="badge_text_size">12sp</dimen>
 </resources>

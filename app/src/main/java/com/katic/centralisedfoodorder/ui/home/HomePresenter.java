@@ -25,6 +25,8 @@ public class HomePresenter implements HomeContract.Presenter {
     private List<Restaurant> mRestaurants;
     private List<String> mActiveFilters;
 
+    private boolean mBookmarksActive = false;
+
     public HomePresenter(HomeContract.View view) {
         this.mView = view;
         this.mDataHandler = DataHandlerProvider.provide();
@@ -121,10 +123,22 @@ public class HomePresenter implements HomeContract.Presenter {
         filterRestaurants();
     }
 
+    @Override
+    public void onBookmarksSelected() {
+        mBookmarksActive = !mBookmarksActive;
+        filterRestaurants();
+    }
+
     private void filterRestaurants(){
         List<Restaurant> filteredRestaurants = new ArrayList<>();
-        if (mActiveFilters.size() == 0){
+        if (mActiveFilters.size() == 0 && !mBookmarksActive){
             filteredRestaurants.addAll(mRestaurants);
+        } else if (mActiveFilters.size() == 0) {
+            for (Restaurant restaurant : mRestaurants){
+                if (restaurant.isBookmarked()){
+                    filteredRestaurants.add(restaurant);
+                }
+            }
         } else {
             for (Restaurant restaurant : mRestaurants){
                 int numOfFilters = 0;
@@ -134,11 +148,20 @@ public class HomePresenter implements HomeContract.Presenter {
                     }
                 }
                 if (numOfFilters == mActiveFilters.size()){
-                    filteredRestaurants.add(restaurant);
+                    if (mBookmarksActive && restaurant.isBookmarked()){
+                        filteredRestaurants.add(restaurant);
+                    } else if (!mBookmarksActive){
+                        filteredRestaurants.add(restaurant);
+                    }
                 }
             }
         }
         mView.loadRestaurants(filteredRestaurants);
+    }
+
+    @Override
+    public boolean isBookmarksActive() {
+        return mBookmarksActive;
     }
 
     @Override

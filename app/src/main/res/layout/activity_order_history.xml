@@ -2,8 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:id="@+id/rl_order_history_view">
+    android:background="@color/colorPrimaryLight"
+    android:id="@+id/rl_order_history_view"
+    android:paddingTop="@dimen/difficulty_view_height"
+    android:paddingBottom="@dimen/difficulty_view_height">
 
         <ExpandableListView
             android:layout_width="match_parent"
@@ -13,6 +15,8 @@
             android:groupIndicator="@android:color/transparent"
             android:id="@+id/elv_order_history"
             android:visibility="gone"
+            android:layout_marginEnd="@dimen/medium_margin"
+            android:layout_marginStart="@dimen/medium_margin"
             />
 
         <TextView
@@ -23,6 +27,7 @@
             android:textAlignment="center"
             android:text="@string/empty_order_history"
             android:textSize="20sp"
+            android:textColor="@color/white"
             android:id="@+id/tv_empty_order_history"
             android:visibility="gone"/>
 

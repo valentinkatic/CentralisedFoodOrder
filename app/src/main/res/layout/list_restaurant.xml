@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v7.widget.CardView
-    android:layout_width="match_parent"
+<android.support.v7.widget.CardView android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cv"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_marginLeft="2dp"
-    android:layout_marginRight="2dp"
-    >
+    android:layout_marginEnd="@dimen/medium_margin"
+    android:layout_marginStart="@dimen/medium_margin"
+    app:cardBackgroundColor="@color/colorPrimary"
+    app:cardCornerRadius="@dimen/card_view_corner_radius"
+    app:cardElevation="@dimen/card_view_elevation"
+    app:cardMaxElevation="@dimen/card_view_elevation"
+    app:cardUseCompatPadding="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:background="@drawable/selector_row"
         >
 
         <ImageView
@@ -31,6 +34,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/restaurantName"
             android:text="Naziv Restorana"
+            android:textColor="@color/white"
             android:layout_toEndOf="@+id/restaurantPhoto"
             android:layout_alignParentTop="true"
             android:textSize="30sp"
@@ -43,6 +47,7 @@
             android:layout_toEndOf="@+id/restaurantPhoto"
             android:layout_below="@+id/restaurantName"
             android:text="Adresa"
+            android:textColor="@color/white"
             />
 
         <ImageView

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/background">
+    android:background="@color/colorPrimaryLight">
 
     <RelativeLayout
         android:id="@+id/details_view"
@@ -54,12 +54,12 @@
             android:id="@+id/nsv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#F6F8FA"
             android:fillViewport="true"
             android:clipToPadding="false"
             android:scrollbars="none"
             android:scrollingCache="true"
-            android:layout_below="@id/iv_restaurant_image">
+            android:layout_below="@id/iv_restaurant_image"
+            android:background="@color/colorPrimaryLight">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -70,9 +70,7 @@
                     android:id="@+id/tl_food_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:tabMode="scrollable"
-                    app:tabSelectedTextColor="@android:color/holo_red_dark"
-                    app:tabTextColor="@android:color/black" />
+                    app:tabMode="scrollable" />
 
                 <android.support.v4.view.ViewPager
                     android:id="@+id/vp_food"

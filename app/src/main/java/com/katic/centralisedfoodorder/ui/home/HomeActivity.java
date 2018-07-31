@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.katic.centralisedfoodorder.R;
@@ -77,6 +79,11 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
     }
 
     private void initializeUI(){
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null){
+            actionBar.setTitle(R.string.choose_restaurant);
+        }
+
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false);
         mFiltersRecyclerView.setLayoutManager(horizontalLayoutManager);
@@ -84,9 +91,6 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
         mRestaurantsRecyclerView.setLayoutManager(linearLayoutManager);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this,
-                linearLayoutManager.getOrientation());
-        mRestaurantsRecyclerView.addItemDecoration(dividerItemDecoration);
 
         mFilterAdapter = new FilterAdapter(this);
         mFiltersRecyclerView.setAdapter(mFilterAdapter);
@@ -120,7 +124,6 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
         if (!restaurants.isEmpty()) {
             mTVNoData.setVisibility(View.GONE);
         }
-        mFiltersRecyclerView.setVisibility(View.VISIBLE);
         mRestaurantsRecyclerView.setVisibility(View.VISIBLE);
         mRestaurantAdapter.loadRestaurants(restaurants);
     }
@@ -240,6 +243,21 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
+            case R.id.menu_bookmarks:
+                mPresenter.onBookmarksSelected();
+                if (mPresenter.isBookmarksActive()){
+                    showSnackBar(R.string.showing_bookmarks);
+                } else {
+                    showSnackBar(R.string.showing_all_restaurants);
+                }
+                break;
+            case R.id.menu_filter:
+                if (mTVNoData.getVisibility() == View.VISIBLE){
+                    mFiltersRecyclerView.setVisibility(View.GONE);
+                    break;
+                }
+                mFiltersRecyclerView.setVisibility(mFiltersRecyclerView.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+                break;
             case R.id.menu_cart:
                 mPresenter.onCartClicked();
                 break;

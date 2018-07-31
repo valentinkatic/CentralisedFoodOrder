@@ -5,27 +5,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/parent_view"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorPrimaryLight">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/refresh_homescreen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/difficulty_view_margin">
+        android:paddingTop="@dimen/difficulty_view_margin">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:animateLayoutChanges="true">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_filters"
             android:layout_width="match_parent"
             android:layout_height="110dp"
-            android:background="#ddd"
             tools:listitem="@layout/item_filter"
             android:orientation="horizontal"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            android:paddingEnd="@dimen/medium_margin"
+            android:paddingStart="@dimen/medium_margin"
+            android:clipToPadding="false"
+            android:visibility="gone"
             />
 
         <android.support.v7.widget.RecyclerView
@@ -48,6 +53,7 @@
         android:visibility="gone"
         android:text="@string/no_internet_connection"
         android:textAppearance="?android:textAppearanceMedium"
+        android:textColor="@color/white"
         android:layout_centerInParent="true"
         />
 

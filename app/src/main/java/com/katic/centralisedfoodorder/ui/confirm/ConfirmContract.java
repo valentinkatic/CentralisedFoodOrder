@@ -33,7 +33,7 @@ public interface ConfirmContract {
 
         void startSelectAddressDialog(List<DeliveryAddress> addresses);
 
-        void showToastMessage(int messageID);
+        void showMessage(int messageID);
 
         void dismissView();
 

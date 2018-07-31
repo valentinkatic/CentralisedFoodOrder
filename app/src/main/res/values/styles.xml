@@ -10,10 +10,14 @@
 
 
     <style name="ChooseAddressDialog" parent="Theme.AppCompat.Dialog.Alert">
-        <item name="android:background">#454545</item>
+        <item name="android:background">@color/colorPrimaryDark</item>
         <item name="android:windowBackground">@drawable/dialog_choose_address_background</item>
         <item name="android:popupBackground">@drawable/dialog_choose_address_background</item>
     </style>
 
+    <style name="AppTheme.Picker" parent="Theme.AppCompat.Light.NoActionBar" >
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="colorControlNormal">@color/darkgrey</item>
+    </style>
 
 </resources>

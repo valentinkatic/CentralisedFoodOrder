@@ -40,7 +40,7 @@ public class ConfirmPresenter implements ConfirmContract.Presenter {
             @Override
             public void onResponse(Void result) {
                 mView.loadDefaultAddress(address);
-                mView.showToastMessage(ConfirmContract.KEY_MESSAGE_ADDRESS_SET);
+                mView.showMessage(ConfirmContract.KEY_MESSAGE_ADDRESS_SET);
             }
 
             @Override
@@ -56,7 +56,7 @@ public class ConfirmPresenter implements ConfirmContract.Presenter {
         setDefaultAddress(address, new DataHandler.Callback<Void>() {
             @Override
             public void onResponse(Void result) {
-                mView.showToastMessage(ConfirmContract.KEY_MESSAGE_ADDRESS_SAVED);
+                mView.showMessage(ConfirmContract.KEY_MESSAGE_ADDRESS_SAVED);
             }
 
             @Override
@@ -84,7 +84,7 @@ public class ConfirmPresenter implements ConfirmContract.Presenter {
         mDataHandler.saveUserAddresses(mDeliveryAddresses, new DataHandler.Callback<Void>() {
             @Override
             public void onResponse(Void result) {
-                mView.showToastMessage(ConfirmContract.KEY_MESSAGE_ADDRESS_REMOVED);
+                mView.showMessage(ConfirmContract.KEY_MESSAGE_ADDRESS_REMOVED);
             }
 
             @Override
@@ -103,7 +103,7 @@ public class ConfirmPresenter implements ConfirmContract.Presenter {
         mDataHandler.sendOrder(mCart, new DataHandler.Callback<Void>() {
             @Override
             public void onResponse(Void result) {
-                mView.showToastMessage(ConfirmContract.KEY_MESSAGE_ORDER_SENT);
+                mView.showMessage(ConfirmContract.KEY_MESSAGE_ORDER_SENT);
                 mView.navigateToActivity(OrderHistoryActivity.class, true);
             }
 
@@ -123,7 +123,7 @@ public class ConfirmPresenter implements ConfirmContract.Presenter {
         mDataHandler.sendOrder(mCart, new DataHandler.Callback<Void>() {
             @Override
             public void onResponse(Void result) {
-                mView.showToastMessage(ConfirmContract.KEY_MESSAGE_ORDER_SENT);
+                mView.showMessage(ConfirmContract.KEY_MESSAGE_ORDER_SENT);
                 mView.navigateToActivity(OrderHistoryActivity.class, true);
             }
 

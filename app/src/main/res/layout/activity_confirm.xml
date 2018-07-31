@@ -1,312 +1,363 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parent_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@color/colorPrimaryLight">
 
     <RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <TextView
-        android:text="@string/payment_method"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tv_title"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:paddingTop="10dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
-    <RadioGroup
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/rg_order_type"
-        android:layout_margin="10dp"
-        android:background="@android:color/white"
-        android:layout_below="@id/tv_title"
-        android:layout_centerHorizontal="true">
+        android:layout_height="wrap_content">
 
-        <RadioButton
-            android:text="@string/onRecieve"
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:paddingTop="10dp"
+            android:text="@string/payment_method"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:textColor="@color/white" />
+
+        <RadioGroup
+            android:id="@+id/rg_order_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/rb_delivery"
-            android:textSize="22sp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:layout_weight="1" />
+            android:layout_below="@id/tv_title"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="10dp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/rl_delivery"
-            android:visibility="gone"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="15dp"
-            android:background="@android:color/white">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/userLastName"
-                android:id="@+id/tv_last_name"
-                android:layout_marginTop="10dp"
-                android:textSize="20sp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/street"
-                android:id="@+id/tv_address"
-                android:layout_below="@id/tv_last_name"
-                android:layout_marginTop="10dp"
-                android:textSize="20sp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/streetNumber"
-                android:id="@+id/tv_street_number"
-                android:layout_below="@id/tv_address"
-                android:layout_marginTop="10dp"
-                android:textSize="20sp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/city"
-                android:id="@+id/tv_city"
-                android:layout_below="@id/tv_street_number"
-                android:layout_marginTop="10dp"
-                android:textSize="20sp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/floor"
-                android:id="@+id/tv_floor"
-                android:layout_below="@id/tv_city"
-                android:layout_marginTop="10dp"
-                android:textSize="20sp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/apartmentNumber"
-                android:id="@+id/apartmentNumberText"
-                android:layout_below="@id/tv_floor"
-                android:layout_marginTop="10dp"
-                android:textSize="20sp"
-                android:visibility="gone"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/contactNumber"
-                android:id="@+id/tv_phone_number"
-                android:layout_below="@id/apartmentNumberText"
-                android:layout_marginTop="10dp"
-                android:textSize="20sp"/>
-
-            <LinearLayout
+            <RadioButton
+                android:id="@+id/rb_delivery"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_phone_number"
-                android:orientation="horizontal"
-                android:layout_marginTop="5dp">
+                android:layout_weight="1"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="@string/onRecieve"
+                android:textSize="22sp"
+                android:textColor="@color/white"  />
 
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:id="@+id/bt_select_address"
-                    android:text="@string/choose_address"
-                    android:layout_weight="1"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    />
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/cv_delivery"
+                app:cardBackgroundColor="@color/colorPrimary"
+                app:cardCornerRadius="@dimen/card_view_confirm_corner_radius"
+                app:cardElevation="@dimen/card_view_confirm_elevation"
+                app:cardMaxElevation="@dimen/card_view_confirm_elevation"
+                app:cardUseCompatPadding="true"
+                android:visibility="gone">
 
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="?android:attr/listDivider"
-                    android:layout_marginBottom="10dp"
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/medium_margin">
+
+                    <TextView
+                        android:id="@+id/tv_last_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/userLastName"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/tv_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_last_name"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/street"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/tv_street_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_address"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/streetNumber"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/tv_city"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_street_number"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/city"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/tv_floor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_city"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/floor"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/apartmentNumberText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_floor"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/apartmentNumber"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tv_phone_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/apartmentNumberText"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/contactNumber"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_phone_number"
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/bt_select_address"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/choose_address"
+                            android:textColor="@color/white" />
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@color/white" />
+
+                        <Button
+                            android:id="@+id/bt_add_address"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/save"
+                            android:textColor="@color/white" />
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@color/white" />
+
+                        <Button
+                            android:id="@+id/bt_reset"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/reset"
+                            android:textColor="@color/white" />
+
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/et_last_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@id/tv_last_name"
+                        android:layout_marginStart="10dp"
+                        android:paddingStart="@dimen/medium_margin"
+                        android:paddingEnd="@dimen/medium_margin"
+                        android:layout_toEndOf="@+id/tv_last_name"
+                        android:background="@drawable/edittext_bg"
+                        android:ems="8"
+                        android:inputType="text"
+                        android:textSize="20sp"
+                        android:textColor="@color/white" />
+
+                    <EditText
+                        android:id="@+id/et_street"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@id/tv_address"
+                        android:layout_marginStart="10dp"
+                        android:paddingStart="@dimen/medium_margin"
+                        android:paddingEnd="@dimen/medium_margin"
+                        android:layout_toEndOf="@+id/tv_address"
+                        android:background="@drawable/edittext_bg"
+                        android:ems="8"
+                        android:inputType="text"
+                        android:textSize="20sp"
+                        android:textColor="@color/white" />
+
+                    <EditText
+                        android:id="@+id/et_street_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@id/tv_street_number"
+                        android:layout_marginStart="10dp"
+                        android:paddingStart="@dimen/medium_margin"
+                        android:paddingEnd="@dimen/medium_margin"
+                        android:layout_toEndOf="@+id/tv_street_number"
+                        android:background="@drawable/edittext_bg"
+                        android:ems="3"
+                        android:inputType="text"
+                        android:textSize="20sp"
+                        android:textColor="@color/white" />
+
+                    <EditText
+                        android:id="@+id/et_city"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@id/tv_city"
+                        android:layout_marginStart="10dp"
+                        android:paddingStart="@dimen/medium_margin"
+                        android:paddingEnd="@dimen/medium_margin"
+                        android:layout_toEndOf="@+id/tv_city"
+                        android:background="@drawable/edittext_bg"
+                        android:ems="8"
+                        android:inputType="text"
+                        android:textSize="20sp"
+                        android:textColor="@color/white" />
+
+                    <EditText
+                        android:id="@+id/et_floor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@id/tv_floor"
+                        android:layout_marginStart="10dp"
+                        android:paddingStart="@dimen/medium_margin"
+                        android:paddingEnd="@dimen/medium_margin"
+                        android:layout_toEndOf="@+id/tv_floor"
+                        android:background="@drawable/edittext_bg"
+                        android:ems="3"
+                        android:inputType="numberSigned"
+                        android:textSize="20sp"
+                        android:textColor="@color/white" />
+
+                    <EditText
+                        android:id="@+id/apartmentNumberEdit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@id/apartmentNumberText"
+                        android:layout_marginStart="10dp"
+                        android:paddingStart="@dimen/medium_margin"
+                        android:paddingEnd="@dimen/medium_margin"
+                        android:layout_toEndOf="@+id/apartmentNumberText"
+                        android:background="@drawable/edittext_bg"
+                        android:ems="3"
+                        android:inputType="numberSigned"
+                        android:textSize="20sp"
+                        android:visibility="gone"
+                        android:textColor="@color/white" />
+
+                    <EditText
+                        android:id="@+id/et_phone_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@id/tv_phone_number"
+                        android:layout_marginStart="10dp"
+                        android:paddingStart="@dimen/medium_margin"
+                        android:paddingEnd="@dimen/medium_margin"
+                        android:layout_toEndOf="@+id/tv_phone_number"
+                        android:background="@drawable/edittext_bg"
+                        android:ems="7"
+                        android:inputType="phone"
+                        android:textSize="20sp"
+                        android:textColor="@color/white" />
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <RadioButton
+                android:id="@+id/rb_pickup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="@string/pickup"
+                android:textSize="22sp"
+                android:textColor="@color/white"  />
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/cv_pickup"
+                app:cardBackgroundColor="@color/colorPrimary"
+                app:cardCornerRadius="@dimen/card_view_confirm_corner_radius"
+                app:cardElevation="@dimen/card_view_confirm_elevation"
+                app:cardMaxElevation="@dimen/card_view_confirm_elevation"
+                app:cardUseCompatPadding="true"
+                android:visibility="gone">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginStart="10dp">
+
+                <TextView
+                    android:id="@+id/tv_last_name_pickup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    />
+                    android:text="@string/userLastName"
+                    android:textSize="20sp"
+                    android:textColor="@color/white"/>
 
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:id="@+id/bt_add_address"
-                    android:text="@string/save"
-                    android:layout_weight="1"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    />
+                <EditText
+                    android:id="@+id/et_last_name_pickup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/tv_last_name_pickup"
+                    android:layout_marginStart="10dp"
+                    android:paddingStart="@dimen/medium_margin"
+                    android:paddingEnd="@dimen/medium_margin"
+                    android:layout_toEndOf="@+id/tv_last_name_pickup"
+                    android:background="@drawable/edittext_bg"
+                    android:ems="8"
+                    android:inputType="text"
+                    android:textSize="20sp"
+                    android:textColor="@color/white" />
 
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="?android:attr/listDivider"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
-                    />
+            </RelativeLayout>
 
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:id="@+id/bt_reset"
-                    android:text="@string/reset"
-                    android:layout_weight="1"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    />
+            </android.support.v7.widget.CardView>
 
-            </LinearLayout>
+        </RadioGroup>
 
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="7"
-                android:textSize="20sp"
-                android:inputType="text"
-                android:id="@+id/et_last_name"
-                android:layout_toEndOf="@+id/tv_last_name"
-                android:layout_alignBaseline="@id/tv_last_name"
-                android:layout_marginStart="10dp"
-                android:background="@drawable/edittext_bg"/>
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="7"
-                android:textSize="20sp"
-                android:inputType="text"
-                android:id="@+id/et_street"
-                android:layout_toEndOf="@+id/tv_address"
-                android:layout_alignBaseline="@id/tv_address"
-                android:layout_marginStart="10dp"
-                android:background="@drawable/edittext_bg"/>
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="2"
-                android:textSize="20sp"
-                android:inputType="text"
-                android:layout_toEndOf="@+id/tv_street_number"
-                android:layout_alignBaseline="@id/tv_street_number"
-                android:layout_marginStart="10dp"
-                android:id="@+id/et_street_number"
-                android:background="@drawable/edittext_bg"/>
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="7"
-                android:textSize="20sp"
-                android:inputType="text"
-                android:layout_toEndOf="@+id/tv_city"
-                android:layout_alignBaseline="@id/tv_city"
-                android:layout_marginStart="10dp"
-                android:id="@+id/et_city"
-                android:background="@drawable/edittext_bg"/>
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="2"
-                android:textSize="20sp"
-                android:inputType="numberSigned"
-                android:layout_toEndOf="@+id/tv_floor"
-                android:layout_alignBaseline="@id/tv_floor"
-                android:layout_marginStart="10dp"
-                android:id="@+id/et_floor"
-                android:background="@drawable/edittext_bg"/>
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="2"
-                android:textSize="20sp"
-                android:inputType="numberSigned"
-                android:layout_toEndOf="@+id/apartmentNumberText"
-                android:layout_alignBaseline="@id/apartmentNumberText"
-                android:layout_marginStart="10dp"
-                android:id="@+id/apartmentNumberEdit"
-                android:background="@drawable/edittext_bg"
-                android:visibility="gone"/>
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="6"
-                android:textSize="20sp"
-                android:inputType="phone"
-                android:layout_toEndOf="@+id/tv_phone_number"
-                android:layout_alignBaseline="@id/tv_phone_number"
-                android:layout_marginStart="10dp"
-                android:id="@+id/et_phone_number"
-                android:background="@drawable/edittext_bg"/>
-
-        </RelativeLayout>
-
-        <RadioButton
-            android:text="@string/pickup"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/bt_confirm"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/rb_pickup"
-            android:layout_weight="1"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:textSize="22sp"/>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/rl_pickup"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="15dp"
-            android:background="@android:color/white"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/userLastName"
-                android:id="@+id/tv_last_name_pickup"
-                android:layout_marginTop="10dp"
-                android:textSize="20sp"/>
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="7"
-                android:textSize="20sp"
-                android:inputType="text"
-                android:id="@+id/et_last_name_pickup"
-                android:layout_toEndOf="@+id/tv_last_name_pickup"
-                android:layout_alignBaseline="@id/tv_last_name_pickup"
-                android:layout_marginStart="10dp"
-                android:background="@drawable/edittext_bg"/>
-
-        </RelativeLayout>
-    </RadioGroup>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/choose"
-        android:textSize="20sp"
-        android:id="@+id/bt_confirm"
-        android:layout_below="@+id/rg_order_type"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"/>
+            android:layout_below="@+id/rg_order_type"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:text="@string/choose"
+            android:textSize="20sp" />
 
     </RelativeLayout>
 

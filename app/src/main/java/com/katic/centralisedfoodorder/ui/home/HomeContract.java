@@ -35,6 +35,10 @@ public interface HomeContract {
 
         void onFilterSelected(FilterData filter);
 
+        void onBookmarksSelected();
+
+        boolean isBookmarksActive();
+
         void onCartClicked();
 
     }
