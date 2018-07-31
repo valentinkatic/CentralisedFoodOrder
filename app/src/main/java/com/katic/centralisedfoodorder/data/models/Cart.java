@@ -42,6 +42,10 @@ public class Cart {
     @SerializedName("order_date")
     private String mOrderDate;
 
+    @Expose
+    @SerializedName("new_order")
+    private boolean mNewOrder;
+
     @Exclude
     private String mOrderKey;
 
@@ -136,6 +140,16 @@ public class Cart {
     @Exclude
     public void setOrderKey(String orderKey) {
         this.mOrderKey = orderKey;
+    }
+
+    @PropertyName("new_order")
+    public boolean isNewOrder() {
+        return mNewOrder;
+    }
+
+    @PropertyName("new_order")
+    public void setNewOrder(boolean newOrder) {
+        this.mNewOrder = newOrder;
     }
 
     public static Cart copyCart(Cart cart) {

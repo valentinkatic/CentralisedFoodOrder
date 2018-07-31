@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.katic.centralisedfoodorder.GlideApp;
+import com.katic.centralisedfoodorder.utils.GlideApp;
 import com.katic.centralisedfoodorder.R;
 import com.katic.centralisedfoodorder.data.models.Food;
 import com.katic.centralisedfoodorder.data.models.Restaurant;

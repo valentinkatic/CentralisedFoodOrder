@@ -100,6 +100,7 @@ public class ConfirmPresenter implements ConfirmContract.Presenter {
         mCart.setPhoneToken(mDataHandler.getUserPhoneToken());
         mCart.setOrderDate(Utils.getISO8601Date(Calendar.getInstance().getTimeInMillis()));
         mCart.setDelivery(true);
+        mCart.setNewOrder(true);
         mDataHandler.sendOrder(mCart, new DataHandler.Callback<Void>() {
             @Override
             public void onResponse(Void result) {
@@ -120,6 +121,7 @@ public class ConfirmPresenter implements ConfirmContract.Presenter {
         mCart.setPhoneToken(mDataHandler.getUserPhoneToken());
         mCart.setOrderDate(Utils.getISO8601Date(Calendar.getInstance().getTimeInMillis()));
         mCart.setDelivery(false);
+        mCart.setNewOrder(true);
         mDataHandler.sendOrder(mCart, new DataHandler.Callback<Void>() {
             @Override
             public void onResponse(Void result) {

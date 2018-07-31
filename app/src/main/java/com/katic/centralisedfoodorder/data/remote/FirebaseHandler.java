@@ -1,14 +1,11 @@
 package com.katic.centralisedfoodorder.data.remote;
 
-import com.katic.centralisedfoodorder.data.DataHandler;
 import com.katic.centralisedfoodorder.data.models.Cart;
 import com.katic.centralisedfoodorder.data.models.DeliveryAddress;
 import com.katic.centralisedfoodorder.data.models.FilterData;
-import com.katic.centralisedfoodorder.data.models.Food;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.data.models.User;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -19,10 +16,10 @@ import java.util.List;
  */
 public interface FirebaseHandler {
 
-    String REF_FILTER_DATA_NODE = "filterData";
-    String REF_RESTAURANT_DATA_NODE = "restaurantDataTest";
-    String REF_RESTAURANTS_NODE = "restaurantsTest";
-    String REF_USERS_NODE = "usersTest";
+    String REF_FILTER_DATA_NODE = "filter_data";
+    String REF_RESTAURANT_DATA_NODE = "restaurant_data";
+    String REF_RESTAURANTS_NODE = "restaurants";
+    String REF_USERS_NODE = "users";
 
     void fetchRestaurants(Callback<List<Restaurant>> callback);
 

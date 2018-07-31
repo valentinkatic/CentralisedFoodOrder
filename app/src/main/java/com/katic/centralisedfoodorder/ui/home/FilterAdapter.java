@@ -13,12 +13,11 @@ import android.widget.TextView;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.katic.centralisedfoodorder.GlideApp;
+import com.katic.centralisedfoodorder.utils.GlideApp;
 import com.katic.centralisedfoodorder.R;
 import com.katic.centralisedfoodorder.data.models.FilterData;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;

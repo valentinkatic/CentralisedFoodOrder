@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.katic.centralisedfoodorder.GlideApp;
 import com.katic.centralisedfoodorder.R;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
+import com.katic.centralisedfoodorder.utils.GlideApp;
 
 import java.util.ArrayList;
 import java.util.List;
