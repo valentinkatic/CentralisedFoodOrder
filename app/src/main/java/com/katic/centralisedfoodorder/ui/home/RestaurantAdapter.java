@@ -9,12 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.katic.centralisedfoodorder.GlideApp;
 import com.katic.centralisedfoodorder.R;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
-import com.katic.centralisedfoodorder.data.remote.FirebaseHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,30 +22,32 @@ import butterknife.ButterKnife;
 
 public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.ViewHolder> {
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    private final static String TAG = RestaurantAdapter.class.getSimpleName();
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.restaurantName) TextView restaurantName;
         @BindView(R.id.restaurantAddress) TextView restaurantAddress;
         @BindView(R.id.restaurantPhoto) ImageView restaurantPhoto;
         @BindView(R.id.bookmark) ImageView bookmark;
 
-        FirebaseStorage mStorageRef = FirebaseStorage.getInstance();
-        StorageReference mPathReference;
+        Restaurant current;
 
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            itemView.setOnClickListener(this);
         }
 
         void bind(int position){
-            final Restaurant current = mRestaurants.get(position);
+            current = mRestaurants.get(position);
             Context context = itemView.getContext();
 
             restaurantName.setText(current.getName());
             restaurantAddress.setText(String.format(Locale.getDefault(), "%s, %s", current.getAddress(), current.getCity()));
-            mPathReference = mStorageRef.getReference(FirebaseHandler.REF_RESTAURANTS_NODE + "/" + current.getKey() + "/" + current.getName() + ".png");
             GlideApp.with(context)
-                    .load(mPathReference)
+                    .load(current.getPhotoURL())
                     .into(restaurantPhoto);
 
             if (!current.isBookmarked()) {
@@ -69,17 +68,13 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
                     mRestaurantItemListener.onBookmarkStatusChanged(current);
                 }
             });
+        }
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mRestaurantItemListener.onRestaurantClicked(current);
-                }
-            });
+        @Override
+        public void onClick(View v) {
+            mRestaurantItemListener.onRestaurantClicked(current);
         }
     }
-
-    private final static String TAG = RestaurantAdapter.class.getSimpleName();
 
     private List<Restaurant> mRestaurants;
     private RestaurantItemListener mRestaurantItemListener;

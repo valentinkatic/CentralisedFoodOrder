@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.katic.centralisedfoodorder.data.DataHandler;
 import com.katic.centralisedfoodorder.data.DataHandlerProvider;
 import com.katic.centralisedfoodorder.data.models.Cart;
+import com.katic.centralisedfoodorder.data.models.FilterData;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.ui.cart.CartActivity;
 import com.katic.centralisedfoodorder.ui.orderhistory.OrderHistoryActivity;
@@ -22,12 +23,14 @@ public class HomePresenter implements HomeContract.Presenter {
     private HomeContract.View mView;
 
     private List<Restaurant> mRestaurants;
+    private List<String> mActiveFilters;
 
     public HomePresenter(HomeContract.View view) {
         this.mView = view;
         this.mDataHandler = DataHandlerProvider.provide();
 
         mRestaurants = new ArrayList<>();
+        mActiveFilters = new ArrayList<>();
 
         // This should be the last statement
         this.mView.setPresenter(this);
@@ -71,7 +74,7 @@ public class HomePresenter implements HomeContract.Presenter {
             public void onResponse(List<Restaurant> result) {
                 mRestaurants.clear();
                 mRestaurants.addAll(result);
-                mView.loadRestaurants(result);
+                filterRestaurants();
                 mView.hideLoading();
 
                 mDataHandler.getMyCart(new DataHandler.Callback<Cart>() {
@@ -85,6 +88,18 @@ public class HomePresenter implements HomeContract.Presenter {
                         mView.updateCartIcon(0);
                     }
                 });
+
+                mDataHandler.fetchFilterData(new DataHandler.Callback<List<FilterData>>() {
+                    @Override
+                    public void onResponse(List<FilterData> result) {
+                        mView.loadFilters(result);
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
             }
 
             @Override
@@ -93,6 +108,37 @@ public class HomePresenter implements HomeContract.Presenter {
                 mView.hideLoading();
             }
         });
+    }
+
+    @Override
+    public void onFilterSelected(FilterData filter) {
+        if (mActiveFilters.contains(filter.getId())){
+            mActiveFilters.remove(filter.getId());
+        } else {
+            mActiveFilters.add(filter.getId());
+        }
+
+        filterRestaurants();
+    }
+
+    private void filterRestaurants(){
+        List<Restaurant> filteredRestaurants = new ArrayList<>();
+        if (mActiveFilters.size() == 0){
+            filteredRestaurants.addAll(mRestaurants);
+        } else {
+            for (Restaurant restaurant : mRestaurants){
+                int numOfFilters = 0;
+                for (String filter : mActiveFilters){
+                    if (restaurant.getFoodTypes().contains(filter)){
+                        numOfFilters ++;
+                    }
+                }
+                if (numOfFilters == mActiveFilters.size()){
+                    filteredRestaurants.add(restaurant);
+                }
+            }
+        }
+        mView.loadRestaurants(filteredRestaurants);
     }
 
     @Override

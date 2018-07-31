@@ -1,12 +1,12 @@
 package com.katic.centralisedfoodorder.data;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.katic.centralisedfoodorder.application.AppClass;
 import com.katic.centralisedfoodorder.data.models.Cart;
 import com.katic.centralisedfoodorder.data.models.CartItem;
 import com.katic.centralisedfoodorder.data.models.DeliveryAddress;
+import com.katic.centralisedfoodorder.data.models.FilterData;
 import com.katic.centralisedfoodorder.data.models.Pizza;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.data.models.User;
@@ -14,8 +14,6 @@ import com.katic.centralisedfoodorder.data.remote.FirebaseHandler;
 import com.katic.centralisedfoodorder.data.remote.FirebaseProvider;
 
 import java.util.List;
-
-import butterknife.OnClick;
 
 public class AppDataHandler implements DataHandler {
 
@@ -258,6 +256,11 @@ public class AppDataHandler implements DataHandler {
     public void saveUserAddresses(List<DeliveryAddress> addresses, Callback<Void> callback) {
         mPreferences.setUserAddresses(addresses);
         mFirebaseHandler.updateUserAddresses(addresses, new FirebaseCallback<>(callback));
+    }
+
+    @Override
+    public void fetchFilterData(Callback<List<FilterData>> callback) {
+        mFirebaseHandler.fetchFilterData(new FirebaseCallback<>(callback));
     }
 
     @Override

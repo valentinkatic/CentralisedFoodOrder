@@ -64,12 +64,12 @@
     <string name="favorites">Favoriti</string>
     <string name="order_sent">Narudžba poslana</string>
 
-    <string name="sigin_text_almost_there">For Scholars, By Scholars</string>
+    <string name="sigin_text_almost_there">Centralizirana dostava hrane</string>
     <string name="google_web_client_id" translatable="false">886715338644-ssdkgaerehe6m1a33vna3gvghpeu14mr.apps.googleusercontent.com</string>
-    <string name="text_please_wait">Please wait…</string>
+    <string name="text_please_wait">Molimo pričekajte…</string>
     <string name="something_went_wrong">Nešto je pošlo po krivu. Molimo pokušajte ponovno</string>
-    <string name="msg_login_successful">Login successful</string>
-    <string name="unable_to_login">Unable to login with this account</string>
+    <string name="msg_login_successful">Prijava uspješna</string>
+    <string name="unable_to_login">Prijava nije moguća s tim računom</string>
     <string name="no_internet_connection">Nema internetske veze.</string>
     <string name="refreshed">Osvježeno</string>
     <string name="home_back_btn_msg">Pritisni nazad ponovno za izlaz.</string>

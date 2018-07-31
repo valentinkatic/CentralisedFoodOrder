@@ -1,5 +1,6 @@
 package com.katic.centralisedfoodorder.ui.home;
 
+import com.katic.centralisedfoodorder.data.models.FilterData;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.ui.BasePresenter;
 import com.katic.centralisedfoodorder.ui.BaseView;
@@ -11,6 +12,8 @@ public interface HomeContract {
     interface View extends BaseView<Presenter> {
 
         void loadRestaurants(List<Restaurant> restaurants);
+
+        void loadFilters(List<FilterData> filters);
 
         void onRestaurantLoadError();
 
@@ -29,6 +32,8 @@ public interface HomeContract {
         void onRestaurantClicked(Restaurant restaurant);
 
         void onBookmarkStatusChange(Restaurant restaurant);
+
+        void onFilterSelected(FilterData filter);
 
         void onCartClicked();
 

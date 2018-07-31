@@ -20,8 +20,8 @@ public class Restaurant {
     private String mAddress;
 
     @Expose
-    @SerializedName("photoID")
-    private long mPhotoID;
+    @SerializedName("photo_url")
+    private String mPhotoURL;
 
     @Exclude
     private boolean mBookmarked;
@@ -72,14 +72,14 @@ public class Restaurant {
         this.mAddress = address;
     }
 
-    @PropertyName("photoID")
-    public long getPhotoID() {
-        return mPhotoID;
+    @PropertyName("photo_url")
+    public String getPhotoURL() {
+        return mPhotoURL;
     }
 
-    @PropertyName("photoID")
-    public void setPhotoID(long photoID) {
-        this.mPhotoID = photoID;
+    @PropertyName("photo_url")
+    public void setPhotoURL(String photoID) {
+        this.mPhotoURL = photoID;
     }
 
     @Exclude
@@ -157,7 +157,7 @@ public class Restaurant {
         return "Restaurant{" +
                 "name='" + mName + '\'' +
                 ", address='" + mAddress + '\'' +
-                ", photoID=" + mPhotoID +
+                ", photoURL=" + mPhotoURL +
                 ", bookmarked=" + mBookmarked +
                 ", phone='" + mPhone + '\'' +
                 ", city='" + mCity + '\'' +

@@ -48,9 +48,9 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
         LinearLayout itemLayout;
         public MyViewHolder(View view) {
             super(view);
-            imageView= view.findViewById(R.id.image);
+            imageView= view.findViewById(R.id.iv_filter);
             title= view.findViewById(R.id.title);
-            itemLayout= view.findViewById(R.id.itemLayout);
+            itemLayout= view.findViewById(R.id.parent_view);
         }
 
     }
@@ -59,7 +59,7 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
 
     @Override
     public HorizontalAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewitem, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_filter, parent, false);
 
         return new HorizontalAdapter.MyViewHolder(itemView);
     }

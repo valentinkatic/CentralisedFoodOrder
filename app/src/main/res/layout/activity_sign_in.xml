@@ -23,7 +23,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/margin_xx_large"
         android:contentDescription="@string/app_name"
-        android:src="@drawable/signin_pic" />
+        android:src="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@+id/signin_text_almost_there"

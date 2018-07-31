@@ -2,6 +2,7 @@ package com.katic.centralisedfoodorder.data;
 
 import com.katic.centralisedfoodorder.data.models.Cart;
 import com.katic.centralisedfoodorder.data.models.DeliveryAddress;
+import com.katic.centralisedfoodorder.data.models.FilterData;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 
 import java.util.List;
@@ -57,6 +58,8 @@ public interface DataHandler {
     void removeOrder(String orderKey, Callback<Void> callback);
 
     void sendOrder(Cart cart, Callback<Void> callback);
+
+    void fetchFilterData(Callback<List<FilterData>> callback);
 
     void destroy();
     /**

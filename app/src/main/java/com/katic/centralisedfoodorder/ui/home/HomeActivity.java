@@ -12,23 +12,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.katic.centralisedfoodorder.R;
+import com.katic.centralisedfoodorder.data.models.FilterData;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.ui.PresenterInjector;
 import com.katic.centralisedfoodorder.ui.restaurantdetails.RestaurantDetailsActivity;
 import com.katic.centralisedfoodorder.ui.restaurantdetails.RestaurantDetailsContract;
 import com.katic.centralisedfoodorder.utils.Connectivity;
-import com.katic.centralisedfoodorder.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -36,7 +36,7 @@ import butterknife.ButterKnife;
 
 import static com.katic.centralisedfoodorder.utils.Utils.setBadgeCount;
 
-public class HomeActivity extends AppCompatActivity implements HomeContract.View, RestaurantAdapter.RestaurantItemListener {
+public class HomeActivity extends AppCompatActivity implements HomeContract.View, RestaurantAdapter.RestaurantItemListener, FilterAdapter.FilterListener {
 
     public static final String TAG = HomeActivity.class.getSimpleName();
 
@@ -44,9 +44,11 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
 
     private HomeContract.Presenter mPresenter;
 
-    private RestaurantAdapter adapter;
+    private FilterAdapter mFilterAdapter;
+    private RestaurantAdapter mRestaurantAdapter;
 
-    @BindView(R.id.refresh_homescreen) SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.refresh_homescreen) SwipeRefreshLayout mSwipeRefreshLayout;
+    @BindView(R.id.rv_filters) RecyclerView mFiltersRecyclerView;
     @BindView(R.id.rv_restaurants) RecyclerView mRestaurantsRecyclerView;
     @BindView(R.id.empty_view) TextView mTVNoData;
     @BindView(R.id.home_screen_pb) LottieAnimationView mProgressBar;
@@ -75,6 +77,10 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
     }
 
     private void initializeUI(){
+        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(this,
+                LinearLayoutManager.HORIZONTAL, false);
+        mFiltersRecyclerView.setLayoutManager(horizontalLayoutManager);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
         mRestaurantsRecyclerView.setLayoutManager(linearLayoutManager);
@@ -82,8 +88,16 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
                 linearLayoutManager.getOrientation());
         mRestaurantsRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        adapter = new RestaurantAdapter(this);
-        mRestaurantsRecyclerView.setAdapter(adapter);
+        mFilterAdapter = new FilterAdapter(this);
+        mFiltersRecyclerView.setAdapter(mFilterAdapter);
+
+        mRestaurantAdapter = new RestaurantAdapter(this);
+        mRestaurantsRecyclerView.setAdapter(mRestaurantAdapter);
+    }
+
+    @Override
+    public void onFilterClicked(FilterData filter) {
+        mPresenter.onFilterSelected(filter);
     }
 
     @Override
@@ -97,12 +111,18 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
     }
 
     @Override
+    public void loadFilters(List<FilterData> filters) {
+        mFilterAdapter.setFilters(filters);
+    }
+
+    @Override
     public void loadRestaurants(List<Restaurant> restaurants) {
         if (!restaurants.isEmpty()) {
             mTVNoData.setVisibility(View.GONE);
         }
+        mFiltersRecyclerView.setVisibility(View.VISIBLE);
         mRestaurantsRecyclerView.setVisibility(View.VISIBLE);
-        adapter.loadRestaurants(restaurants);
+        mRestaurantAdapter.loadRestaurants(restaurants);
     }
 
     @Override
@@ -127,6 +147,8 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
 
     @Override
     public void handleEmptyView() {
+        mFiltersRecyclerView.setVisibility(View.GONE);
+        mRestaurantsRecyclerView.setVisibility(View.GONE);
         mTVNoData.setVisibility(View.VISIBLE);
     }
 
@@ -158,24 +180,24 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
     }
 
     private void setUpSwipeRefresh() {
-        swipeRefreshLayout.setColorSchemeResources(R.color.bnv_color, R.color.blue_jeans,
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.bnv_color, R.color.blue_jeans,
                 R.color.ufo_green, R.color.vivid_tangelo);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 mPresenter.start(getIntent().getExtras());
 
-                swipeRefreshLayout.setRefreshing(true);
+                mSwipeRefreshLayout.setRefreshing(true);
 
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (adapter != null) {
-                            adapter.notifyDataSetChanged();
+                        if (mRestaurantAdapter != null) {
+                            mRestaurantAdapter.notifyDataSetChanged();
                             showSnackBar(R.string.refreshed);
                         }
-                        swipeRefreshLayout.setRefreshing(false);
+                        mSwipeRefreshLayout.setRefreshing(false);
                     }
                 }, BACK_PRESS_DURATION);
             }

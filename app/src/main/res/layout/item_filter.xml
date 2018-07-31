@@ -5,12 +5,12 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="2dp"
-    android:id="@+id/itemLayout"
+    android:id="@+id/parent_view"
     android:background="@drawable/selector_icon"
     >
 
     <ImageView
-        android:id="@+id/image"
+        android:id="@+id/iv_filter"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:scaleType="fitCenter"
@@ -19,7 +19,7 @@
         />
 
     <TextView
-        android:id="@+id/mTitle"
+        android:id="@+id/tv_filter_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#000"

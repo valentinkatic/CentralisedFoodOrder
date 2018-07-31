@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import com.katic.centralisedfoodorder.data.DataHandler;
 import com.katic.centralisedfoodorder.data.models.Cart;
 import com.katic.centralisedfoodorder.data.models.DeliveryAddress;
+import com.katic.centralisedfoodorder.data.models.FilterData;
 import com.katic.centralisedfoodorder.data.models.Food;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.data.models.User;
@@ -46,6 +47,7 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
     private DatabaseReference mUsersRef;
     private DatabaseReference mRestaurantsRef;
     private DatabaseReference mRestaurantDataRef;
+    private DatabaseReference mFilterDataRef;
 
     private List<ValueEventListener> mValueListeners;
     private HashMap<DatabaseReference, ValueEventListener> mFirebaseListeners = new HashMap<>();
@@ -63,6 +65,7 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
         mUsersRef = rootRef.child(REF_USERS_NODE);
         mRestaurantsRef = rootRef.child(REF_RESTAURANTS_NODE);
         mRestaurantDataRef = rootRef.child(REF_RESTAURANT_DATA_NODE);
+        mFilterDataRef = rootRef.child(REF_FILTER_DATA_NODE);
     }
 
     @Override
@@ -413,7 +416,7 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
         };
 
         mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_CART)
-                .addValueEventListener(listener);
+                .addListenerForSingleValueEvent(listener);
         mFirebaseListeners.put(mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_CART), listener);
     }
 
@@ -444,7 +447,7 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
         };
 
         mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_ORDER_HISTORY).orderByChild(KEY_ORDER_DATE)
-                .addValueEventListener(listener);
+                .addListenerForSingleValueEvent(listener);
         mFirebaseListeners.put(mUsersRef.child(mCurrentUser.getUid()).child(KEY_USER_ORDER_HISTORY), listener);
     }
 
@@ -490,6 +493,31 @@ public class FirebaseHandlerImpl implements FirebaseHandler {
                         callback.onError();
                     }
                 });
+    }
+
+    @Override
+    public void fetchFilterData(final Callback<List<FilterData>> callback) {
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<FilterData> filterDataList = new ArrayList<>();
+                for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                    FilterData filter = childSnapshot.getValue(FilterData.class);
+                    if (filter != null) {
+                        filterDataList.add(filter);
+                    }
+                }
+                callback.onResponse(filterDataList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                callback.onError();
+            }
+        };
+
+        mFilterDataRef.addListenerForSingleValueEvent(listener);
+        mFirebaseListeners.put(mFilterDataRef, listener);
     }
 
     @Override

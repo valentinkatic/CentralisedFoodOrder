@@ -18,13 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.katic.centralisedfoodorder.GlideApp;
 import com.katic.centralisedfoodorder.R;
 import com.katic.centralisedfoodorder.data.models.Food;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
-import com.katic.centralisedfoodorder.data.remote.FirebaseHandler;
 import com.katic.centralisedfoodorder.ui.PresenterInjector;
 import com.katic.centralisedfoodorder.utils.Utils;
 
@@ -109,14 +106,8 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
         mTvRestaurantName.setText(restaurant.getName());
         mTvRestaurantAddress.setText(String.format(Locale.getDefault(), "%s, %s", restaurant.getAddress(), restaurant.getCity()));
 
-        StorageReference storageRef = FirebaseStorage
-                .getInstance()
-                .getReference()
-                .child(FirebaseHandler.REF_RESTAURANTS_NODE)
-                .child(restaurant.getKey())
-                .child(restaurant.getName() + ".png");
         GlideApp.with(getApplicationContext())
-                .load(storageRef)
+                .load(restaurant.getPhotoURL())
                 .into(mIvRestaurantImage);
 
         mRestaurantOfferAdapter.loadRestaurantOffer(restaurant.getFoodTypeList(), restaurant.getFoodList(), allowedCart);

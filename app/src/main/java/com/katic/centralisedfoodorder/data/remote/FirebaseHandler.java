@@ -3,6 +3,7 @@ package com.katic.centralisedfoodorder.data.remote;
 import com.katic.centralisedfoodorder.data.DataHandler;
 import com.katic.centralisedfoodorder.data.models.Cart;
 import com.katic.centralisedfoodorder.data.models.DeliveryAddress;
+import com.katic.centralisedfoodorder.data.models.FilterData;
 import com.katic.centralisedfoodorder.data.models.Food;
 import com.katic.centralisedfoodorder.data.models.Restaurant;
 import com.katic.centralisedfoodorder.data.models.User;
@@ -52,6 +53,8 @@ public interface FirebaseHandler {
     void removeOrder(String orderKey, Callback<Void> callback);
 
     void sendOrder(Cart cart, Callback<Void> callback);
+
+    void fetchFilterData(Callback<List<FilterData>> callback);
 
     void destroy();
 
